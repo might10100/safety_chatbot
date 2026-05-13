@@ -3,7 +3,7 @@ app.py — 건설 현장 안전관리 AI v3
 """
 import streamlit as st
 from datetime import date, datetime, timedelta
-import uuid, os
+import uuid, os, re
 import shared_state as SS
 
 from chain_search import (load_resources, law_search, get_law_candidates,
@@ -72,6 +72,41 @@ def go(page,**kw):
     st.session_state.page=page
     for k,v in kw.items(): st.session_state[k]=v
     st.rerun()
+
+def clean_text(text: str) -> str:
+    """AI 생성 텍스트에서 마크다운 기호와 이모지 제거"""
+    if not text: return text
+    # 마크다운 기호 제거
+    text = re.sub(r'^>\s*', '', text, flags=re.MULTILINE)   # 인용 >
+    text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)            # 볼드 **
+    text = re.sub(r'\*(.*?)\*', r'\1', text)                # 이탤릭 *
+    text = re.sub(r'^---+$', '', text, flags=re.MULTILINE)   # 구분선 ---
+    text = re.sub(r'^#{1,6}\s*', '', text, flags=re.MULTILINE)  # 헤더 #
+    # 이모지 제거
+    emoji_pat = re.compile(
+        "[" 
+        "\U0001F600-\U0001F64F"
+        "\U0001F300-\U0001F5FF"
+        "\U0001F680-\U0001F6FF"
+        "\U0001F1E0-\U0001F1FF"
+        "\U00002702-\U000027B0"
+        "\U000024C2-\U0001F251"
+        "\U0001F900-\U0001F9FF"
+        "\U00002600-\U000026FF"
+        "]+", flags=re.UNICODE)
+    text = emoji_pat.sub('', text)
+    # 연속 공백/줄바꿈 정리
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+
+def fmt_date(d: str) -> str:
+    """2026-05-13 → 2026년 05월 13일"""
+    try:
+        dp = d.split("-")
+        return f"{dp[0]}년 {dp[1]}월 {dp[2]}일"
+    except:
+        return d
+
 
 def _pd(s):
     try: return datetime.strptime(s,"%Y-%m-%d")
@@ -516,15 +551,16 @@ def law_ui(query):
     return selected
 
 def render_daily_log_html(daily,report_text):
+    report_text = clean_text(report_text)
     lines=report_text.split("\n")
     risk_sets=[]; risk=law_=action=""
     for line in lines:
         s=line.strip()
         if s.startswith("[위험요인]"):
             if risk: risk_sets.append((risk,law_,action))
-            risk=s.replace("[위험요인]","").strip(); law_=""; action=""
-        elif s.startswith("[법적 근거]"): law_=s.replace("[법적 근거]","").strip()
-        elif s.startswith("[안전 조치]"): action=s.replace("[안전 조치]","").strip()
+            risk=clean_text(s.replace("[위험요인]","").strip()); law_=""; action=""
+        elif s.startswith("[법적 근거]"): law_=clean_text(s.replace("[법적 근거]","").strip())
+        elif s.startswith("[안전 조치]"): action=clean_text(s.replace("[안전 조치]","").strip())
     if risk: risk_sets.append((risk,law_,action))
     if not risk_sets: risk_sets=[("(위험 요인 없음)","","")]
 
@@ -532,7 +568,7 @@ def render_daily_log_html(daily,report_text):
     for line in lines:
         if "TBM 메시지" in line: in_tbm=True; continue
         if in_tbm and line.strip() and not line.strip().startswith("["): tbm+=line.strip()+" "
-    tbm=tbm.strip() or "(TBM 메시지 없음)"
+    tbm=clean_text(tbm.strip()) or "(TBM 메시지 없음)"
 
     w=daily.get("weather",{})
     ws=(f"최고풍속 {w.get('wind_max','-')} ({w.get('peak_time','-')} 도달) / 평균기온 {w.get('temp_avg','-')}"
@@ -549,9 +585,9 @@ def render_daily_log_html(daily,report_text):
 <tr><td colspan="4" style="padding:2px;background:#f0f0f0;"></td></tr>"""
 
     return f"""<table style="width:100%;border-collapse:collapse;font-size:.88rem;margin:8px 0;">
-<tr><td colspan="4" style="background:#1a1a2e;color:white;text-align:center;padding:12px;font-size:1.05rem;font-weight:bold;letter-spacing:.15em;">금일 안전 일지</td></tr>
+<tr><td colspan="4" style="background:#1a1a2e;color:white;text-align:center;padding:12px;font-size:1.05rem;font-weight:bold;letter-spacing:.15em;">금 일  안 전  일 지</td></tr>
 <tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;width:15%;">작성 일자</td>
-<td style="padding:6px;border:1px solid #aaa;width:35%;">{daily.get("date","")}</td>
+<td style="padding:6px;border:1px solid #aaa;width:35%;">{fmt_date(daily.get("date",""))}</td>
 <td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;width:15%;">관리자</td>
 <td style="padding:6px;border:1px solid #aaa;width:35%;">{daily.get("manager","")}</td></tr>
 <tr><td colspan="4" style="background:#e8eaf6;font-weight:bold;padding:7px;border:1px solid #aaa;">1. 기본 사항</td></tr>
