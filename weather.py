@@ -114,9 +114,17 @@ def fetch_weather(address: str, date: str = None) -> dict:
         data = resp.json()
 
         items = data["response"]["body"]["items"]["item"]
+            
+            # 현재 시각에 가장 가까운 예보 시간 찾기
+        now_str = datetime.now().strftime("%H%M")
+        times = sorted(set(item["fcstTime"] for item in items))
+        nearest = min(times, key=lambda t: abs(int(t) - int(now_str)))
+            
+            # 해당 시간대 데이터만 필터링
         result = {}
         for item in items:
-            result[item["category"]] = item["fcstValue"]
+            if item["fcstTime"] == nearest:
+                result[item["category"]] = item["fcstValue"]
 
         tmp  = float(result.get("TMP", 0))
         sky  = int(result.get("SKY", 1))

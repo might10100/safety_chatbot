@@ -173,17 +173,37 @@ def sidebar():
         w = fetch_weather(p.get("district", "서울"))
         precip_icon = w.get("pty_icon") or w.get("sky_icon", "☀️")
         wind_color = {"safe":"#22c55e","caution":"#f59e0b","warning":"#ef4444","danger":"#dc2626"}.get(w.get("wind_safe","safe"),"#9ca3af")
-        st.markdown(f"""<div style="background:#1a1f2e;border-radius:8px;padding:11px 13px;">
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-<span style="font-size:24px;">{precip_icon}</span>
-<div><div style="font-size:20px;font-weight:600;color:#f3f4f6;line-height:1;">{f"{w['tmp']:.0f}°C" if w['tmp'] is not None else "—"}</div>
-<div style="font-size:11px;color:#9ca3af;">{w.get('sky','—')} · {p.get('district','')}</div></div></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-<div style="background:#111318;border-radius:6px;padding:7px 9px;"><div style="font-size:10px;color:#6b7280;">강수확률</div><div style="font-size:12px;font-weight:500;color:#e5e7eb;">{w.get('pop','—')}</div></div>
-<div style="background:#111318;border-radius:6px;padding:7px 9px;"><div style="font-size:10px;color:#6b7280;">습도</div><div style="font-size:12px;font-weight:500;color:#e5e7eb;">{w.get('reh','—')}</div></div>
-<div style="background:#111318;border-radius:6px;padding:7px 9px;"><div style="font-size:10px;color:#6b7280;">풍속</div><div style="font-size:12px;font-weight:500;color:{wind_color};">{f"{w['wsd']} m/s" if w['wsd'] is not None else "—"}</div></div>
-<div style="background:#111318;border-radius:6px;padding:7px 9px;"><div style="font-size:10px;color:#6b7280;">풍향</div><div style="font-size:12px;font-weight:500;color:#e5e7eb;">{w.get('vec_str','—')}</div></div>
-</div>{f'<div style="font-size:10px;color:#ef4444;margin-top:7px;font-weight:500;">⚠ {w["wind_level"]} — 고소작업 주의</div>' if w.get("wind_safe") in ("warning","danger") else f'<div style="font-size:10px;color:#22c55e;margin-top:7px;font-weight:500;">✔ 풍속 안전</div>'}
+        # ── 날씨 위젯 (밝은 테마) ──
+        st.divider()
+        w = fetch_weather(p.get("district", "서울"))
+        precip_icon = w.get("pty_icon") or w.get("sky_icon", "☀️")
+        wind_color = {"safe":"#0064FF","caution":"#F59E0B","warning":"#EF4444","danger":"#DC2626"}.get(w.get("wind_safe","safe"),"#8B95A1")
+        st.markdown(f"""<div style="background:#F2F4F6;border-radius:14px;padding:14px 16px;margin:0 8px;">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+<span style="font-size:26px;line-height:1;">{precip_icon}</span>
+<div>
+<div style="font-size:22px;font-weight:700;color:#191F28;line-height:1;letter-spacing:-0.03em;">{f"{w['tmp']:.0f}°C" if w['tmp'] is not None else "—"}</div>
+<div style="font-size:12px;color:#8B95A1;margin-top:2px;">{w.get('sky','—')} · {p.get('district','')}</div>
+</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+<div style="background:#FFFFFF;border-radius:10px;padding:8px 10px;border:1px solid #E8EAED;">
+<div style="font-size:10px;color:#8B95A1;font-weight:600;margin-bottom:3px;">강수확률</div>
+<div style="font-size:13px;font-weight:600;color:#191F28;">{w.get('pop','—')}</div>
+</div>
+<div style="background:#FFFFFF;border-radius:10px;padding:8px 10px;border:1px solid #E8EAED;">
+<div style="font-size:10px;color:#8B95A1;font-weight:600;margin-bottom:3px;">습도</div>
+<div style="font-size:13px;font-weight:600;color:#191F28;">{w.get('reh','—')}</div>
+</div>
+<div style="background:#FFFFFF;border-radius:10px;padding:8px 10px;border:1px solid #E8EAED;">
+<div style="font-size:10px;color:#8B95A1;font-weight:600;margin-bottom:3px;">풍속</div>
+<div style="font-size:13px;font-weight:600;color:{wind_color};">{f"{w['wsd']} m/s" if w['wsd'] is not None else "—"}</div>
+</div>
+<div style="background:#FFFFFF;border-radius:10px;padding:8px 10px;border:1px solid #E8EAED;">
+<div style="font-size:10px;color:#8B95A1;font-weight:600;margin-bottom:3px;">풍향</div>
+<div style="font-size:13px;font-weight:600;color:#191F28;">{w.get('vec_str','—')}</div>
+</div>
+</div>
+{f'<div style="font-size:11px;color:#EF4444;margin-top:8px;font-weight:600;">⚠ {w["wind_level"]} — 고소작업 주의</div>' if w.get("wind_safe") in ("warning","danger") else f'<div style="font-size:11px;color:#0064FF;margin-top:8px;font-weight:600;">✔ 풍속 안전</div>'}
 </div>""", unsafe_allow_html=True)
         
 # ── 위치 선택 ─────────────────────────────────────────────────

@@ -1,323 +1,472 @@
 /* ============================================================
-   건설 안전 AI - Custom Streamlit Theme
-   Reference: Linear, SafetyCulture/iAuditor
+   건설 안전 AI — Toss-inspired Theme
+   Primary: #0064FF | Background: #F2F4F6
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap');
 
-/* ── Root & Body ──────────────────────────────────────────── */
+/* ── 기본 ── */
 html, body, [data-testid="stAppViewContainer"] {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    font-family: 'Geist', -apple-system, 'Apple SD Gothic Neo', BlinkMacSystemFont, sans-serif !important;
+    background-color: #F2F4F6 !important;
 }
 
-/* Streamlit 기본 padding 제거 */
+[data-testid="stAppViewContainer"] > .main {
+    background-color: #F2F4F6 !important;
+}
+
 [data-testid="stAppViewContainer"] > .main > .block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
-    max-width: 1100px;
+    padding-top: 2.2rem !important;
+    padding-bottom: 2.2rem !important;
+    padding-left: 2.8rem !important;
+    padding-right: 2.8rem !important;
+    max-width: 1080px !important;
 }
 
-/* ── Sidebar ──────────────────────────────────────────────── */
+/* ── 사이드바 — 토스 스타일 (밝은 배경) ── */
 [data-testid="stSidebar"] {
-    background-color: #111318 !important;
-    border-right: 1px solid #1e2128 !important;
+    background-color: #FFFFFF !important;
+    border-right: 1px solid #E8EAED !important;
 }
 
 [data-testid="stSidebar"] > div:first-child {
     padding: 0 !important;
 }
 
-/* 사이드바 내부 텍스트 전체 */
+/* 사이드바 텍스트 기본 색 */
 [data-testid="stSidebar"] * {
-    color: #9ba3af !important;
+    color: #4E5968 !important;
+    font-family: 'Geist', -apple-system, sans-serif !important;
 }
 
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
 [data-testid="stSidebar"] h3 {
-    color: #f3f4f6 !important;
+    color: #191F28 !important;
     font-size: 13px !important;
-    font-weight: 500 !important;
-    letter-spacing: 0.02em;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em !important;
 }
 
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span,
-[data-testid="stSidebar"] label {
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] small {
     font-size: 13px !important;
+    color: #4E5968 !important;
 }
 
-/* 사이드바 구분선 */
 [data-testid="stSidebar"] hr {
-    border-color: #1e2128 !important;
-    margin: 8px 0 !important;
+    border-color: #F2F4F6 !important;
+    margin: 6px 0 !important;
 }
 
-/* 사이드바 버튼 - Linear 스타일 */
+/* 사이드바 버튼 — 토스 메뉴 스타일 */
 [data-testid="stSidebar"] .stButton > button {
-    width: 100% !important;
     background: transparent !important;
     border: none !important;
-    border-radius: 6px !important;
-    color: #9ba3af !important;
-    font-size: 13px !important;
-    font-weight: 400 !important;
+    border-radius: 10px !important;
+    color: #4E5968 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
     text-align: left !important;
-    padding: 7px 12px !important;
-    margin: 1px 0 !important;
+    /* 넉넉한 좌우 패딩 — 텍스트 잘림 방지 */
+    padding: 10px 20px !important;
+    margin: 1px 8px !important;
+    width: calc(100% - 16px) !important;
     transition: background 0.12s, color 0.12s !important;
     box-shadow: none !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    letter-spacing: -0.01em !important;
 }
 
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: #1e2330 !important;
-    color: #f3f4f6 !important;
+    background: #F2F4F6 !important;
+    color: #191F28 !important;
 }
 
-[data-testid="stSidebar"] .stButton > button:focus,
-[data-testid="stSidebar"] .stButton > button:active {
-    background: #1e2330 !important;
-    color: #ffffff !important;
-    box-shadow: none !important;
-    outline: none !important;
-}
-
-/* 활성 버튼 강조 (빨강 버튼 → 흰배경/강조로) */
+/* 사이드바 활성 버튼 — 토스 블루 */
 [data-testid="stSidebar"] .stButton > button[kind="primary"] {
-    background: #1e2d40 !important;
-    color: #60a5fa !important;
-    border-left: 2px solid #3b82f6 !important;
-    padding-left: 10px !important;
-}
-
-/* 사이드바 selectbox, radio */
-[data-testid="stSidebar"] [data-testid="stSelectbox"] > div > div {
-    background: #1a1f2a !important;
-    border-color: #2a3040 !important;
-    color: #e5e7eb !important;
-    font-size: 13px !important;
-    border-radius: 6px !important;
-}
-
-/* ── 메인 헤딩 ────────────────────────────────────────────── */
-.main h1 {
-    font-size: 1.4rem !important;
+    background: #EFF4FF !important;
+    color: #0064FF !important;
     font-weight: 600 !important;
-    color: #0f172a !important;
-    letter-spacing: -0.02em !important;
-    margin-bottom: 0.25rem !important;
+    border: none !important;
+}
+
+[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
+    background: #E0ECFF !important;
+}
+
+/* ── 메인 헤딩 ── */
+.main h1 {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #191F28 !important;
+    letter-spacing: -0.03em !important;
+    margin-bottom: 0.2rem !important;
     line-height: 1.3 !important;
 }
 
 .main h2 {
-    font-size: 1rem !important;
-    font-weight: 500 !important;
-    color: #374151 !important;
-    letter-spacing: -0.01em !important;
-    margin-top: 1.5rem !important;
-    margin-bottom: 0.75rem !important;
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+    color: #191F28 !important;
+    letter-spacing: -0.02em !important;
+    margin-top: 1.8rem !important;
+    margin-bottom: 0.6rem !important;
 }
 
 .main h3 {
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    color: #6b7280 !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    color: #8B95A1 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.06em !important;
+    letter-spacing: 0.07em !important;
     margin-top: 1.5rem !important;
     margin-bottom: 0.5rem !important;
 }
 
-/* ── 일반 버튼 ────────────────────────────────────────────── */
+.main p, .main span, .main label {
+    color: #333D4B !important;
+    font-size: 14px !important;
+    letter-spacing: -0.01em !important;
+}
+
+/* ── 메인 버튼 기본 ── */
 .main .stButton > button {
-    background: #ffffff !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 8px !important;
-    color: #374151 !important;
-    font-size: 13.5px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #E8EAED !important;
+    border-radius: 10px !important;
+    color: #333D4B !important;
+    font-size: 14px !important;
     font-weight: 500 !important;
-    padding: 7px 16px !important;
+    padding: 9px 18px !important;
     transition: all 0.12s !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+    letter-spacing: -0.01em !important;
 }
 
 .main .stButton > button:hover {
-    background: #f9fafb !important;
-    border-color: #d1d5db !important;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
-    color: #111827 !important;
+    background: #F8F9FA !important;
+    border-color: #D1D6DB !important;
+    color: #191F28 !important;
 }
 
-/* Primary 버튼 (빨강 → 진한 회색/거의 검정) */
+/* Primary — 토스 블루 */
 .main .stButton > button[kind="primary"] {
-    background: #111827 !important;
-    border-color: #111827 !important;
-    color: #ffffff !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12) !important;
+    background: #0064FF !important;
+    border-color: #0064FF !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(0,100,255,0.25) !important;
+    letter-spacing: -0.01em !important;
 }
 
 .main .stButton > button[kind="primary"]:hover {
-    background: #1f2937 !important;
-    border-color: #1f2937 !important;
+    background: #0050D0 !important;
+    border-color: #0050D0 !important;
+    box-shadow: 0 3px 12px rgba(0,100,255,0.35) !important;
 }
 
-/* ── 입력 필드 ────────────────────────────────────────────── */
+.main .stButton > button[kind="primary"]:disabled {
+    background: #ADC8FF !important;
+    border-color: #ADC8FF !important;
+    color: #FFFFFF !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+}
+
+/* ── 입력 필드 ── */
 .stTextInput > div > div > input,
 .stTextArea > div > div > textarea,
 .stNumberInput > div > div > input {
-    border: 1px solid #e5e7eb !important;
-    border-radius: 8px !important;
+    border: 1.5px solid #E8EAED !important;
+    border-radius: 10px !important;
     font-size: 14px !important;
     font-family: inherit !important;
-    background: #ffffff !important;
-    color: #111827 !important;
-    padding: 8px 12px !important;
+    background: #FFFFFF !important;
+    color: #191F28 !important;
+    padding: 10px 14px !important;
     transition: border-color 0.15s, box-shadow 0.15s !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+    letter-spacing: -0.01em !important;
 }
 
 .stTextInput > div > div > input:focus,
 .stTextArea > div > div > textarea:focus {
-    border-color: #6366f1 !important;
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.1) !important;
+    border-color: #0064FF !important;
+    box-shadow: 0 0 0 3px rgba(0,100,255,0.12) !important;
     outline: none !important;
 }
 
-/* ── Selectbox ────────────────────────────────────────────── */
+/* ── Selectbox ── */
 [data-testid="stSelectbox"] > div > div {
-    border: 1px solid #e5e7eb !important;
-    border-radius: 8px !important;
+    border: 1.5px solid #E8EAED !important;
+    border-radius: 10px !important;
     font-size: 14px !important;
-    background: #ffffff !important;
-    color: #111827 !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+    background: #FFFFFF !important;
+    color: #191F28 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
 }
 
 [data-testid="stSelectbox"] > div > div:focus-within {
-    border-color: #6366f1 !important;
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.1) !important;
+    border-color: #0064FF !important;
+    box-shadow: 0 0 0 3px rgba(0,100,255,0.12) !important;
 }
 
-/* ── Label 텍스트 ─────────────────────────────────────────── */
+/* ── Date input ── */
+[data-testid="stDateInput"] > div > div > input {
+    border: 1.5px solid #E8EAED !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    background: #FFFFFF !important;
+    color: #191F28 !important;
+    padding: 10px 14px !important;
+}
+
+/* ── Label ── */
 .stTextInput label,
 .stTextArea label,
 .stSelectbox label,
 .stNumberInput label,
 .stDateInput label {
     font-size: 13px !important;
-    font-weight: 500 !important;
-    color: #374151 !important;
-    margin-bottom: 4px !important;
+    font-weight: 600 !important;
+    color: #333D4B !important;
+    margin-bottom: 5px !important;
+    letter-spacing: -0.01em !important;
 }
 
-/* 필수항목 * 표시 */
-.stTextInput label span,
-.stSelectbox label span {
-    color: #ef4444 !important;
+/* ── 필수 항목 * — 빨간색 유지 ── */
+.req { color: #E74C3C !important; font-weight: bold !important; }
+span.req { color: #E74C3C !important; }
+
+/* ── Toggle ── */
+[data-testid="stToggle"] > label > div[data-checked="true"] {
+    background: #0064FF !important;
 }
 
-/* ── Metric 카드 ──────────────────────────────────────────── */
+/* ── Metric 카드 ── */
 [data-testid="stMetric"] {
-    background: #ffffff !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 10px !important;
-    padding: 14px 18px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    background: #FFFFFF !important;
+    border: 1px solid #E8EAED !important;
+    border-radius: 14px !important;
+    padding: 16px 20px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
 }
 
 [data-testid="stMetricLabel"] {
     font-size: 12px !important;
-    color: #6b7280 !important;
-    font-weight: 500 !important;
+    color: #8B95A1 !important;
+    font-weight: 600 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
+    letter-spacing: 0.06em !important;
 }
 
 [data-testid="stMetricValue"] {
-    font-size: 1.75rem !important;
-    font-weight: 600 !important;
-    color: #111827 !important;
-    letter-spacing: -0.02em !important;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    color: #191F28 !important;
+    letter-spacing: -0.03em !important;
 }
 
-/* ── Info / Warning / Error 박스 ──────────────────────────── */
+/* ── Alert 박스 ── */
 .stAlert {
-    border-radius: 8px !important;
+    border-radius: 12px !important;
     border-width: 1px !important;
     font-size: 13.5px !important;
+    letter-spacing: -0.01em !important;
 }
 
 [data-testid="stInfo"] {
-    background: #f0f9ff !important;
-    border-color: #bae6fd !important;
-    color: #0c4a6e !important;
+    background: #EFF4FF !important;
+    border-color: #C2D8FF !important;
+    color: #0050D0 !important;
 }
 
 [data-testid="stWarning"] {
-    background: #fffbeb !important;
-    border-color: #fde68a !important;
-    color: #78350f !important;
+    background: #FFF8EC !important;
+    border-color: #FFE0A3 !important;
+    color: #7A4700 !important;
 }
 
 [data-testid="stError"] {
-    background: #fff1f2 !important;
-    border-color: #fecdd3 !important;
-    color: #881337 !important;
+    background: #FFF2F2 !important;
+    border-color: #FFCDD2 !important;
+    color: #C62828 !important;
 }
 
 [data-testid="stSuccess"] {
-    background: #f0fdf4 !important;
-    border-color: #bbf7d0 !important;
-    color: #14532d !important;
+    background: #EDFBF4 !important;
+    border-color: #B2EDD2 !important;
+    color: #0A6640 !important;
 }
 
-/* ── Expander ─────────────────────────────────────────────── */
+/* ── Expander ── */
 [data-testid="stExpander"] {
-    border: 1px solid #e5e7eb !important;
-    border-radius: 8px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #E8EAED !important;
+    border-radius: 12px !important;
     overflow: hidden !important;
-    box-shadow: none !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
 }
 
 [data-testid="stExpander"] summary {
-    font-size: 13.5px !important;
+    font-size: 14px !important;
     font-weight: 500 !important;
-    color: #374151 !important;
-    padding: 10px 14px !important;
-    background: #fafafa !important;
+    color: #333D4B !important;
+    padding: 12px 16px !important;
+    background: #FFFFFF !important;
+    letter-spacing: -0.01em !important;
 }
 
 [data-testid="stExpander"] summary:hover {
-    background: #f3f4f6 !important;
+    background: #F8F9FA !important;
 }
 
-/* ── 구분선 ───────────────────────────────────────────────── */
+/* ── 구분선 ── */
 .main hr {
     border: none !important;
-    border-top: 1px solid #f3f4f6 !important;
+    border-top: 1px solid #E8EAED !important;
     margin: 1.5rem 0 !important;
 }
 
-/* ── 데이터프레임 / 표 ────────────────────────────────────── */
+/* ── 데이터프레임 ── */
 [data-testid="stDataFrame"] {
-    border: 1px solid #e5e7eb !important;
-    border-radius: 8px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #E8EAED !important;
+    border-radius: 12px !important;
     overflow: hidden !important;
     font-size: 13px !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
 }
 
-/* ── Streamlit 상단 메뉴바 숨기기 ─────────────────────────── */
+/* ── 상단 메뉴 숨김 ── */
 #MainMenu { visibility: hidden !important; }
 footer { visibility: hidden !important; }
 [data-testid="stToolbar"] { visibility: hidden !important; }
 
-/* ── 스크롤바 (Webkit) ────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+/* ── 스크롤바 ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+::-webkit-scrollbar-thumb { background: #D1D6DB; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #8B95A1; }
 
-/* ── 사이드바 스크롤바 ────────────────────────────────────── */
-[data-testid="stSidebar"] ::-webkit-scrollbar-thumb { background: #2d3748; }
+/* ── Chat ── */
+[data-testid="stChatInput"] textarea {
+    border-radius: 10px !important;
+    border: 1.5px solid #E8EAED !important;
+    font-size: 14px !important;
+    background: #FFFFFF !important;
+}
+
+[data-testid="stChatInput"] textarea:focus {
+    border-color: #0064FF !important;
+    box-shadow: 0 0 0 3px rgba(0,100,255,0.12) !important;
+}
+
+[data-testid="stChatMessage"] {
+    border-radius: 12px !important;
+    border: 1px solid #E8EAED !important;
+    background: #FFFFFF !important;
+}
+
+/* ── 번호 입력 ── */
+[data-testid="stNumberInput"] button {
+    border-radius: 8px !important;
+    border-color: #E8EAED !important;
+    background: #F8F9FA !important;
+    color: #333D4B !important;
+}
+
+/* ============================================================
+   패치 — style.css 맨 아래에 추가
+   ============================================================ */
+
+/* ── 날짜/숫자 입력 칸 테두리 강화 (배경과 구분) ── */
+[data-testid="stDateInput"] input,
+[data-testid="stDateInput"] > div > div {
+    border: 1.5px solid #C8D0D8 !important;
+    border-radius: 10px !important;
+    background: #FFFFFF !important;
+    color: #191F28 !important;
+    font-size: 14px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07) !important;
+}
+
+[data-testid="stNumberInput"] > div {
+    border: 1.5px solid #C8D0D8 !important;
+    border-radius: 10px !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07) !important;
+}
+
+[data-testid="stNumberInput"] input {
+    background: #FFFFFF !important;
+    color: #191F28 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* ── 사이드바 마크다운 텍스트 패딩 (글씨 왼쪽 붙음 방지) ── */
+[data-testid="stSidebar"] .stMarkdown,
+[data-testid="stSidebar"] .stMarkdown p,
+[data-testid="stSidebar"] .stMarkdown strong {
+    padding-left: 20px !important;
+    padding-right: 16px !important;
+    color: #191F28 !important;
+}
+
+[data-testid="stSidebar"] .stCaption,
+[data-testid="stSidebar"] .stCaption p {
+    padding-left: 20px !important;
+    color: #8B95A1 !important;
+    font-size: 12px !important;
+}
+
+/* ── Primary 버튼 강제 파란색 (빨간색 완전 제거) ── */
+button[kind="primary"],
+.stButton button[kind="primary"],
+[data-testid="stBaseButton-primary"] {
+    background: #0064FF !important;
+    background-color: #0064FF !important;
+    border-color: #0064FF !important;
+    color: #FFFFFF !important;
+}
+
+button[kind="primary"]:hover,
+[data-testid="stBaseButton-primary"]:hover {
+    background: #0050D0 !important;
+    background-color: #0050D0 !important;
+    border-color: #0050D0 !important;
+}
+/* ── 사이드바 프로젝트명/구역 표시 영역 ── */
+[data-testid="stSidebar"] .stMarkdown p {
+    padding-left: 20px !important;
+    padding-right: 16px !important;
+    color: #191F28 !important;
+    font-size: 14px !important;
+}
+
+/* 구역 이름 (st.caption) — 들여쓰기 + 회색 */
+[data-testid="stSidebar"] .stCaptionContainer p,
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+    padding-left: 28px !important;
+    color: #8B95A1 !important;
+    font-size: 12px !important;
+}
+
+/* 섹션 구분을 위한 배경 강조 */
+[data-testid="stSidebar"] .stMarkdown strong {
+    color: #191F28 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+}
+
+/* 사이드바 전체에 미세한 텍스트 대비 강화 */
+[data-testid="stSidebar"] {
+    border-right: 1px solid #DDE1E7 !important;
+}
