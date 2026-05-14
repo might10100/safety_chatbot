@@ -14,6 +14,12 @@ from pdf_utils import save_daily_log_pdf, save_checklist_pdf
 from accident_form import save_accident_form_pdf
 
 st.set_page_config(page_title="건설 현장 안전관리 AI", page_icon="🏗", layout="wide")
+def load_css():
+    from pathlib import Path
+    css = open(Path(__file__).parent / "style.css", encoding="utf-8").read()
+    st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+
+load_css()
 st.markdown("""<style>
 .title{font-size:1.8rem;font-weight:900;color:#1a1a2e;}
 .sub{font-size:.85rem;color:#888;margin-bottom:1rem;}
@@ -162,7 +168,24 @@ def sidebar():
             except: st.info("경로를 직접 입력해 주세요.")
         if cur_dir: st.caption(f"저장: {os.path.basename(cur_dir)}")
         else: st.caption("저장: 바탕화면 (기본값)")
-
+        # ── 날씨 위젯 ──
+        st.divider()
+        w = fetch_weather(p.get("district", "서울"))
+        precip_icon = w.get("pty_icon") or w.get("sky_icon", "☀️")
+        wind_color = {"safe":"#22c55e","caution":"#f59e0b","warning":"#ef4444","danger":"#dc2626"}.get(w.get("wind_safe","safe"),"#9ca3af")
+        st.markdown(f"""<div style="background:#1a1f2e;border-radius:8px;padding:11px 13px;">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+<span style="font-size:24px;">{precip_icon}</span>
+<div><div style="font-size:20px;font-weight:600;color:#f3f4f6;line-height:1;">{f"{w['tmp']:.0f}°C" if w['tmp'] is not None else "—"}</div>
+<div style="font-size:11px;color:#9ca3af;">{w.get('sky','—')} · {p.get('district','')}</div></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+<div style="background:#111318;border-radius:6px;padding:7px 9px;"><div style="font-size:10px;color:#6b7280;">강수확률</div><div style="font-size:12px;font-weight:500;color:#e5e7eb;">{w.get('pop','—')}</div></div>
+<div style="background:#111318;border-radius:6px;padding:7px 9px;"><div style="font-size:10px;color:#6b7280;">습도</div><div style="font-size:12px;font-weight:500;color:#e5e7eb;">{w.get('reh','—')}</div></div>
+<div style="background:#111318;border-radius:6px;padding:7px 9px;"><div style="font-size:10px;color:#6b7280;">풍속</div><div style="font-size:12px;font-weight:500;color:{wind_color};">{f"{w['wsd']} m/s" if w['wsd'] is not None else "—"}</div></div>
+<div style="background:#111318;border-radius:6px;padding:7px 9px;"><div style="font-size:10px;color:#6b7280;">풍향</div><div style="font-size:12px;font-weight:500;color:#e5e7eb;">{w.get('vec_str','—')}</div></div>
+</div>{f'<div style="font-size:10px;color:#ef4444;margin-top:7px;font-weight:500;">⚠ {w["wind_level"]} — 고소작업 주의</div>' if w.get("wind_safe") in ("warning","danger") else f'<div style="font-size:10px;color:#22c55e;margin-top:7px;font-weight:500;">✔ 풍속 안전</div>'}
+</div>""", unsafe_allow_html=True)
+        
 # ── 위치 선택 ─────────────────────────────────────────────────
 def location_selector(key_prefix="", cur_region="서울특별시", cur_dist="강남구"):
     regions=list(REGIONS.keys())
