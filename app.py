@@ -170,12 +170,10 @@ def sidebar():
         else: st.caption("저장: 바탕화면 (기본값)")
         # ── 날씨 위젯 ──
         st.divider()
-        w = fetch_weather(p.get("district", "서울"))
-        precip_icon = w.get("pty_icon") or w.get("sky_icon", "☀️")
-        wind_color = {"safe":"#22c55e","caution":"#f59e0b","warning":"#ef4444","danger":"#dc2626"}.get(w.get("wind_safe","safe"),"#9ca3af")
-        # ── 날씨 위젯 (밝은 테마) ──
-        st.divider()
-        w = fetch_weather(p.get("district", "서울"))
+        try:
+            w = fetch_weather(p.get("district", "서울"))
+        except Exception:
+            w = {}
         precip_icon = w.get("pty_icon") or w.get("sky_icon", "☀️")
         wind_color = {"safe":"#0064FF","caution":"#F59E0B","warning":"#EF4444","danger":"#DC2626"}.get(w.get("wind_safe","safe"),"#8B95A1")
         st.markdown(f"""<div style="background:#F2F4F6;border-radius:14px;padding:14px 16px;margin:0 8px;">
