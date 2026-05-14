@@ -5,6 +5,8 @@ weather.py — 기상청 단기예보 날씨 자동 추출
 import os
 import requests
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+KST = ZoneInfo('Asia/Seoul')
 
 try:
     from dotenv import load_dotenv
@@ -43,7 +45,7 @@ def get_grid(address: str) -> tuple:
 
 def _get_base_time() -> tuple[str, str]:
     """가장 가까운 예보 발표 시각 반환 (3시간 단위: 0200/0500/0800/1100/1400/1700/2000/2300)"""
-    now = datetime.now()
+    now = datetime.now(KST)
     base_hours = [2, 5, 8, 11, 14, 17, 20, 23]
     base_h = max([h for h in base_hours if h <= now.hour], default=23)
 
@@ -116,7 +118,7 @@ def fetch_weather(address: str, date: str = None) -> dict:
         items = data["response"]["body"]["items"]["item"]
             
             # 현재 시각에 가장 가까운 예보 시간 찾기
-        now_str = datetime.now().strftime("%H%M")
+        now_str = datetime.now(KST).strftime("%H%M")
         times = sorted(set(item["fcstTime"] for item in items))
         nearest = min(times, key=lambda t: abs(int(t) - int(now_str)))
             
