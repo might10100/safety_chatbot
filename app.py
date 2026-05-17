@@ -614,7 +614,6 @@ def law_ui(query):
     return selected
 
 def render_daily_log_html(daily,report_text):
-    report_text = clean_text(report_text)
     lines=report_text.split("\n")
     risk_sets=[]; risk=law_=action=""
     for line in lines:
@@ -728,9 +727,7 @@ def page_gen_daily_log():
         daily=st.session_state.daily_input
         st.markdown("### 보고서 확인 및 수정")
         st.markdown(render_daily_log_html(daily,st.session_state.report_content),unsafe_allow_html=True)
-        with st.expander("내용 직접 수정"):
-            edited=st.text_area("",value=st.session_state.report_content,height=300,label_visibility="collapsed")
-            if st.button("수정 적용"): st.session_state.report_content=edited; st.rerun()
+
         st.markdown("---")
         c1,c2,c3=st.columns(3)
         if c1.button("PDF로 저장",type="primary",use_container_width=True):
@@ -742,8 +739,8 @@ def page_gen_daily_log():
                     st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(path),mime="application/pdf")
             save_report("daily","금일 안전 일지",path,st.session_state.report_content,daily["date"])
             go("daily_input")
-        if c2.button("법규 다시 선택",use_container_width=True):
-            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; st.rerun()
+        if c2.button("수정하기",use_container_width=True):
+            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; go("daily_input")
         tbm_text=""
         lines_=st.session_state.report_content.split("\n")
         in_tbm_=False
