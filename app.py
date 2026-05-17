@@ -657,6 +657,14 @@ def render_daily_log_html(daily,report_text):
             tbm=_resp.content[0].text.strip()
         except Exception as e:
             tbm=f"오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
+        import re as _re
+        if "TBM 메시지" in st.session_state.report_content:
+            st.session_state.report_content = _re.sub(
+                r"TBM 메시지\n.*?(?=\n관리자 서명|\Z)",
+                f"TBM 메시지\n{tbm}",
+                st.session_state.report_content, flags=_re.DOTALL)
+        else:
+            st.session_state.report_content += f"\n\nTBM 메시지\n{tbm}"
 
     w=daily.get("weather",{})
     ws=(f"최고풍속 {w.get('wind_max','-')} ({w.get('peak_time','-')} 도달) / 평균기온 {w.get('temp_avg','-')}"
