@@ -631,7 +631,30 @@ def render_daily_log_html(daily,report_text):
     for line in lines:
         if "TBM 메시지" in line: in_tbm=True; continue
         if in_tbm and line.strip() and not line.strip().startswith("["): tbm+=line.strip()+" "
-    tbm=clean_text(tbm.strip()) or "(TBM 메시지 없음)"
+    tbm=clean_text(tbm.strip())
+    if not tbm or tbm=="(TBM 메시지 없음)":
+        try:
+            import anthropic as _ac
+            _client=_ac.Anthropic(api_key=ANTHROPIC_API_KEY)
+            _wp=daily.get("work_plan",""); _risk=daily.get("risk_factors","")
+            _weather=daily.get("weather",{})
+            _wstr=f"기온 {_weather.get('tmp','—')}°C, {_weather.get('sky','—')}, 풍속 {_weather.get('wsd','—')}m/s" if _weather and _weather.get('tmp') else "날씨 데이터 없음"
+            _prompt=f"""건설현장 안전관리자로서 오늘 작업자들에게 전달할 TBM(Tool Box Meeting) 메시지를 작성해주세요.
+
+오늘 작업 내용: {_wp}
+주요 위험 요인: {_risk}
+날씨: {_wstr}
+
+조건:
+- 친근하고 따뜻한 말투로 2~4문장
+- 오늘 작업의 핵심 안전수칙 포함
+- 특이사항 없어도 기본 안전수칙 언급
+- 마크다운 기호 없이 일반 텍스트만
+- "안전하게 작업합시다" 류의 마무리 포함"""
+            _resp=_client.messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
+            tbm=_resp.content[0].text.strip()
+        except Exception as e:
+            tbm=f"오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
 
     w=daily.get("weather",{})
     ws=(f"최고풍속 {w.get('wind_max','-')} ({w.get('peak_time','-')} 도달) / 평균기온 {w.get('temp_avg','-')}"
