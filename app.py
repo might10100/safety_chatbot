@@ -161,11 +161,7 @@ def sidebar():
             col=c1 if i%2==0 else c2
             if col.button(lbl,key=f"qp_{lbl}",type="primary" if cur_dir==path else "secondary",use_container_width=True):
                 st.session_state.pdf_save_dir=path; st.rerun()
-        if st.button("폴더 직접 선택", use_container_width=True):
-            try:
-                f=_pick_folder()
-                if f: st.session_state.pdf_save_dir=f; st.rerun()
-            except: st.info("경로를 직접 입력해 주세요.")
+
         if cur_dir: st.caption(f"저장: {os.path.basename(cur_dir)}")
         else: st.caption("저장: 바탕화면 (기본값)")
         # ── 날씨 위젯 ──
