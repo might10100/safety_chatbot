@@ -705,6 +705,9 @@ def page_gen_daily_log():
     else:
         daily=st.session_state.daily_input
         st.markdown("### 보고서 확인 및 수정")
+        # 디버그
+        first_lines = "\n".join(st.session_state.report_content.split("\n")[:5])
+        st.code(first_lines)
         st.markdown(render_daily_log_html(daily,st.session_state.report_content),unsafe_allow_html=True)
 
         st.markdown("---")
