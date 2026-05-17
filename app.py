@@ -217,12 +217,15 @@ def location_selector(key_prefix="", cur_region="서울특별시", cur_dist="강
 # 랜딩
 # ══════════════════════════════════════════════════════════════
 def page_landing():
-    st.markdown('<p class="title">건설 현장 안전관리 AI</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub">관리할 공사 현장을 선택하거나 새로 등록하세요.</p>', unsafe_allow_html=True)
+    st.markdown("""<div style="padding:8px 0 24px 0">
+<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">건설 현장 안전관리</div>
+<div style="font-size:2rem;font-weight:800;color:#191F28;letter-spacing:-0.04em;line-height:1.2">AI 안전관리 시스템</div>
+<div style="font-size:15px;color:#8B95A1;margin-top:8px;font-weight:400">관리할 공사 현장을 선택하거나 새로 등록하세요.</div>
+</div>""", unsafe_allow_html=True)
     projects=SS.get_projects(); archive=SS.get_archive()
 
     if projects:
-        st.markdown("### 저장된 공사 현장")
+        st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">저장된 공사 현장</div>""", unsafe_allow_html=True)
         for pid_,p_ in list(projects.items()):
             c1,c2=st.columns([.85,.15])
             with c1:
@@ -237,7 +240,7 @@ def page_landing():
                     arch=SS.get_archive(); arch[ts]={"project":p_,"zone_data":SS.get_zone_data().get(pid_,{})}
                     SS.set_archive(arch)
                     projs=SS.get_projects(); del projs[pid_]; SS.set_projects(projs); st.rerun()
-        st.markdown("---")
+        st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:20px 0'>", unsafe_allow_html=True)
 
     if archive:
         with st.expander(f"이전 현장 기록 ({len(archive)}건)"):
@@ -360,8 +363,11 @@ def page_edit_project():
 def page_zone_board():
     p,z=proj(),zone(); zd=zdata()
     ac=zd.get("accidents",[])
-    st.markdown(f'<p class="title">{z}</p>',unsafe_allow_html=True)
-    st.markdown(f'<p class="sub">{p.get("name","")} | {p.get("address","")}</p>',unsafe_allow_html=True)
+    st.markdown(f"""<div style="padding:8px 0 20px 0">
+<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">{p.get('name','')} · 구역</div>
+<div style="font-size:2rem;font-weight:800;color:#191F28;letter-spacing:-0.04em;line-height:1.2">{z}</div>
+<div style="font-size:14px;color:#8B95A1;margin-top:6px">{p.get('address','')}</div>
+</div>""", unsafe_allow_html=True)
 
     # 전일 미조치 확인
     prev_unresolved=_get_prev_unresolved()
