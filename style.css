@@ -489,3 +489,8 @@ button[kind="primary"]:hover,
     display: flex !important;
     visibility: visible !important;
 }
+
+/* ── 사이드바 토글 버튼 숨김 (항상 열린 상태) ── */
+[data-testid="collapsedControl"] {
+    display: none !important;
+}
