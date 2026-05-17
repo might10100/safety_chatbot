@@ -710,12 +710,21 @@ def page_gen_daily_log():
             import re as _re2
             _rc=st.session_state.report_content
             _m=_re2.search(r"TBM 메시지", _rc)
-            if _m:
-                _idx=_m.start()
-                _next_line=_rc.find("\n", _idx)+1
-                _end=_rc.find("관리자 서명", _idx)
-                if _end==-1: _end=len(_rc)
-                st.session_state.report_content=_rc[:_next_line]+_tbm+"\n"+_rc[_end:]
+            # TBM 섹션만 교체 (나머지 내용 보존)
+                lines_rc = _rc.split("\n")
+                new_lines = []
+                skip = False
+                for l in lines_rc:
+                    if "TBM 메시지" in l:
+                        new_lines.append(l)
+                        new_lines.append(_tbm)
+                        skip = True
+                    elif skip and "관리자 서명" in l:
+                        skip = False
+                        new_lines.append(l)
+                    elif not skip:
+                        new_lines.append(l)
+                st.session_state.report_content = "\n".join(new_lines)
         st.rerun()
     else:
         daily=st.session_state.daily_input
