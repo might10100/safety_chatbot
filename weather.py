@@ -96,7 +96,25 @@ def fetch_weather(address: str, date: str = None) -> dict:
         return _dummy_weather()
 
     nx, ny = get_grid(address)
-    base_date, base_time = _get_base_time()
+    from datetime import datetime as dt2
+    now = dt2.now(KST)
+    today = now.strftime("%Y%m%d")
+    if date and date != today:
+        # 요청 날짜가 오늘이 아니면 유효성 검사 (3일 이내만 가능)
+        try:
+            req_dt = dt2.strptime(date, "%Y%m%d").replace(tzinfo=KST)
+            diff = (req_dt.date() - now.date()).days
+            if diff < -1 or diff > 2:
+                return {"error": "3일 이내 날짜만 조회 가능합니다.", "tmp": None, "sky": "—", "sky_icon": "❓",
+                        "pty": "—", "pty_icon": "", "pop": "—", "pcp": "—", "wsd": 0,
+                        "wind_level": "—", "wind_safe": "safe", "vec": 0, "vec_str": "—", "reh": "—"}
+            base_date = date
+            # 해당 날짜 가장 가까운 발표시각
+            base_time = "0200"
+        except:
+            base_date, base_time = _get_base_time()
+    else:
+        base_date, base_time = _get_base_time()
 
     url = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
     params = {

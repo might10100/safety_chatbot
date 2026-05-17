@@ -522,7 +522,7 @@ def page_daily_input():
         p_=proj()
         addr=f"{p_.get('region','')} {p_.get('district','')}"
         with st.spinner("날씨 정보 가져오는 중..."):
-            weather=fetch_weather(addr)
+            weather=fetch_weather(addr, d.strftime("%Y%m%d"))
         if weather.get("available"):
             wc1,wc2,wc3=st.columns(3)
             wc1.metric("평균기온",weather["temp_avg"]); wc1.metric("최고기온",weather["temp_max"])
