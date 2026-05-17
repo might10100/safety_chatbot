@@ -476,3 +476,16 @@ button[kind="primary"]:hover,
     visibility: visible !important;
     display: flex !important;
 }
+
+/* ── 사이드바 강제 표시 ── */
+[data-testid="stSidebar"] {
+    display: block !important;
+    visibility: visible !important;
+    transform: translateX(0) !important;
+    min-width: 240px !important;
+}
+
+[data-testid="collapsedControl"] {
+    display: flex !important;
+    visibility: visible !important;
+}
