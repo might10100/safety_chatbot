@@ -390,3 +390,21 @@ span.req { color: #E74C3C !important; }
     font-size: 13px !important;
 }
 wc -l style.css
+
+/* ── 사이드바 섹션 레이블 (기능, PDF 저장 경로) ── */
+[data-testid="stSidebar"] .stMarkdown strong {
+    display: block !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #B0B8C1 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    padding: 16px 20px 4px 20px !important;
+}
+
+/* ── 저장경로 caption ── */
+[data-testid="stSidebar"] .stCaptionContainer p {
+    font-size: 11px !important;
+    color: #B0B8C1 !important;
+    padding-left: 20px !important;
+}
