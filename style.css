@@ -1,6 +1,6 @@
+cat > style.css << 'CSSEOF'
 @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap');
 
-/* ── 기본 ── */
 html, body, [data-testid="stAppViewContainer"] {
     font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', sans-serif !important;
     background-color: #F2F4F6 !important;
@@ -23,11 +23,13 @@ html, body, [data-testid="stAppViewContainer"] {
     margin-bottom: 1.5rem !important;
 }
 
-/* ── 사이드바 ── */
 [data-testid="stSidebar"] {
     background-color: #FFFFFF !important;
     border-right: 1px solid #E8EAED !important;
     min-width: 220px !important;
+    display: block !important;
+    visibility: visible !important;
+    transform: translateX(0) !important;
 }
 
 [data-testid="stSidebar"] > div:first-child {
@@ -45,7 +47,6 @@ html, body, [data-testid="stAppViewContainer"] {
     color: #191F28 !important;
     font-size: 13px !important;
     font-weight: 700 !important;
-    letter-spacing: -0.01em !important;
 }
 
 [data-testid="stSidebar"] p,
@@ -84,7 +85,6 @@ html, body, [data-testid="stAppViewContainer"] {
     text-transform: uppercase !important;
 }
 
-/* 사이드바 버튼 */
 [data-testid="stSidebar"] .stButton > button {
     background: transparent !important;
     border: none !important;
@@ -115,7 +115,10 @@ html, body, [data-testid="stAppViewContainer"] {
     border: none !important;
 }
 
-/* ── 헤딩 ── */
+[data-testid="collapsedControl"] {
+    display: none !important;
+}
+
 .main h1 {
     font-size: 1.6rem !important;
     font-weight: 800 !important;
@@ -150,7 +153,6 @@ html, body, [data-testid="stAppViewContainer"] {
     letter-spacing: -0.01em !important;
 }
 
-/* ── 메인 버튼 ── */
 .main .stButton > button {
     background: #FFFFFF !important;
     border: 1.5px solid #E8EAED !important;
@@ -167,7 +169,6 @@ html, body, [data-testid="stAppViewContainer"] {
     background: #F8F9FA !important;
     border-color: #C5C9D0 !important;
     color: #191F28 !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
 }
 
 .main .stButton > button[kind="primary"],
@@ -186,7 +187,6 @@ button[kind="primary"],
     background: #0050D0 !important;
     background-color: #0050D0 !important;
     border-color: #0050D0 !important;
-    box-shadow: 0 4px 14px rgba(0,100,255,0.38) !important;
 }
 
 .main .stButton > button[kind="primary"]:disabled {
@@ -197,7 +197,6 @@ button[kind="primary"],
     opacity: 1 !important;
 }
 
-/* ── 입력 필드 ── */
 .stTextInput > div > div > input,
 .stTextArea > div > div > textarea,
 .stNumberInput > div > div > input {
@@ -209,7 +208,6 @@ button[kind="primary"],
     color: #191F28 !important;
     padding: 10px 14px !important;
     transition: border-color 0.15s, box-shadow 0.15s !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
 }
 
 .stTextInput > div > div > input:focus,
@@ -220,7 +218,6 @@ button[kind="primary"],
     outline: none !important;
 }
 
-/* ── Selectbox ── */
 [data-testid="stSelectbox"] > div > div {
     border: 1.5px solid #E8EAED !important;
     border-radius: 10px !important;
@@ -229,12 +226,6 @@ button[kind="primary"],
     color: #191F28 !important;
 }
 
-[data-testid="stSelectbox"] > div > div:focus-within {
-    border-color: #0064FF !important;
-    box-shadow: 0 0 0 3px rgba(0,100,255,0.1) !important;
-}
-
-/* ── Date input ── */
 [data-testid="stDateInput"] input,
 [data-testid="stDateInput"] > div > div {
     border: 1.5px solid #E8EAED !important;
@@ -244,7 +235,6 @@ button[kind="primary"],
     font-size: 14px !important;
 }
 
-/* ── Number input ── */
 [data-testid="stNumberInput"] > div {
     border: 1.5px solid #E8EAED !important;
     border-radius: 10px !important;
@@ -260,12 +250,10 @@ button[kind="primary"],
 
 [data-testid="stNumberInput"] button {
     border-radius: 8px !important;
-    border-color: #E8EAED !important;
     background: #F2F4F6 !important;
     color: #333D4B !important;
 }
 
-/* ── Label ── */
 .stTextInput label,
 .stTextArea label,
 .stSelectbox label,
@@ -275,10 +263,8 @@ button[kind="primary"],
     font-weight: 600 !important;
     color: #333D4B !important;
     margin-bottom: 6px !important;
-    letter-spacing: -0.01em !important;
 }
 
-/* ── Metric 카드 ── */
 [data-testid="stMetric"] {
     background: #F8FAFF !important;
     border: 1.5px solid #E0ECFF !important;
@@ -302,7 +288,6 @@ button[kind="primary"],
     letter-spacing: -0.04em !important;
 }
 
-/* ── Alert ── */
 .stAlert {
     border-radius: 12px !important;
     border-width: 1px !important;
@@ -333,13 +318,11 @@ button[kind="primary"],
     color: #0A6640 !important;
 }
 
-/* ── Expander ── */
 [data-testid="stExpander"] {
     background: #FFFFFF !important;
     border: 1.5px solid #E8EAED !important;
     border-radius: 14px !important;
     overflow: hidden !important;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
 }
 
 [data-testid="stExpander"] summary {
@@ -349,14 +332,12 @@ button[kind="primary"],
     padding: 14px 18px !important;
 }
 
-/* ── 구분선 ── */
 .main hr {
     border: none !important;
     border-top: 1.5px solid #F2F4F6 !important;
     margin: 1.8rem 0 !important;
 }
 
-/* ── Chat ── */
 [data-testid="stChatInput"] textarea {
     border-radius: 12px !important;
     border: 1.5px solid #E8EAED !important;
@@ -373,41 +354,24 @@ button[kind="primary"],
     border-radius: 14px !important;
     border: 1.5px solid #F2F4F6 !important;
     background: #FFFFFF !important;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
 }
 
-/* ── 상단 메뉴/푸터 숨김 ── */
 #MainMenu { visibility: hidden !important; }
 footer { visibility: hidden !important; }
 [data-testid="stToolbar"] { visibility: hidden !important; }
 
-/* ── 스크롤바 ── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #D1D6DB; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #8B95A1; }
 
-/* ── Toggle ── */
 [data-testid="stToggle"] > label > div[data-checked="true"] {
     background: #0064FF !important;
 }
 
-/* ── 사이드바 항상 표시 ── */
-[data-testid="stSidebar"] {
-    display: block !important;
-    visibility: visible !important;
-    transform: translateX(0) !important;
-}
-
-[data-testid="collapsedControl"] {
-    display: none !important;
-}
-
-/* ── 필수 항목 ── */
 .req { color: #E74C3C !important; font-weight: bold !important; }
 span.req { color: #E74C3C !important; }
 
-/* ── DataFrames ── */
 [data-testid="stDataFrame"] {
     background: #FFFFFF !important;
     border: 1.5px solid #E8EAED !important;
@@ -415,3 +379,5 @@ span.req { color: #E74C3C !important; }
     overflow: hidden !important;
     font-size: 13px !important;
 }
+CSSEOF
+wc -l style.css
