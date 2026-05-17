@@ -812,7 +812,7 @@ def page_accident_form():
         # 재해 발생 개요 (필수)
         st.markdown('<p class="sec-label">재해 발생 개요 *</p>',unsafe_allow_html=True)
         ov=st.text_area("",value=acc.get("overview",""),height=100,
-                         placeholder="자세히 기술해주세요. (언제, 어디서, 누가, 무엇을, 어떻게, 왜)",
+                         placeholder="자세히 기술해주세요.",
                          label_visibility="collapsed")
 
         new_acc={
