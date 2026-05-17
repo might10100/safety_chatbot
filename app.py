@@ -226,17 +226,20 @@ def page_landing():
     projects=SS.get_projects(); archive=SS.get_archive()
 
     if projects:
-        st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">저장된 공사 현장</div>""", unsafe_allow_html=True)
+        st.markdown("""<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px">저장된 공사 현장</div>""", unsafe_allow_html=True)
         for pid_,p_ in list(projects.items()):
+            st.markdown(f"""<div style="background:#FFFFFF;border:1.5px solid #E8EAED;border-radius:16px;padding:18px 22px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
+<div style="font-size:17px;font-weight:800;color:#191F28;letter-spacing:-0.03em;margin-bottom:4px">{p_['name']}</div>
+<div style="font-size:13px;color:#8B95A1">{p_.get('address','')} &nbsp;·&nbsp; {p_.get('period_start','')} ~ {p_.get('period_end','')}</div>
+</div>""", unsafe_allow_html=True)
             c1,c2=st.columns([.85,.15])
             with c1:
-                if st.button(f"**{p_['name']}**  |  {p_.get('address','')}  |  {p_.get('period_start','')} ~ {p_.get('period_end','')}",
-                             key=f"p_{pid_}",use_container_width=True):
+                if st.button("입장하기 →", key=f"p_{pid_}", use_container_width=True, type="primary"):
                     st.session_state.cur_proj_id=pid_
                     with st.spinner("AI 모델 로딩 중..."): load_resources()
                     go("main_board")
             with c2:
-                if st.button("삭제",key=f"dp_{pid_}"):
+                if st.button("삭제", key=f"dp_{pid_}"):
                     ts=datetime.now().strftime("%Y%m%d_%H%M%S")
                     arch=SS.get_archive(); arch[ts]={"project":p_,"zone_data":SS.get_zone_data().get(pid_,{})}
                     SS.set_archive(arch)
