@@ -614,6 +614,7 @@ def law_ui(query):
     return selected
 
 def render_daily_log_html(daily,report_text):
+    report_text = clean_text(report_text)
     lines=report_text.split("\n")
     risk_sets=[]; risk=law_=action=""
     for line in lines:
@@ -625,14 +626,7 @@ def render_daily_log_html(daily,report_text):
         elif s.startswith("[안전 조치]"): action=clean_text(s.replace("[안전 조치]","").strip())
     if risk: risk_sets.append((risk,law_,action))
     if not risk_sets: risk_sets=[("(위험 요인 없음)","","")]
-
-    tbm=""; in_tbm=False
-    for line in lines:
-        if "TBM 메시지" in line: in_tbm=True; continue
-        if in_tbm and line.strip() and not line.strip().startswith("["): tbm+=line.strip()+" "
-    tbm=clean_text(tbm.strip())
-    if not tbm or tbm=="(TBM 메시지 없음)":
-        tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
+    tbm=st.session_state.get("tbm_message","오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다.")
     w=daily.get("weather",{})
     ws=(f"최고풍속 {w.get('wind_max','-')} ({w.get('peak_time','-')} 도달) / 평균기온 {w.get('temp_avg','-')}"
         if w and w.get("temp_avg") else "날씨 데이터 없음")
@@ -706,22 +700,7 @@ def page_gen_daily_log():
                 _tbm=_resp.content[0].text.strip()
             except:
                 _tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
-            import re as _re2
-            _rc=st.session_state.report_content
-            lines_rc = _rc.split("\n")
-            new_lines = []
-            skip = False
-            for l in lines_rc:
-                if "TBM 메시지" in l:
-                    new_lines.append(l)
-                    new_lines.append(_tbm)
-                    skip = True
-                elif skip and "관리자 서명" in l:
-                    skip = False
-                    new_lines.append(l)
-                elif not skip:
-                    new_lines.append(l)
-            st.session_state.report_content = "\n".join(new_lines)
+            st.session_state.tbm_message = _tbm
         st.rerun()
     else:
         daily=st.session_state.daily_input
