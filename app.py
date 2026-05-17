@@ -697,25 +697,26 @@ def page_gen_daily_log():
     if not st.session_state.report_content:
         with st.spinner("AI가 법규를 분석하고 안전 일지를 작성 중입니다..."):
             st.session_state.report_content=generate_daily_log(daily, None)
-        try:
-            import anthropic as _ac, re as _re
-            _wp=daily.get("work_process",""); _risk=daily.get("risk_factors","")
-            _weather=daily.get("weather",{})
-            _wstr=f"기온 {_weather.get('tmp','—')}°C, {_weather.get('sky','—')}, 풍속 {_weather.get('wsd','—')}m/s" if _weather and _weather.get('tmp') else "날씨 데이터 없음"
-            _prompt=f"건설현장 TBM 메시지를 작성해주세요.\n작업내용: {_wp}\n위험요인: {_risk}\n날씨: {_wstr}\n조건: 친근한 말투 3~5문장, 법규 기반 주의사항 포함, 마크다운 없이 순수 텍스트"
-            _resp=_ac.Anthropic(api_key=ANTHROPIC_API_KEY).messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
-            _tbm=_resp.content[0].text.strip()
-        except:
-            _tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
-        import re as _re2
-        _rc = st.session_state.report_content
-        _m = _re2.search(r"TBM 메시지", _rc)
-        if _m:
-            _idx = _m.start()
-            _end = _rc.find("관리자 서명", _idx)
-            if _end == -1: _end = len(_rc)
-            st.session_state.report_content = _rc[:_idx] + "TBM 메시지\n" + _tbm + "\n" + _rc[_end:]
+            try:
+                import anthropic as _ac
+                _wp=daily.get("work_process",""); _risk=daily.get("risk_factors","")
+                _weather=daily.get("weather",{})
+                _wstr=f"기온 {_weather.get('tmp','—')}°C, {_weather.get('sky','—')}, 풍속 {_weather.get('wsd','—')}m/s" if _weather and _weather.get('tmp') else "날씨 데이터 없음"
+                _prompt=f"건설현장 TBM 메시지 3~5문장 작성. 작업:{_wp}, 위험:{_risk}, 날씨:{_wstr}. 친근한 말투, 법규 주의사항 포함, 마크다운 없이"
+                _resp=_ac.Anthropic(api_key=ANTHROPIC_API_KEY).messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
+                _tbm=_resp.content[0].text.strip()
+            except:
+                _tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
+            import re as _re2
+            _rc=st.session_state.report_content
+            _m=_re2.search(r"TBM 메시지", _rc)
+            if _m:
+                _idx=_m.start()
+                _end=_rc.find("관리자 서명", _idx)
+                if _end==-1: _end=len(_rc)
+                st.session_state.report_content=_rc[:_idx]+"TBM 메시지\n"+_tbm+"\n"+_rc[_end:]
         st.rerun()
+    else:
         daily=st.session_state.daily_input
         st.markdown("### 보고서 확인 및 수정")
         st.markdown(render_daily_log_html(daily,st.session_state.report_content),unsafe_allow_html=True)
