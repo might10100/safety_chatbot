@@ -725,7 +725,7 @@ def page_gen_daily_log():
                 if _r3: _rs3.append((_r3,_l3,_a3))
                 st.session_state.risk_sets = _rs3 if _rs3 else [("위험요인 분석 실패","","")]
             except Exception as _e3:
-                st.session_state.risk_sets = [("위험요인 분석 중 오류 발생","str(_e3)","")]
+                st.session_state.risk_sets = [("위험요인 분석 중 오류 발생",str(_e3),"")]
             try:
                 import anthropic as _ac
                 _wp=daily.get("work_process",""); _risk=daily.get("risk_factors","")
