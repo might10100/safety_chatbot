@@ -868,14 +868,14 @@ def page_chatbot():
         if "global_chat" not in st.session_state: st.session_state.global_chat=[]
         chat_history=st.session_state.global_chat
 
-    for msg in chat_history:
-        with st.chat_message(msg["role"]): st.markdown(msg["content"])
-    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
     col_input, col_btn = st.columns([.85, .15])
     with col_input:
         q = st.text_input("질문 입력", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key="chat_input_box")
     with col_btn:
         send = st.button("검색", type="primary", use_container_width=True)
+    st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:12px 0'>", unsafe_allow_html=True)
+    for msg in chat_history:
+        with st.chat_message(msg["role"]): st.markdown(msg["content"])
     if send and q:
         with st.chat_message("user"): st.markdown(q)
         with st.chat_message("assistant"):
