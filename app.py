@@ -709,22 +709,20 @@ def page_gen_daily_log():
                 _tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
             import re as _re2
             _rc=st.session_state.report_content
-            _m=_re2.search(r"TBM 메시지", _rc)
-            # TBM 섹션만 교체 (나머지 내용 보존)
-                lines_rc = _rc.split("\n")
-                new_lines = []
-                skip = False
-                for l in lines_rc:
-                    if "TBM 메시지" in l:
-                        new_lines.append(l)
-                        new_lines.append(_tbm)
-                        skip = True
-                    elif skip and "관리자 서명" in l:
-                        skip = False
-                        new_lines.append(l)
-                    elif not skip:
-                        new_lines.append(l)
-                st.session_state.report_content = "\n".join(new_lines)
+            lines_rc = _rc.split("\n")
+            new_lines = []
+            skip = False
+            for l in lines_rc:
+                if "TBM 메시지" in l:
+                    new_lines.append(l)
+                    new_lines.append(_tbm)
+                    skip = True
+                elif skip and "관리자 서명" in l:
+                    skip = False
+                    new_lines.append(l)
+                elif not skip:
+                    new_lines.append(l)
+            st.session_state.report_content = "\n".join(new_lines)
         st.rerun()
     else:
         daily=st.session_state.daily_input
