@@ -615,17 +615,45 @@ def law_ui(query):
 
 def render_daily_log_html(daily,report_text):
     report_text = clean_text(report_text)
-    lines=report_text.split("\n")
-    risk_sets=[]; risk=law_=action=""
-    for line in lines:
-        s=line.strip()
-        if s.startswith("[위험요인]"):
-            if risk: risk_sets.append((risk,law_,action))
-            risk=clean_text(s.replace("[위험요인]","").strip()); law_=""; action=""
-        elif s.startswith("[법적 근거]"): law_=clean_text(s.replace("[법적 근거]","").strip())
-        elif s.startswith("[안전 조치]"): action=clean_text(s.replace("[안전 조치]","").strip())
-    if risk: risk_sets.append((risk,law_,action))
-    if not risk_sets: risk_sets=[("(위험 요인 없음)","","")]
+    # 1,2번 데이터 기반으로 위험요인 직접 생성
+    try:
+        import anthropic as _ac2
+        _wp2=daily.get("work_process",""); _loc2=daily.get("location","")
+        _env2=daily.get("env",""); _equip2=daily.get("equipment","")
+        _prev2=daily.get("prev_issues","없음"); _new2=daily.get("new_workers","없음")
+        _prompt2=f"""건설안전 전문가로서 아래 현장 정보를 바탕으로 위험요인 2~3개를 분석하세요.
+
+작업내용: {_wp2}
+작업위치: {_loc2}
+작업환경: {_env2}
+장비: {_equip2}
+전일미조치: {_prev2}
+신규인원: {_new2}
+
+반드시 아래 형식으로만 출력하세요 (다른 텍스트 없이):
+[위험요인] 위험명
+[법적 근거] 법령명 조항
+[안전 조치] 조치내용
+
+[위험요인] 위험명2
+[법적 근거] 법령명 조항
+[안전 조치] 조치내용"""
+        _resp2=_ac2.Anthropic(api_key=ANTHROPIC_API_KEY).messages.create(
+            model="claude-sonnet-4-6",max_tokens=500,
+            messages=[{"role":"user","content":_prompt2}])
+        _risk_text=_resp2.content[0].text.strip()
+        risk_sets=[]; risk=law_=action=""
+        for line in _risk_text.split("\n"):
+            s=line.strip()
+            if s.startswith("[위험요인]"):
+                if risk: risk_sets.append((risk,law_,action))
+                risk=s.replace("[위험요인]","").strip(); law_=""; action=""
+            elif s.startswith("[법적 근거]"): law_=s.replace("[법적 근거]","").strip()
+            elif s.startswith("[안전 조치]"): action=s.replace("[안전 조치]","").strip()
+        if risk: risk_sets.append((risk,law_,action))
+    except:
+        risk_sets=[]
+    if not risk_sets: risk_sets=[("작업 내용을 입력하면 위험요인이 자동 분석됩니다.","","")]
     tbm=st.session_state.get("tbm_message","오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다.")
     w=daily.get("weather",{})
     ws=(f"최고풍속 {w.get('wind_max','-')} ({w.get('peak_time','-')} 도달) / 평균기온 {w.get('temp_avg','-')}"
