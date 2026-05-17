@@ -706,18 +706,17 @@ def page_gen_daily_log():
             _resp=_ac.Anthropic(api_key=ANTHROPIC_API_KEY).messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
             _tbm=_resp.content[0].text.strip()
         except:
+        except:
             _tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
         import re as _re2
-        st.session_state.report_content = _re2.sub(
-            r"(TBM 메시지
-).*?(
-관리자 서명)",
-            f"TBM 메시지
-{_tbm}
-관리자 서명",
-            st.session_state.report_content, flags=_re2.DOTALL)
+        _rc = st.session_state.report_content
+        _m = _re2.search(r"TBM 메시지", _rc)
+        if _m:
+            _idx = _m.start()
+            _end = _rc.find("관리자 서명", _idx)
+            if _end == -1: _end = len(_rc)
+            st.session_state.report_content = _rc[:_idx] + "TBM 메시지\n" + _tbm + "\n" + _rc[_end:]
         st.rerun()
-    else:
         daily=st.session_state.daily_input
         st.markdown("### 보고서 확인 및 수정")
         st.markdown(render_daily_log_html(daily,st.session_state.report_content),unsafe_allow_html=True)
