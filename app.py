@@ -130,8 +130,11 @@ def sidebar():
     if page in ("landing","main_board","edit_project"): return
     p,z=proj(),zone()
     with st.sidebar:
-        st.markdown(f"**{p.get('name','')}**")
-        if z: st.caption(f"{z}")
+        st.markdown(f"""<div style="padding:20px 20px 4px 20px">
+<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px">공사 현장</div>
+<div style="font-size:15px;font-weight:800;color:#191F28;letter-spacing:-0.02em">{p.get('name','')}</div>
+{"<div style='font-size:12px;color:#0064FF;font-weight:600;margin-top:3px'>● " + z + "</div>" if z else ""}
+</div>""", unsafe_allow_html=True)
         st.divider()
         st.markdown("**기능**")
         if st.button("Chatbot", type="primary" if page=="chatbot" else "secondary", use_container_width=True):
@@ -852,7 +855,11 @@ def page_accident_form():
 # ══════════════════════════════════════════════════════════════
 def page_chatbot():
     z_=zone() or "전체"
-    st.markdown(f"## Chatbot — {z_}")
+    st.markdown(f"""<div style="padding:8px 0 20px 0">
+<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">AI 법령 검색</div>
+<div style="font-size:2rem;font-weight:800;color:#191F28;letter-spacing:-0.04em;line-height:1.2">안전 챗봇</div>
+<div style="font-size:14px;color:#8B95A1;margin-top:6px">건설 안전 법령을 검색하고 질문하세요.</div>
+</div>""", unsafe_allow_html=True)
     p_=pid()
     if p_ and z_ and z_!="전체":
         ensure_zd(p_,z_)
