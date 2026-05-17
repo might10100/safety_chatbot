@@ -870,7 +870,13 @@ def page_chatbot():
 
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
-    if q:=st.chat_input("법령 관련 질문을 입력하세요..."):
+    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+    col_input, col_btn = st.columns([.85, .15])
+    with col_input:
+        q = st.text_input("질문 입력", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key="chat_input_box")
+    with col_btn:
+        send = st.button("검색", type="primary", use_container_width=True)
+    if send and q:
         with st.chat_message("user"): st.markdown(q)
         with st.chat_message("assistant"):
             with st.spinner("법령 검색 중..."): r=law_search(q)
