@@ -753,10 +753,12 @@ def page_gen_daily_log():
             if in_tbm_ and l_.strip(): tbm_text+=l_.strip()+" "
         tbm_text=tbm_text.strip()
         if tbm_text:
-            st.markdown(f"""<div style="margin-top:8px">
-<button onclick="navigator.clipboard.writeText({repr(tbm_text)}).then(()=>{{this.innerText='✅ 복사됨!';setTimeout(()=>{{this.innerText='📋 TBM 메시지 복사'}},2000)}})"
-style="width:100%;padding:10px;background:#FFFFFF;border:1.5px solid #E8EAED;border-radius:12px;font-size:14px;font-weight:500;color:#333D4B;cursor:pointer">
-📋 TBM 메시지 복사</button></div>""", unsafe_allow_html=True)
+            if c3.button("TBM 메시지 복사", use_container_width=True):
+                st.session_state["tbm_copied"]=True
+            if st.session_state.get("tbm_copied"):
+                st.code(tbm_text, language=None)
+                st.success("✅ 위 텍스트를 복사하세요! (텍스트 오른쪽 복사 아이콘 클릭)")
+                st.session_state["tbm_copied"]=False
 
 # ══════════════════════════════════════════════════════════════
 # 안전 점검 체크리스트
