@@ -523,13 +523,17 @@ def page_daily_input():
         addr=f"{p_.get('region','')} {p_.get('district','')}"
         with st.spinner("날씨 정보 가져오는 중..."):
             weather=fetch_weather(addr)
-        if weather.get("available"):
-            wc1,wc2,wc3=st.columns(3)
-            wc1.metric("평균기온",weather["temp_avg"]); wc1.metric("최고기온",weather["temp_max"])
-            wc2.metric("평균습도",weather["humidity"]); wc2.metric("평균풍속",weather["wind_speed"])
-            wc3.metric("최고풍속",weather["wind_max"]); wc3.metric("최고점시간",weather["peak_time"])
+        if weather.get("error"):
+            st.warning(weather.get("error","날씨 정보를 가져올 수 없습니다.")); weather=_mw()
         else:
-            st.warning(weather.get("message","")); weather=_mw()
+            wc1,wc2,wc3=st.columns(3)
+            tmp = f"{weather['tmp']:.0f}°C" if weather.get('tmp') is not None else "—"
+            wc1.metric("기온", tmp)
+            wc2.metric("습도", weather.get("reh","—"))
+            wc3.metric("풍속", f"{weather.get('wsd','—')}m/s")
+            wc1.metric("날씨", weather.get("sky","—"))
+            wc2.metric("강수확률", weather.get("pop","—"))
+            wc3.metric("풍향", weather.get("vec_str","—"))
     else:
         weather=_mw()
 
