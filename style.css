@@ -408,3 +408,19 @@ wc -l style.css
     color: #B0B8C1 !important;
     padding-left: 20px !important;
 }
+
+/* ── 사이드바 섹션 레이블 강화 ── */
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p strong {
+    display: block !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #B0B8C1 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+    font-size: 11px !important;
+    color: #B0B8C1 !important;
+    padding-left: 20px !important;
+}
