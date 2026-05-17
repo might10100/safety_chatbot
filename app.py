@@ -13,7 +13,7 @@ from weather import fetch_weather
 from pdf_utils import save_daily_log_pdf, save_checklist_pdf
 from accident_form import save_accident_form_pdf
 
-sed -i '' '16s/.*/st.set_page_config(page_title="건설 현장 안전관리 AI", page_icon="🏗", layout="wide", initial_sidebar_state="expanded")/' app.py
+st.set_page_config(page_title="건설 현장 안전관리 AI", page_icon="🏗", layout="wide", initial_sidebar_state="expanded")
 def load_css():
     from pathlib import Path
     css = open(Path(__file__).parent / "style.css", encoding="utf-8").read()
