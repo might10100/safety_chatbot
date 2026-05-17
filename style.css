@@ -389,5 +389,4 @@ span.req { color: #E74C3C !important; }
     overflow: hidden !important;
     font-size: 13px !important;
 }
-CSSEOF
 wc -l style.css

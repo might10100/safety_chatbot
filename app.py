@@ -543,7 +543,7 @@ def page_daily_input():
 
     # 필수 항목 체크
     required_checks=[("관리자",manager),("작업 위치",location),("투입 인원 현황",workers),("주요 작업 내용",wp)]
-    weather_ok=any(weather.get(k) for k in ["temp_avg","wind_max"])
+    weather_ok=any(weather.get(k) for k in ["tmp","wsd","temp_avg","wind_max"])
     if not weather_ok: required_checks.append(("날씨",None))
     missing=[n for n,v in required_checks if not v]
 
