@@ -158,11 +158,9 @@ def sidebar():
         cur_dir=st.session_state.pdf_save_dir
         home=os.path.expanduser("~")
         qp={"바탕화면":os.path.join(home,"Desktop"),"다운로드":os.path.join(home,"Downloads"),"문서":os.path.join(home,"Documents")}
-        c1,c2=st.columns(2)
         items=list(qp.items())
         for i,(lbl,path) in enumerate(items):
-            col=c1 if i%2==0 else c2
-            if col.button(lbl,key=f"qp_{lbl}",type="primary" if cur_dir==path else "secondary",use_container_width=True):
+            if st.button(lbl,key=f"qp_{lbl}",type="primary" if cur_dir==path else "secondary",use_container_width=True):
                 st.session_state.pdf_save_dir=path; st.rerun()
 
         if cur_dir: st.caption(f"저장: {os.path.basename(cur_dir)}")

@@ -119,6 +119,16 @@ html, body, [data-testid="stAppViewContainer"] {
     display: none !important;
 }
 
+[data-testid="stSidebarCollapseButton"] {
+    display: none !important;
+}
+
+button[data-testid="stSidebarCollapseButton"],
+button[aria-label="Collapse sidebar"],
+button[aria-label="Expand sidebar"] {
+    display: none !important;
+}
+
 .main h1 {
     font-size: 1.6rem !important;
     font-weight: 800 !important;
