@@ -727,12 +727,9 @@ def page_gen_daily_log():
     daily=st.session_state.daily_input
     st.markdown(f"## 금일 안전 일지 — {zone()}")
     if not st.session_state.report_content:
-        query=f"{daily.get('work_process','')} {daily.get('location','')} 안전"
-        st.markdown("---"); st.session_state.selected_laws=law_ui(query)
-        if st.button("금일 안전 일지 작성",type="primary",use_container_width=True):
-            with st.spinner("작성 중입니다..."):
-                st.session_state.report_content=generate_daily_log(daily,st.session_state.selected_laws)
-            st.rerun()
+        with st.spinner("AI가 법규를 분석하고 안전 일지를 작성 중입니다..."):
+            st.session_state.report_content=generate_daily_log(daily, None)
+        st.rerun()
     else:
         daily=st.session_state.daily_input
         st.markdown("### 보고서 확인 및 수정")
