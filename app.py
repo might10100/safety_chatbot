@@ -712,9 +712,10 @@ def page_gen_daily_log():
             _m=_re2.search(r"TBM 메시지", _rc)
             if _m:
                 _idx=_m.start()
+                _next_line=_rc.find("\n", _idx)+1
                 _end=_rc.find("관리자 서명", _idx)
                 if _end==-1: _end=len(_rc)
-                st.session_state.report_content=_rc[:_idx]+"TBM 메시지\n"+_tbm+"\n"+_rc[_end:]
+                st.session_state.report_content=_rc[:_next_line]+_tbm+"\n"+_rc[_end:]
         st.rerun()
     else:
         daily=st.session_state.daily_input
