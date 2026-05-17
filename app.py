@@ -258,20 +258,20 @@ def page_landing():
             st.session_state.show_new_proj=not st.session_state.show_new_proj; st.rerun()
         show=st.session_state.show_new_proj
     else:
-        show=True; st.markdown("### 공사 현장 정보 입력")
-
+        show=True
     if show:
-        st.markdown("**시공명 ***")
+        st.markdown("""<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px">새 공사 현장 등록</div>""", unsafe_allow_html=True)
+        st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px">시공명 <span style="color:#FF3B30">*</span></div>""", unsafe_allow_html=True)
         name=st.text_input("시공명",placeholder="예: 강남 OO아파트 신축공사",label_visibility="collapsed")
         c1,c2=st.columns(2)
         with c1:
-            st.markdown("**현장 위치 ***")
+            st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px;margin-top:12px">현장 위치 <span style="color:#FF3B30">*</span></div>""", unsafe_allow_html=True)
             full_addr,sel_r,sel_d=location_selector("new_")
         with c2:
-            st.markdown("**시공 기간 ***")
+            st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px;margin-top:12px">시공 기간 <span style="color:#FF3B30">*</span></div>""", unsafe_allow_html=True)
             p_start=st.date_input("착공일 *",value=date.today(),key="new_ps")
             p_end=st.date_input("완공일 *",value=date.today(),key="new_pe")
-        st.markdown("**구역 구획화**")
+        st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px;margin-top:16px">구역 구획화</div>""", unsafe_allow_html=True)
         zone_count=st.number_input("구역 수 *",min_value=1,max_value=20,value=3,step=1)
         cols=st.columns(min(int(zone_count),4))
         zone_names=[]
@@ -290,6 +290,7 @@ def page_landing():
             for z_ in zone_names: ensure_zd(new_pid,z_)
             st.session_state.cur_proj_id=new_pid; st.session_state.show_new_proj=False
             with st.spinner("AI 모델 로딩 중..."): load_resources()
+            go("main_board")
             go("main_board")
 
 # ══════════════════════════════════════════════════════════════
