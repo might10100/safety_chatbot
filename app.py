@@ -633,39 +633,7 @@ def render_daily_log_html(daily,report_text):
         if in_tbm and line.strip() and not line.strip().startswith("["): tbm+=line.strip()+" "
     tbm=clean_text(tbm.strip())
     if not tbm or tbm=="(TBM 메시지 없음)":
-        try:
-            import anthropic as _ac
-            _client=_ac.Anthropic(api_key=ANTHROPIC_API_KEY)
-            _wp=daily.get("work_plan",""); _risk=daily.get("risk_factors","")
-            _weather=daily.get("weather",{})
-            _wstr=f"기온 {_weather.get('tmp','—')}°C, {_weather.get('sky','—')}, 풍속 {_weather.get('wsd','—')}m/s" if _weather and _weather.get('tmp') else "날씨 데이터 없음"
-            _prompt=f"""건설현장 안전관리자로서 오늘 작업자들에게 전달할 TBM(Tool Box Meeting) 메시지를 작성해주세요.
-
-오늘 작업 내용: {_wp}
-주요 위험 요인: {_risk}
-날씨: {_wstr}
-
-조건:
-- 친근하고 따뜻한 말투로 3~5문장
-- 오늘 작업 내용과 위험 요인을 반드시 반영
-- 건설안전법규 기반 주의사항 1~2가지 포함 (예: 안전대 착용, 낙하물 방지망 점검 등)
-- 날씨에 따른 주의사항 포함 (더위/강풍/비 등)
-- 특이사항 없어도 기본 안전수칙 언급
-- 마크다운 기호 없이 일반 텍스트만
-- 따뜻하고 격려하는 마무리 문장 포함"""
-            _resp=_client.messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
-            tbm=_resp.content[0].text.strip()
-        except Exception as e:
-            tbm=f"오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
-        import re as _re
-        if "TBM 메시지" in st.session_state.report_content:
-            st.session_state.report_content = _re.sub(
-                r"TBM 메시지\n.*?(?=\n관리자 서명|\Z)",
-                f"TBM 메시지\n{tbm}",
-                st.session_state.report_content, flags=_re.DOTALL)
-        else:
-            st.session_state.report_content += f"\n\nTBM 메시지\n{tbm}"
-
+        tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
     w=daily.get("weather",{})
     ws=(f"최고풍속 {w.get('wind_max','-')} ({w.get('peak_time','-')} 도달) / 평균기온 {w.get('temp_avg','-')}"
         if w and w.get("temp_avg") else "날씨 데이터 없음")
@@ -729,6 +697,25 @@ def page_gen_daily_log():
     if not st.session_state.report_content:
         with st.spinner("AI가 법규를 분석하고 안전 일지를 작성 중입니다..."):
             st.session_state.report_content=generate_daily_log(daily, None)
+        try:
+            import anthropic as _ac, re as _re
+            _wp=daily.get("work_process",""); _risk=daily.get("risk_factors","")
+            _weather=daily.get("weather",{})
+            _wstr=f"기온 {_weather.get('tmp','—')}°C, {_weather.get('sky','—')}, 풍속 {_weather.get('wsd','—')}m/s" if _weather and _weather.get('tmp') else "날씨 데이터 없음"
+            _prompt=f"건설현장 TBM 메시지를 작성해주세요.\n작업내용: {_wp}\n위험요인: {_risk}\n날씨: {_wstr}\n조건: 친근한 말투 3~5문장, 법규 기반 주의사항 포함, 마크다운 없이 순수 텍스트"
+            _resp=_ac.Anthropic(api_key=ANTHROPIC_API_KEY).messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
+            _tbm=_resp.content[0].text.strip()
+        except:
+            _tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
+        import re as _re2
+        st.session_state.report_content = _re2.sub(
+            r"(TBM 메시지
+).*?(
+관리자 서명)",
+            f"TBM 메시지
+{_tbm}
+관리자 서명",
+            st.session_state.report_content, flags=_re2.DOTALL)
         st.rerun()
     else:
         daily=st.session_state.daily_input
