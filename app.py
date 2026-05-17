@@ -294,13 +294,19 @@ def page_landing():
 # ══════════════════════════════════════════════════════════════
 def page_main_board():
     p=proj()
-    st.markdown(f'<p class="title">{p.get("name","")}</p>',unsafe_allow_html=True)
-    st.markdown(f'<p class="sub">{p.get("address","")}  |  {p.get("period_start","")} ~ {p.get("period_end","")}</p>',unsafe_allow_html=True)
     c1,c2=st.columns([.8,.2])
+    with c1:
+        st.markdown(f"""<div style="padding:8px 0 20px 0">
+<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">공사 현장</div>
+<div style="font-size:2rem;font-weight:800;color:#191F28;letter-spacing:-0.04em;line-height:1.2">{p.get('name','')}</div>
+<div style="font-size:14px;color:#8B95A1;margin-top:6px">{p.get('address','')} &nbsp;·&nbsp; {p.get('period_start','')} ~ {p.get('period_end','')}</div>
+</div>""", unsafe_allow_html=True)
     with c2:
-        if st.button("현장 정보 변경",use_container_width=True): go("edit_project")
-    st.markdown("---")
-    st.markdown("### 구역 현황")
+        st.markdown("<div style='padding-top:28px'>", unsafe_allow_html=True)
+        if st.button("현장 정보 변경", use_container_width=True): go("edit_project")
+        st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:4px 0 24px 0'>", unsafe_allow_html=True)
+    st.markdown("""<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px">구역 현황</div>""", unsafe_allow_html=True)
     zones=p.get("zones",[])
     if not zones: st.info("등록된 구역이 없습니다."); return
     cols=st.columns(min(len(zones),3))
@@ -308,8 +314,13 @@ def page_main_board():
         with cols[i%3]:
             zd_=SS.get_zone_data().get(pid(),{}).get(z_,{})
             acc_cnt=len(zd_.get("accidents",[]))
-            border="#e74c3c" if acc_cnt>0 else "#4361ee"
-            if st.button(f"**{z_}**\n\n사고 {acc_cnt}건",key=f"gz_{i}",use_container_width=True):
+            color="#FF3B30" if acc_cnt>0 else "#0064FF"
+            badge_bg="#FFF2F2" if acc_cnt>0 else "#EFF4FF"
+            st.markdown(f"""<div style="background:#FFFFFF;border:1.5px solid #E8EAED;border-radius:16px;padding:22px 22px 16px 22px;margin-bottom:4px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+<div style="font-size:18px;font-weight:800;color:#191F28;letter-spacing:-0.03em;margin-bottom:12px">{z_}</div>
+<div style="display:inline-block;background:{badge_bg};color:{color};font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px">사고 {acc_cnt}건</div>
+</div>""", unsafe_allow_html=True)
+            if st.button("입장 →", key=f"gz_{i}", use_container_width=True, type="primary" if acc_cnt>0 else "secondary"):
                 st.session_state.cur_zone=z_; ensure_zd(pid(),z_); go("zone_board")
 
 # ══════════════════════════════════════════════════════════════
