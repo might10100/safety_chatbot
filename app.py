@@ -646,11 +646,13 @@ def render_daily_log_html(daily,report_text):
 날씨: {_wstr}
 
 조건:
-- 친근하고 따뜻한 말투로 2~4문장
-- 오늘 작업의 핵심 안전수칙 포함
+- 친근하고 따뜻한 말투로 3~5문장
+- 오늘 작업 내용과 위험 요인을 반드시 반영
+- 건설안전법규 기반 주의사항 1~2가지 포함 (예: 안전대 착용, 낙하물 방지망 점검 등)
+- 날씨에 따른 주의사항 포함 (더위/강풍/비 등)
 - 특이사항 없어도 기본 안전수칙 언급
 - 마크다운 기호 없이 일반 텍스트만
-- "안전하게 작업합시다" 류의 마무리 포함"""
+- 따뜻하고 격려하는 마무리 문장 포함"""
             _resp=_client.messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
             tbm=_resp.content[0].text.strip()
         except Exception as e:
@@ -741,8 +743,20 @@ def page_gen_daily_log():
                     st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(path),mime="application/pdf")
             save_report("daily","금일 안전 일지",path,st.session_state.report_content,daily["date"])
             go("daily_input")
-        if c2.button("다시 작성",use_container_width=True):
+        if c2.button("법규 다시 선택",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; st.rerun()
+        tbm_text=""
+        lines_=st.session_state.report_content.split("\n")
+        in_tbm_=False
+        for l_ in lines_:
+            if "TBM 메시지" in l_: in_tbm_=True; continue
+            if in_tbm_ and l_.strip(): tbm_text+=l_.strip()+" "
+        tbm_text=tbm_text.strip()
+        if tbm_text:
+            st.markdown(f"""<div style="margin-top:8px">
+<button onclick="navigator.clipboard.writeText({repr(tbm_text)}).then(()=>{{this.innerText='✅ 복사됨!';setTimeout(()=>{{this.innerText='📋 TBM 메시지 복사'}},2000)}})"
+style="width:100%;padding:10px;background:#FFFFFF;border:1.5px solid #E8EAED;border-radius:12px;font-size:14px;font-weight:500;color:#333D4B;cursor:pointer">
+📋 TBM 메시지 복사</button></div>""", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # 안전 점검 체크리스트
