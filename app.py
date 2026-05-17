@@ -705,9 +705,6 @@ def page_gen_daily_log():
     else:
         daily=st.session_state.daily_input
         st.markdown("### 보고서 확인 및 수정")
-        # 디버그
-        risk_lines = [l for l in st.session_state.report_content.split("\n") if "[위험요인]" in l or "[법적 근거]" in l]
-        st.code("\n".join(risk_lines[:6]) if risk_lines else "위험요인 태그 없음")
         st.markdown(render_daily_log_html(daily,st.session_state.report_content),unsafe_allow_html=True)
 
         st.markdown("---")
