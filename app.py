@@ -769,18 +769,11 @@ def page_gen_daily_log():
             go("daily_input")
         if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; go("daily_input")
-        tbm_text=""
-        lines_=st.session_state.report_content.split("\n")
-        in_tbm_=False
-        for l_ in lines_:
-            if "TBM 메시지" in l_: in_tbm_=True; continue
-            if in_tbm_ and l_.strip(): tbm_text+=l_.strip()+" "
-        tbm_text=tbm_text.strip()
-        if tbm_text:
-            if c3.button("TBM 메시지 복사", use_container_width=True):
-                st.session_state["tbm_copied"]=True
-            if st.session_state.get("tbm_copied"):
-                st.code(tbm_text, language=None)
+        tbm_text=st.session_state.get("tbm_message","")
+        if c3.button("TBM 메시지 복사", use_container_width=True):
+            st.session_state["tbm_copied"]=True
+        if st.session_state.get("tbm_copied"):
+            st.code(tbm_text, language=None)
                 st.success("✅ 위 텍스트를 복사하세요! (텍스트 오른쪽 복사 아이콘 클릭)")
                 st.session_state["tbm_copied"]=False
 
