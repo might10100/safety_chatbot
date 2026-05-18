@@ -391,11 +391,19 @@ def page_zone_board():
         st.markdown("""<div class='warn'><b>전일 미조치 사항</b> — 이행 여부를 확인하세요.</div>""",unsafe_allow_html=True)
         for i,item in enumerate(prev_unresolved):
             if st.checkbox(item["text"],key=f"pck_{i}"): _mark_resolved(item["text"])
-
     # 사고 건수 + 파이차트
     col_stat, col_chart = st.columns([1,1])
     with col_stat:
-        st.metric("사고 건수", len(ac))
+        acc_cnt=len(ac)
+        color="#FF3B30" if acc_cnt>0 else "#0064FF"
+        badge_bg="#FFF2F2" if acc_cnt>0 else "#EFF4FF"
+        border_color="#FFCDD2" if acc_cnt>0 else "#C2D8FF"
+        status_text="사고 발생" if acc_cnt>0 else "안전 운영 중"
+        st.markdown(f"""<div style="background:{badge_bg};border:1.5px solid {border_color};border-radius:16px;padding:24px 28px">
+<div style="font-size:12px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">사고 건수</div>
+<div style="font-size:3rem;font-weight:800;color:{color};letter-spacing:-0.04em">{acc_cnt}</div>
+<div style="font-size:13px;color:#8B95A1;margin-top:4px">{status_text}</div>
+</div>""", unsafe_allow_html=True)
     with col_chart:
         if ac:
             types={}
@@ -404,35 +412,47 @@ def page_zone_board():
                 import matplotlib.pyplot as plt, matplotlib
                 matplotlib.use("Agg")
                 fig,ax=plt.subplots(figsize=(3,3))
-                ax.pie(types.values(),labels=types.keys(),autopct="%1.0f%%",textprops={"fontsize":8})
-                ax.set_title("유형별 사고",fontsize=9)
+                colors_pie=["#FF3B30","#FF9500","#FFCC00","#34C759","#007AFF"]
+                ax.pie(types.values(),labels=types.keys(),autopct="%1.0f%%",
+                       textprops={"fontsize":8},colors=colors_pie[:len(types)],
+                       wedgeprops={"edgecolor":"white","linewidth":2})
+                ax.set_title("유형별 사고",fontsize=9,fontweight="bold")
                 st.pyplot(fig); plt.close()
-            except: st.write(str(types))
-
-    st.markdown("---")
-    # 사고 기록 전체 표시
-    st.markdown("**사고 기록**")
+            except: pass
+        else:
+            st.markdown("""<div style="background:#F2F4F6;border-radius:16px;padding:24px;text-align:center;color:#8B95A1;font-size:14px">
+사고 기록 없음</div>""", unsafe_allow_html=True)
+    st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:24px 0'>", unsafe_allow_html=True)
+    st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">사고 기록</div>""", unsafe_allow_html=True)
     if ac:
         for a in reversed(ac):
-            st.markdown(f"""<div class='warn'><b>{a.get('accident_type','')}</b> — {a.get('accident_datetime','')}<br>
-<small>장소: {a.get('location','')} | 기인물: {a.get('cause_object','')}</small></div>""",unsafe_allow_html=True)
+            atype=a.get("accident_type","")
+            adtime=a.get("accident_datetime","")
+            aloc=a.get("location","")
+            acause=a.get("cause_object","")
+            st.markdown(f"""<div style="background:#FFF2F2;border:1.5px solid #FFCDD2;border-radius:12px;padding:14px 18px;margin-bottom:8px">
+<div style="font-size:15px;font-weight:700;color:#C62828">{atype}</div>
+<div style="font-size:13px;color:#8B95A1;margin-top:4px">{adtime} · 장소: {aloc} · 기인물: {acause}</div>
+</div>""", unsafe_allow_html=True)
     else:
         st.info("기록된 사고가 없습니다.")
-
-    # 최근 보고서
     rs=zd.get("reports",[])
+    st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:24px 0'>", unsafe_allow_html=True)
+    st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">최근 1주일 보고서</div>""", unsafe_allow_html=True)
     if rs:
-        st.markdown("**최근 보고서**")
         one_week_ago=datetime.now()-timedelta(days=7)
         recent=[r for r in rs if _pd(r.get("date",""))>=one_week_ago]
-        for r in reversed(recent[-5:]):
-            with st.expander(f"{r.get('label','')} — {r.get('date','')}"):
-                st.text_area("",value=r.get("content",""),height=200,key=f"rv_{r.get('id','')}",disabled=True,label_visibility="collapsed")
-                if r.get("path") and os.path.exists(r.get("path","")):
-                    with open(r["path"],"rb") as f_:
-                        st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{r.get('id','')}")
-
-def _get_prev_unresolved():
+        if recent:
+            for r in reversed(recent[-7:]):
+                with st.expander(f"보고서 - {r.get('label','')} / {r.get('date','')}"):
+                    st.text_area("",value=r.get("content",""),height=200,key=f"rv_{r.get('id','')}",disabled=True,label_visibility="collapsed")
+                    if r.get("path") and os.path.exists(r.get("path","")):
+                        with open(r["path"],"rb") as f_:
+                            st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{r.get('id','')}")
+        else:
+            st.info("최근 1주일 내 보고서가 없습니다.")
+    else:
+        st.info("작성된 보고서가 없습니다.")
     zd=zdata(); history=zd.get("daily_history",[])
     if not history: return []
     yesterday=(datetime.now()-timedelta(days=1)).strftime("%Y-%m-%d")
