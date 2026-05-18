@@ -491,14 +491,14 @@ def page_daily_input():
     work_time=f"{sh}:{sm} ~ {eh}:{em}"
 
     c3,c4=st.columns(2)
-    manager=c3.text_input("관리자 *",value=di.get("manager",""),placeholder="예: 김성균")
-    location=c4.text_input("작업 위치 *",value=di.get("location",""),placeholder="예: A동 12층 외벽")
+    manager=c3.text_input("관리자 *",value=di.get("manager",""),placeholder="예: 김성균",key="inp_manager")
+    location=c4.text_input("작업 위치 *",value=di.get("location",""),placeholder="예: A동 12층 외벽",key="inp_location")
     env=c3.selectbox("작업 환경 *",["지상","고소","밀폐","지하","수중","기타"])
     materials=c4.text_input("주요 자재",value=di.get("materials",""),placeholder="예: 철근, 거푸집")
 
-    workers=st.text_area("투입 인원 현황 (공종별) *",value=di.get("workers",""),
+    workers=st.text_area("투입 인원 현황 (공종별) *",value=di.get("workers",""),key="inp_workers",
                           placeholder="예: 철근공 10명, 형틀공 5명",height=65)
-    wp=st.text_area("주요 작업 내용 *",value=di.get("work_process",""),
+    wp=st.text_area("주요 작업 내용 *",value=di.get("work_process",""),key="inp_wp",
                      placeholder="예: 12층 외부 갱폼 인양 및 설치",height=65)
 
     # ── 특이 사항 ──
@@ -566,6 +566,13 @@ def page_daily_input():
         st.markdown(f"""<div style="background:#FFF2F2;border:1.5px solid #FFCDD2;border-radius:12px;padding:12px 16px;margin-bottom:8px">
 <span style="color:#C62828;font-size:14px">필수 항목을 입력해 주세요: {missing_str}</span>
 </div>""", unsafe_allow_html=True)
+        # 미입력 항목 빨간 테두리
+        key_map={"관리자":"inp_manager","작업 위치":"inp_location","투입 인원 현황":"inp_workers","주요 작업 내용":"inp_wp"}
+        red_keys=[key_map[n] for n,v in required_checks if not v and n in key_map]
+        if red_keys:
+            css_sel=" , ".join([f'div[data-testid="stTextInput"] input[aria-label*="{k}"], div[data-testid="stTextArea"] textarea[aria-label*="{k}"]' for k in red_keys])
+            red_css="".join([f'div:has(> div > input[id*="{k}"]) > div, div:has(> div > textarea[id*="{k}"]) > div {{border-color: #FF3B30 !important; box-shadow: 0 0 0 2px rgba(255,59,48,0.2) !important;}}' for k in red_keys])
+            st.markdown(f"<style>{red_css}</style>", unsafe_allow_html=True)
 
     prev_items=[{"text":l.strip(),"resolved":False} for l in prev.split("\n") if l.strip()] if prev.strip() else []
     daily={
