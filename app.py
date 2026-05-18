@@ -380,7 +380,7 @@ def page_zone_board():
     p,z=proj(),zone(); zd=zdata()
     ac=zd.get("accidents",[])
     st.markdown(f"""<div style="padding:8px 0 20px 0">
-<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">{p.get('name','')} · 구역</div>
+<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">{p.get('name','')}</div>
 <div style="font-size:2rem;font-weight:800;color:#191F28;letter-spacing:-0.04em;line-height:1.2">{z}</div>
 <div style="font-size:14px;color:#8B95A1;margin-top:6px">{p.get('address','')}</div>
 </div>""", unsafe_allow_html=True)
