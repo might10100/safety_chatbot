@@ -774,8 +774,8 @@ def page_gen_daily_log():
             st.session_state["tbm_copied"]=True
         if st.session_state.get("tbm_copied"):
             st.code(tbm_text, language=None)
-                st.success("✅ 위 텍스트를 복사하세요! (텍스트 오른쪽 복사 아이콘 클릭)")
-                st.session_state["tbm_copied"]=False
+            st.success("✅ 위 텍스트를 복사하세요! (텍스트 오른쪽 복사 아이콘 클릭)")
+            st.session_state["tbm_copied"]=False
 
 # ══════════════════════════════════════════════════════════════
 # 안전 점검 체크리스트
