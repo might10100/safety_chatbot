@@ -618,8 +618,12 @@ def render_daily_log_html(daily,report_text):
     risk_sets = st.session_state.get("risk_sets", [("위험요인 분석 중...","","")])
     tbm=st.session_state.get("tbm_message","오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다.")
     w=daily.get("weather",{})
-    ws=(f"최고풍속 {w.get('wind_max','-')} ({w.get('peak_time','-')} 도달) / 평균기온 {w.get('temp_avg','-')}"
-        if w and w.get("temp_avg") else "날씨 데이터 없음")
+    if w and w.get("tmp") is not None:
+        ws=f"{w.get('sky','—')} / 기온 {w.get('tmp','—')}°C / 습도 {w.get('reh','—')} / 풍속 {w.get('wsd','—')}m/s"
+    elif w and w.get("temp_avg"):
+        ws=f"최고풍속 {w.get('wind_max','-')} / 평균기온 {w.get('temp_avg','-')}"
+    else:
+        ws="날씨 데이터 없음" 
 
     risk_html=""
     for r,l,a in risk_sets:
