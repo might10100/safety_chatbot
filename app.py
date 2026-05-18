@@ -320,11 +320,7 @@ def page_main_board():
             acc_cnt=len(zd_.get("accidents",[]))
             color="#FF3B30" if acc_cnt>0 else "#0064FF"
             badge_bg="#FFF2F2" if acc_cnt>0 else "#EFF4FF"
-            st.markdown(f"""<div style="background:#FFFFFF;border:1.5px solid #E8EAED;border-radius:16px;padding:22px 22px 16px 22px;margin-bottom:4px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
-<div style="font-size:18px;font-weight:800;color:#191F28;letter-spacing:-0.03em;margin-bottom:12px">{z_}</div>
-<div style="display:inline-block;background:{badge_bg};color:{color};font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px">사고 {acc_cnt}건</div>
-</div>""", unsafe_allow_html=True)
-            if st.button("입장 →", key=f"gz_{i}", use_container_width=True, type="primary" if acc_cnt>0 else "secondary"):
+            if st.button(f"**{z_}**  ·  사고 {acc_cnt}건", key=f"gz_{i}", use_container_width=True, type="primary" if acc_cnt>0 else "secondary"):
                 st.session_state.cur_zone=z_; ensure_zd(pid(),z_); go("zone_board")
 
 # ══════════════════════════════════════════════════════════════
