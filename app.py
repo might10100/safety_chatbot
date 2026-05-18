@@ -491,13 +491,21 @@ def page_daily_input():
     work_time=f"{sh}:{sm} ~ {eh}:{em}"
 
     c3,c4=st.columns(2)
+    if st.session_state.get("show_missing_warning") and not di.get("manager",""):
+        c3.markdown('<p style="color:#FF3B30;font-size:12px;margin-bottom:2px">⚠ 필수 입력</p>', unsafe_allow_html=True)
     manager=c3.text_input("관리자 *",value=di.get("manager",""),placeholder="예: 김성균",key="inp_manager")
+    if st.session_state.get("show_missing_warning") and not di.get("location",""):
+        c4.markdown('<p style="color:#FF3B30;font-size:12px;margin-bottom:2px">⚠ 필수 입력</p>', unsafe_allow_html=True)
     location=c4.text_input("작업 위치 *",value=di.get("location",""),placeholder="예: A동 12층 외벽",key="inp_location")
     env=c3.selectbox("작업 환경 *",["지상","고소","밀폐","지하","수중","기타"])
     materials=c4.text_input("주요 자재",value=di.get("materials",""),placeholder="예: 철근, 거푸집")
 
+    if st.session_state.get("show_missing_warning") and not di.get("workers",""):
+        st.markdown('<p style="color:#FF3B30;font-size:12px;margin-bottom:2px">⚠ 투입 인원 현황 필수 입력</p>', unsafe_allow_html=True)
     workers=st.text_area("투입 인원 현황 (공종별) *",value=di.get("workers",""),key="inp_workers",
                           placeholder="예: 철근공 10명, 형틀공 5명",height=65)
+    if st.session_state.get("show_missing_warning") and not di.get("work_process",""):
+        st.markdown('<p style="color:#FF3B30;font-size:12px;margin-bottom:2px">⚠ 주요 작업 내용 필수 입력</p>', unsafe_allow_html=True)
     wp=st.text_area("주요 작업 내용 *",value=di.get("work_process",""),key="inp_wp",
                      placeholder="예: 12층 외부 갱폼 인양 및 설치",height=65)
 
