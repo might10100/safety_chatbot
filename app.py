@@ -739,7 +739,8 @@ def page_gen_daily_log():
 날씨: {_wstr}
 주요 위험요인: {_risk_summary}
 조건: 친근한 말투 3~5문장, 위험요인 구체적 언급, 법규 안전수칙 포함, 마크다운 없이, 격려 마무리"""
-                _resp=_ac.Anthropic(api_key=ANTHROPIC_API_KEY).messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
+                _key_tbm=st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY",""))
+                _resp=_ac.Anthropic(api_key=_key_tbm).messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
                 _tbm=_resp.content[0].text.strip()
             except:
                 _tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
