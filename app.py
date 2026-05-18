@@ -522,7 +522,7 @@ def page_daily_input():
     # ── 날씨 * ──
     st.markdown('<p class="sec-label">날씨 *</p>',unsafe_allow_html=True)
     weather={}
-    if st.toggle("기상청 자동 추출",value=False):
+    if st.toggle("기상청 자동 추출",value=True):
         p_=proj()
         addr=f"{p_.get('region','')} {p_.get('district','')}"
         with st.spinner("날씨 정보 가져오는 중..."):
