@@ -153,18 +153,7 @@ def sidebar():
             lbl={"daily_input":"← 금일 안전 업무 기록","zone_board":"← 구역 보드","main_board":"← 메인보드"}.get(back,"← 이전")
             if st.button(lbl, use_container_width=True): go(back)
         if z and st.button("메인보드", use_container_width=True): go("main_board",cur_zone=None)
-        st.divider()
-        st.markdown("""<div style="font-size:10px;font-weight:800;color:#B0B8C1;letter-spacing:0.1em;text-transform:uppercase;padding:16px 20px 6px 20px">PDF 저장 경로</div>""", unsafe_allow_html=True)
-        cur_dir=st.session_state.pdf_save_dir
-        home=os.path.expanduser("~")
-        qp={"바탕화면":os.path.join(home,"Desktop"),"다운로드":os.path.join(home,"Downloads"),"문서":os.path.join(home,"Documents")}
-        items=list(qp.items())
-        for i,(lbl,path) in enumerate(items):
-            if st.button(lbl,key=f"qp_{lbl}",type="primary" if cur_dir==path else "secondary",use_container_width=True):
-                st.session_state.pdf_save_dir=path; st.rerun()
-
-        if cur_dir: st.caption(f"저장: {os.path.basename(cur_dir)}")
-        else: st.caption("저장: 바탕화면 (기본값)")
+        # ── 날씨 위젯 ──
         # ── 날씨 위젯 ──
         st.divider()
         try:
