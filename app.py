@@ -562,9 +562,10 @@ def page_daily_input():
     missing=[n for n,v in required_checks if not v]
 
     if missing:
-        for n,v in required_checks:
-            if not v:
-                st.markdown(f'<span class="req">{n} 항목을 입력해 주세요.</span>',unsafe_allow_html=True)
+        missing_str = ", ".join([f"<b>{n}</b>" for n,v in required_checks if not v])
+        st.markdown(f"""<div style="background:#FFF2F2;border:1.5px solid #FFCDD2;border-radius:12px;padding:12px 16px;margin-bottom:8px">
+<span style="color:#C62828;font-size:14px">필수 항목을 입력해 주세요: {missing_str}</span>
+</div>""", unsafe_allow_html=True)
 
     prev_items=[{"text":l.strip(),"resolved":False} for l in prev.split("\n") if l.strip()] if prev.strip() else []
     daily={
@@ -906,9 +907,10 @@ def page_accident_form():
         missing=[n for n,v in all_required if not v]
 
         if missing:
-            for n,v in all_required:
-                if not v:
-                    st.markdown(f'<span class="req">{n} 항목을 입력해 주세요.</span>',unsafe_allow_html=True)
+            missing_str2 = ", ".join([f"<b>{n}</b>" for n,v in all_required if not v])
+            st.markdown(f"""<div style="background:#FFF2F2;border:1.5px solid #FFCDD2;border-radius:12px;padding:12px 16px;margin-bottom:8px">
+<span style="color:#C62828;font-size:14px">필수 항목을 입력해 주세요: {missing_str2}</span>
+</div>""", unsafe_allow_html=True)
 
         if st.button("사고 보고서 작성",type="primary",disabled=bool(missing),use_container_width=True):
             with st.spinner("AI가 보고서를 작성 중입니다..."):
