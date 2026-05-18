@@ -712,7 +712,7 @@ def page_gen_daily_log():
 [안전 조치] 구체적 조치내용"""
                 _key3=st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY",""))
                 _resp3=_ac3.Anthropic(api_key=_key3).messages.create(
-                    model="claude-sonnet-4-6",max_tokens=600,
+                    model="claude-sonnet-4-6",max_tokens=1000,
                     messages=[{"role":"user","content":_prompt3}])
                 _rt3=_resp3.content[0].text.strip()
                 _rs3=[]; _r3=_l3=_a3=""
@@ -738,9 +738,14 @@ def page_gen_daily_log():
 작업내용: {_wp}
 날씨: {_wstr}
 주요 위험요인: {_risk_summary}
-조건: 친근한 말투 3~5문장, 위험요인 구체적 언급, 법규 안전수칙 포함, 마크다운 없이, 격려 마무리"""
+조건:
+- 친근하고 따뜻한 말투로 3~4문장
+- 위험요인을 쉬운 말로 언급 (법규 조항 번호 언급 금지)
+- 구체적 행동 지침 포함
+- 마크다운 기호 없이 순수 텍스트
+- 격려하는 마무리 문장으로 끝내기"""
                 _key_tbm=st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY",""))
-                _resp=_ac.Anthropic(api_key=_key_tbm).messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
+                _resp=_ac.Anthropic(api_key=_key_tbm).messages.create(model="claude-sonnet-4-6",max_tokens=500,messages=[{"role":"user","content":_prompt}])
                 _tbm=_resp.content[0].text.strip()
             except:
                 _tbm="오늘도 안전을 최우선으로 작업에 임해 주세요. 작업 전 장비 점검을 철저히 하고, 안전장비를 반드시 착용합시다. 모두 안전하게 일하고 건강하게 집에 돌아갑시다."
