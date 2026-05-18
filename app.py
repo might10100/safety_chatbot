@@ -561,7 +561,7 @@ def page_daily_input():
     if not weather_ok: required_checks.append(("날씨",None))
     missing=[n for n,v in required_checks if not v]
 
-    if missing:
+    if missing and st.session_state.get("show_missing_warning"):
         missing_str = ", ".join([f"<b>{n}</b>" for n,v in required_checks if not v])
         st.markdown(f"""<div style="background:#FFF2F2;border:1.5px solid #FFCDD2;border-radius:12px;padding:12px 16px;margin-bottom:8px">
 <span style="color:#C62828;font-size:14px">필수 항목을 입력해 주세요: {missing_str}</span>
@@ -584,11 +584,23 @@ def page_daily_input():
     st.markdown("---")
     c1,c2=st.columns(2)
     with c1:
-        if st.button("금일 안전 일지 작성",type="primary",disabled=bool(missing),use_container_width=True):
+        if st.button("금일 안전 일지 작성",type="primary",use_container_width=True):
+            if missing:
+                st.session_state["show_missing_warning"]=True; st.rerun()
+            else:
+                st.session_state["show_missing_warning"]=False
+                st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
+                go("gen_daily_log")
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
             go("gen_daily_log")
     with c2:
-        if st.button("안전 점검 체크리스트 작성",type="primary",disabled=bool(missing),use_container_width=True):
+        if st.button("안전 점검 체크리스트 작성",type="primary",use_container_width=True):
+            if missing:
+                st.session_state["show_missing_warning"]=True; st.rerun()
+            else:
+                st.session_state["show_missing_warning"]=False
+                st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
+                go("gen_checklist")
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
             go("gen_checklist")
 
