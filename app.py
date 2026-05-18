@@ -710,7 +710,8 @@ def page_gen_daily_log():
 [위험요인] 위험명3
 [법적 근거] 법령명 조항
 [안전 조치] 구체적 조치내용"""
-                _resp3=_ac3.Anthropic(api_key=ANTHROPIC_API_KEY).messages.create(
+                _key3=st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY",""))
+                _resp3=_ac3.Anthropic(api_key=_key3).messages.create(
                     model="claude-sonnet-4-6",max_tokens=600,
                     messages=[{"role":"user","content":_prompt3}])
                 _rt3=_resp3.content[0].text.strip()
