@@ -469,6 +469,9 @@ def _mark_resolved(text):
 # ══════════════════════════════════════════════════════════════
 def page_daily_input():
     z=zone()
+    if "daily_input_visited" not in st.session_state:
+        st.session_state["show_missing_warning"] = False
+        st.session_state["daily_input_visited"] = True
     st.markdown(f"## 금일 안전 업무 기록 — {z}")
     di=st.session_state.daily_input
 
