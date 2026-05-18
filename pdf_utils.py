@@ -77,13 +77,26 @@ def _register_font():
     urls = [
         "https://github.com/google/fonts/raw/main/ofl/nanumgothic/NanumGothic-Regular.ttf",
         "https://github.com/naver/nanumfont/raw/master/fonts/NanumFont_TTF_ALL/NanumGothic.ttf",
+        "https://raw.githubusercontent.com/googlefonts/nanum/main/fonts/ttf/NanumGothic-Regular.ttf",
     ]
+    # 나눔고딕 Bold도 다운로드
+    tmp_bold = "/tmp/NanumGothicBold.ttf"
+    bold_urls = [
+        "https://github.com/google/fonts/raw/main/ofl/nanumgothic/NanumGothic-Bold.ttf",
+    ]
+    for burl in bold_urls:
+        try:
+            urllib.request.urlretrieve(burl, tmp_bold)
+            if os.path.exists(tmp_bold) and os.path.getsize(tmp_bold) > 100000:
+                break
+        except: continue
     for url in urls:
         try:
             urllib.request.urlretrieve(url, tmp)
             if os.path.exists(tmp) and os.path.getsize(tmp) > 100000:
                 pdfmetrics.registerFont(TTFont("KR", tmp))
-                pdfmetrics.registerFont(TTFont("KR-Bold", tmp))
+                bp = tmp_bold if os.path.exists(tmp_bold) and os.path.getsize(tmp_bold)>100000 else tmp
+                pdfmetrics.registerFont(TTFont("KR-Bold", bp))
                 _FONT_REGISTERED = True
                 return "KR", "KR-Bold"
         except: continue
