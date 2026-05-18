@@ -461,6 +461,15 @@ def page_zone_board():
             return [i for i in h.get("prev_issues_items",[]) if not i.get("resolved",False) and i.get("text","")]
     return []
 
+def _get_prev_unresolved():
+    zd=zdata(); history=zd.get("daily_history",[])
+    if not history: return []
+    yesterday=(datetime.now()-timedelta(days=1)).strftime("%Y-%m-%d")
+    for h in reversed(history):
+        if h.get("date","")<=yesterday:
+            return [i for i in h.get("prev_issues_items",[]) if not i.get("resolved",False) and i.get("text","")]
+    return []
+
 def _mark_resolved(text):
     p_,z_=pid(),zone()
     if not p_ or not z_: return
