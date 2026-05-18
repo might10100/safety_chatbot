@@ -424,3 +424,21 @@ wc -l style.css
     color: #B0B8C1 !important;
     padding-left: 20px !important;
 }
+
+/* ── 입력 포커스 시 빨간 테두리 제거, 파란색만 ── */
+input:focus, textarea:focus, select:focus,
+.stTextInput > div > div > input:focus,
+.stTextArea > div > div > textarea:focus,
+[data-baseweb="input"]:focus-within,
+[data-baseweb="textarea"]:focus-within,
+[data-baseweb="select"]:focus-within {
+    outline: none !important;
+    box-shadow: 0 0 0 2px #0064FF !important;
+    border-color: #0064FF !important;
+}
+
+[data-baseweb="input"] input:focus,
+[data-baseweb="textarea"] textarea:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
