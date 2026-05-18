@@ -788,33 +788,27 @@ def page_gen_checklist():
     daily=st.session_state.daily_input
     st.markdown(f"## 안전 점검 체크리스트 — {zone()}")
     if not st.session_state.report_content:
-        query=f"{daily.get('work_process','')} {daily.get('location','')} 점검"
-        st.markdown("---"); st.session_state.selected_laws=law_ui(query)
-        if st.button("안전 점검 체크리스트 작성",type="primary",use_container_width=True):
-            with st.spinner("작성 중입니다..."):
-                st.session_state.report_content=generate_checklist(daily,st.session_state.selected_laws)
-            st.rerun()
+        with st.spinner("AI가 법규를 분석하고 체크리스트를 작성 중입니다..."):
+            st.session_state.report_content=generate_checklist(daily, None)
+        st.rerun()
     else:
         daily=st.session_state.daily_input
         st.markdown("### 보고서 확인 및 수정")
-        st.text_area("",value=st.session_state.report_content,height=400,disabled=True,label_visibility="collapsed")
-        with st.expander("내용 직접 수정"):
-            edited=st.text_area("수정",value=st.session_state.report_content,height=300,label_visibility="collapsed")
-            if st.button("수정 적용"): st.session_state.report_content=edited; st.rerun()
+        st.markdown(f"""<div style="background:#FFFFFF;border:1.5px solid #E8EAED;border-radius:14px;padding:20px 24px;white-space:pre-wrap;font-size:14px;color:#191F28;line-height:1.7">{st.session_state.report_content}</div>""", unsafe_allow_html=True)
         st.markdown("---")
         c1,c2=st.columns(2)
         if c1.button("PDF로 저장",type="primary",use_container_width=True):
             with st.spinner("PDF 저장 중..."):
                 from pdf_utils import save_checklist_pdf
-                path=save_checklist_pdf(st.session_state.report_content,daily["date_c"],proj()["name"],st.session_state.pdf_save_dir)
+                path=save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj()["name"],st.session_state.pdf_save_dir)
             st.markdown(f'<div class="ok">PDF 저장 완료: <b>{path}</b></div>',unsafe_allow_html=True)
             if os.path.exists(path):
                 with open(path,"rb") as f_:
                     st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(path),mime="application/pdf")
-            save_report("checklist","안전 점검 체크리스트",path,st.session_state.report_content,daily["date"])
+            save_report("checklist","안전 점검 체크리스트",path,st.session_state.report_content,daily.get("date",""))
             go("zone_board")
-        if c2.button("다시 작성",use_container_width=True):
-            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; st.rerun()
+        if c2.button("수정하기",use_container_width=True):
+            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; go("daily_input")
 
 # ══════════════════════════════════════════════════════════════
 # 사고 보고서
