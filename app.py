@@ -732,7 +732,13 @@ def page_gen_daily_log():
                 _wp=daily.get("work_process",""); _risk=daily.get("risk_factors","")
                 _weather=daily.get("weather",{})
                 _wstr=f"기온 {_weather.get('tmp','—')}°C, {_weather.get('sky','—')}, 풍속 {_weather.get('wsd','—')}m/s" if _weather and _weather.get('tmp') else "날씨 데이터 없음"
-                _prompt=f"건설현장 TBM 메시지 3~5문장 작성. 작업:{_wp}, 위험:{_risk}, 날씨:{_wstr}. 친근한 말투, 법규 주의사항 포함, 마크다운 없이"
+                _rs=st.session_state.get("risk_sets",[])
+                _risk_summary=" / ".join([r[0] for r in _rs if r[0]]) if _rs else _risk
+                _prompt=f"""건설현장 TBM 메시지를 작성해주세요.
+작업내용: {_wp}
+날씨: {_wstr}
+주요 위험요인: {_risk_summary}
+조건: 친근한 말투 3~5문장, 위험요인 구체적 언급, 법규 안전수칙 포함, 마크다운 없이, 격려 마무리"""
                 _resp=_ac.Anthropic(api_key=ANTHROPIC_API_KEY).messages.create(model="claude-sonnet-4-6",max_tokens=300,messages=[{"role":"user","content":_prompt}])
                 _tbm=_resp.content[0].text.strip()
             except:
