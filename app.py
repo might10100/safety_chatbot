@@ -493,25 +493,17 @@ def page_daily_input():
     c3,c4=st.columns(2)
     _m_label="관리자 *"
     manager=c3.text_input(_m_label,value=di.get("manager",""),placeholder="예: 김성균",key="inp_manager")
-    if st.session_state.get("show_missing_warning") and not manager:
-        c3.markdown('<span style="color:#FF3B30;font-size:12px">⚠ 필수 입력</span>', unsafe_allow_html=True)
     _l_label="작업 위치 *"
     location=c4.text_input(_l_label,value=di.get("location",""),placeholder="예: A동 12층 외벽",key="inp_location")
-    if st.session_state.get("show_missing_warning") and not location:
-        c4.markdown('<span style="color:#FF3B30;font-size:12px">⚠ 필수 입력</span>', unsafe_allow_html=True)
     env=c3.selectbox("작업 환경 *",["지상","고소","밀폐","지하","수중","기타"])
     materials=c4.text_input("주요 자재",value=di.get("materials",""),placeholder="예: 철근, 거푸집")
 
     _w_label="투입 인원 현황 (공종별) *"
     workers=st.text_area(_w_label,value=di.get("workers",""),key="inp_workers",
                           placeholder="예: 철근공 10명, 형틀공 5명",height=65)
-    if st.session_state.get("show_missing_warning") and not workers:
-        st.markdown('<span style="color:#FF3B30;font-size:12px">⚠ 필수 입력</span>', unsafe_allow_html=True)
     _wp_label="주요 작업 내용 *"
     wp=st.text_area(_wp_label,value=di.get("work_process",""),key="inp_wp",
                      placeholder="예: 12층 외부 갱폼 인양 및 설치",height=65)
-    if st.session_state.get("show_missing_warning") and not wp:
-        st.markdown('<span style="color:#FF3B30;font-size:12px">⚠ 필수 입력</span>', unsafe_allow_html=True)
 
     # ── 특이 사항 ──
     st.markdown('<p class="sec-label">특이 사항</p>',unsafe_allow_html=True)
