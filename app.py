@@ -935,13 +935,18 @@ def page_accident_form():
         all_required=basic_required+scene_required+content_required
         missing=[n for n,v in all_required if not v]
 
-        if missing:
+        if missing and st.session_state.get("show_accident_warning"):
             missing_str2 = ", ".join([f"<b>{n}</b>" for n,v in all_required if not v])
             st.markdown(f"""<div style="background:#FFF2F2;border:1.5px solid #FFCDD2;border-radius:12px;padding:12px 16px;margin-bottom:8px">
 <span style="color:#C62828;font-size:14px">필수 항목을 입력해 주세요: {missing_str2}</span>
 </div>""", unsafe_allow_html=True)
 
-        if st.button("사고 보고서 작성",type="primary",disabled=bool(missing),use_container_width=True):
+        if st.button("사고 보고서 작성",type="primary",use_container_width=True):
+            if missing:
+                st.session_state["show_accident_warning"] = True
+                st.rerun()
+            else:
+                st.session_state["show_accident_warning"] = False
             with st.spinner("AI가 보고서를 작성 중입니다..."):
                 st.session_state.report_content=generate_accident_report(new_acc,st.session_state.selected_laws)
             st.rerun()
