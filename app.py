@@ -381,55 +381,38 @@ def page_zone_board():
     with col_stat:
         acc_cnt=len(ac)
         color="#FF3B30" if acc_cnt>0 else "#0064FF"
+        badge_bg="#FFF2F2" if acc_cnt>0 else "#EFF4FF"
+        border_color="#FFCDD2" if acc_cnt>0 else "#C2D8FF"
         status_text="사고 발생" if acc_cnt>0 else "안전 운영 중"
-        try:
-            import matplotlib.pyplot as plt, matplotlib
-            matplotlib.use("Agg")
-            fig, ax = plt.subplots(figsize=(3,3))
-            fig.patch.set_facecolor("none")
-            ax.set_facecolor("none")
-            donut_color = "#FF3B30" if acc_cnt>0 else "#0064FF"
-            bg_color = "#F2F4F6"
-            total = max(acc_cnt, 1)
-            if acc_cnt > 0:
-                ax.pie([acc_cnt, max(10-acc_cnt,0)],
-                       colors=[donut_color, bg_color],
-                       startangle=90,
-                       wedgeprops={"width":0.45,"edgecolor":"white","linewidth":2})
-            else:
-                ax.pie([1], colors=[donut_color], startangle=90,
-                       wedgeprops={"width":0.45,"edgecolor":"white","linewidth":2})
-            ax.text(0, 0.08, str(acc_cnt),
-                    ha="center", va="center",
-                    fontsize=28, fontweight="bold", color=donut_color)
-            ax.text(0, -0.22, status_text,
-                    ha="center", va="center",
-                    fontsize=8, color="#8B95A1")
-            ax.text(0, 0.38, "사고 건수",
-                    ha="center", va="center",
-                    fontsize=8, fontweight="bold", color="#8B95A1")
-            ax.set_aspect("equal")
-            st.pyplot(fig, transparent=True); plt.close()
-        except:
-            st.markdown(f"""<div style="text-align:center;padding:24px">
-<div style="font-size:3rem;font-weight:800;color:{color}">{acc_cnt}</div>
-<div style="font-size:13px;color:#8B95A1">{status_text}</div>
+        st.markdown(f"""<div style="background:{badge_bg};border:1.5px solid {border_color};border-radius:16px;padding:24px 28px">
+<div style="font-size:12px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">사고 건수</div>
+<div style="font-size:3rem;font-weight:800;color:{color};letter-spacing:-0.04em">{acc_cnt}</div>
+<div style="font-size:13px;color:#8B95A1;margin-top:4px">{status_text}</div>
 </div>""", unsafe_allow_html=True)
     with col_chart:
         if ac:
             types={}
             for a in ac: types[a.get("accident_type","기타")]=types.get(a.get("accident_type","기타"),0)+1
-            try:
-                import matplotlib.pyplot as plt, matplotlib
-                matplotlib.use("Agg")
-                fig,ax=plt.subplots(figsize=(3,3))
-                colors_pie=["#FF3B30","#FF9500","#FFCC00","#34C759","#007AFF"]
-                ax.pie(types.values(),labels=types.keys(),autopct="%1.0f%%",
-                       textprops={"fontsize":8},colors=colors_pie[:len(types)],
-                       wedgeprops={"edgecolor":"white","linewidth":2})
-                ax.set_title("유형별 사고",fontsize=9,fontweight="bold")
-                st.pyplot(fig); plt.close()
-            except: pass
+            import plotly.graph_objects as go
+            fig=go.Figure(data=[go.Pie(
+                labels=list(types.keys()),
+                values=list(types.values()),
+                hole=0.55,
+                marker=dict(colors=["#FF3B30","#FF9500","#FFCC00","#34C759","#007AFF"],
+                            line=dict(color="white",width=2)),
+                textinfo="label+percent",
+                textfont=dict(size=12),
+                hovertemplate="%{label}: %{value}건<extra></extra>"
+            )])
+            fig.update_layout(
+                title=dict(text="유형별 사고", x=0.5, font=dict(size=13, color="#191F28")),
+                showlegend=False,
+                margin=dict(t=40,b=10,l=10,r=10),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                height=220,
+            )
+            st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         else:
             st.markdown("""<div style="background:#F2F4F6;border-radius:16px;padding:24px;text-align:center;color:#8B95A1;font-size:14px">
 사고 기록 없음</div>""", unsafe_allow_html=True)
