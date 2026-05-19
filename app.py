@@ -856,6 +856,9 @@ def page_gen_checklist():
 # ══════════════════════════════════════════════════════════════
 def page_accident_form():
     st.markdown(f"## 사고 보고서 — {zone()}")
+    if "accident_form_visited" not in st.session_state:
+        st.session_state["show_missing_warning"] = False
+        st.session_state["accident_form_visited"] = True
     acc=st.session_state.accident_input; p=proj()
 
     if not st.session_state.report_content:
