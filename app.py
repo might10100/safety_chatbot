@@ -1015,23 +1015,31 @@ def page_chatbot():
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
     st.markdown("""<style>
-div[data-testid="stBottom"] { display: none !important; }
-.chat-fixed-bar {
-    position: fixed; bottom: 0; left: 336px; right: 0; z-index: 9999;
-    background: white; padding: 14px 24px 24px 24px;
-    border-top: 1.5px solid #F2F4F6;
-    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+div[data-testid="stChatInput"] {
+    border-radius: 12px !important;
+    border: 1.5px solid #E5E8EB !important;
+    background: white !important;
+    padding: 4px 8px !important;
 }
+div[data-testid="stChatInput"] textarea {
+    font-size: 15px !important;
+    font-family: 'Pretendard', sans-serif !important;
+}
+div[data-testid="stChatInput"] button {
+    background-color: #0064FF !important;
+    border-radius: 8px !important;
+    width: 64px !important;
+}
+div[data-testid="stChatInput"] button::before {
+    content: "검색";
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+}
+div[data-testid="stChatInput"] button svg { display: none !important; }
 </style>""", unsafe_allow_html=True)
-    st.markdown("<div style='height:300px'></div>", unsafe_allow_html=True)
-    st.markdown("<div class='chat-fixed-bar'>", unsafe_allow_html=True)
-    col_input, col_btn = st.columns([.85, .15])
-    with col_input:
-        q = st.text_input("질문 입력", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key="chat_input_box")
-    with col_btn:
-        send = st.button("검색", type="primary", use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
-    if send and q:
+    q = st.chat_input("건설 안전 법령에 대해 질문하세요...")
+    if q:
         with st.chat_message("user"): st.markdown(q)
         with st.chat_message("assistant"):
             with st.spinner("법령 검색 중..."): r=law_search(q)
