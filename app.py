@@ -136,7 +136,6 @@ def sidebar():
 {"<div style='font-size:12px;color:#0064FF;font-weight:600;margin-top:3px'>● " + z + "</div>" if z else ""}
 </div>""", unsafe_allow_html=True)
         st.divider()
-        st.markdown("""<div style="font-size:10px;font-weight:800;color:#B0B8C1;letter-spacing:0.1em;text-transform:uppercase;padding:16px 20px 6px 20px">기능</div>""", unsafe_allow_html=True)
         if st.button("Chatbot", type="primary" if page=="chatbot" else "secondary", use_container_width=True):
             go("chatbot")
         if z:
