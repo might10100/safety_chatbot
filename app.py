@@ -870,26 +870,32 @@ def page_accident_form():
         # 기본 정보 (모두 필수)
         st.markdown('<p class="sec-label">기본 정보</p>',unsafe_allow_html=True)
         c1,c2=st.columns(2)
-        wd=c1.date_input("작성 일자 *",value=date.today())
+        c1.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">작성 일자 *</p>', unsafe_allow_html=True)
+        wd=c1.date_input("작성 일자 *",value=date.today(),label_visibility="collapsed")
         pname=p.get("name","") or proj().get("name","")
         pname_full=f"{pname} - {zone()}" if pname else "현장명 없음"
         c2.markdown(f'<div style="margin-top:4px"><label style="font-size:14px;color:#6B7684">현장명</label><div style="background:#F2F4F6;border:1px solid #E5E8EB;border-radius:8px;padding:9px 14px;font-size:15px;color:#191F28;margin-top:4px">{pname_full}</div></div>', unsafe_allow_html=True)
         c3,c4=st.columns(2)
-        wpos=c3.text_input("작성자 직위 *",value=acc.get("writer_position",""),placeholder="예: 안전관리자")
-        wname=c4.text_input("작성자 성명 *",value=acc.get("writer_name",""))
+        c3.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">작성자 직위 *</p>', unsafe_allow_html=True)
+        wpos=c3.text_input("작성자 직위 *",value=acc.get("writer_position",""),placeholder="예: 안전관리자",label_visibility="collapsed")
+        c4.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">작성자 성명 *</p>', unsafe_allow_html=True)
+        wname=c4.text_input("작성자 성명 *",value=acc.get("writer_name",""),label_visibility="collapsed")
 
         # 사고 현장 정보
         st.markdown('<p class="sec-label">사고 현장 정보</p>',unsafe_allow_html=True)
         c1,c2=st.columns(2)
         try: adf=datetime.strptime(acc.get("accident_date",""),"%Y-%m-%d").date()
         except: adf=date.today()
-        adt_date=c1.date_input("사고 발생 일자 *",value=adf)
+        c1.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">사고 발생 일자 *</p>', unsafe_allow_html=True)
+        adt_date=c1.date_input("사고 발생 일자 *",value=adf,label_visibility="collapsed")
         hours_a=[f"{h:02d}" for h in range(0,24)]; mins_a=["00","10","20","30","40","50"]
         tc1,tc2=c1.columns(2)
         sh_=acc.get("accident_time","14:00").split(":")[0] if acc.get("accident_time") else "14"
         sm_=acc.get("accident_time","14:00").split(":")[-1] if acc.get("accident_time") else "00"
-        adt_h=tc1.selectbox("시 *",hours_a,index=hours_a.index(sh_) if sh_ in hours_a else 14,key="adt_h")
-        adt_m=tc2.selectbox("분 *",mins_a,index=mins_a.index(sm_) if sm_ in mins_a else 0,key="adt_m")
+        tc1.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">시 *</p>', unsafe_allow_html=True)
+        adt_h=tc1.selectbox("시 *",hours_a,index=hours_a.index(sh_) if sh_ in hours_a else 14,key="adt_h",label_visibility="collapsed")
+        tc2.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">분 *</p>', unsafe_allow_html=True)
+        adt_m=tc2.selectbox("분 *",mins_a,index=mins_a.index(sm_) if sm_ in mins_a else 0,key="adt_m",label_visibility="collapsed")
         adt_time=f"{adt_h}:{adt_m}"
         loc=c2.text_input("작업 장소",value=acc.get("location",""))
         cobj=c2.text_input("기인물",value=acc.get("cause_object",""),placeholder="예: 갱폼")
