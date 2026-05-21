@@ -1038,6 +1038,18 @@ div[data-testid="stBottom"] > div > div > div {
     border: none !important;
     padding: 0 !important;
 }
+.stChatFloatingInputContainer {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+.stChatFloatingInputContainer > div {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
 div[data-testid="stChatInput"] textarea {
     font-size: 15px !important;
     font-family: 'Pretendard', sans-serif !important;
