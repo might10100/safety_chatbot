@@ -844,7 +844,7 @@ def page_gen_checklist():
         if c1.button("PDF로 저장",type="primary",use_container_width=True):
             with st.spinner("PDF 저장 중..."):
                 from pdf_utils import save_checklist_pdf
-                path=save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj()["name"],st.session_state.pdf_save_dir)
+                path=save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
             st.markdown(f'<div class="ok">PDF 저장 완료: <b>{path}</b></div>',unsafe_allow_html=True)
             if os.path.exists(path):
                 with open(path,"rb") as f_:
