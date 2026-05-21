@@ -1022,10 +1022,14 @@ div[data-testid="stChatInput"] {
     padding: 4px 8px !important;
     box-shadow: none !important;
 }
-div[data-testid="stBottom"] {
+div[data-testid="stBottom"],
+div[data-testid="stBottom"] > div,
+div[data-testid="stBottom"] > div > div {
     background: transparent !important;
+    background-color: transparent !important;
     box-shadow: none !important;
     border: none !important;
+    backdrop-filter: none !important;
 }
 div[data-testid="stChatInput"] textarea {
     font-size: 15px !important;
