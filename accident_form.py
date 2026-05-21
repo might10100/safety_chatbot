@@ -20,8 +20,17 @@ def _reg():
         ("/Library/Fonts/NanumGothic.ttf", None, None),
         ("/Library/Fonts/AppleGothic.ttf", None, None),
         ("/usr/share/fonts/truetype/nanum/NanumGothic.ttf", None, None),
+        ("/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf", None, None),
+        ("/usr/share/fonts/nanum/NanumGothic.ttf", None, None),
+        ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", None, None),
         ("C:/Windows/Fonts/malgun.ttf", None, None),
     ]
+    # 시스템에서 나눔 폰트 자동 탐색
+    import glob
+    for p in glob.glob("/usr/share/fonts/**/*anum*Gothic*.ttf", recursive=True):
+        if "Bold" not in p:
+            candidates.insert(3, (p, None, None))
+            break
     for path, ir, ib in candidates:
         if not os.path.exists(path): continue
         try:
@@ -30,8 +39,10 @@ def _reg():
                 pdfmetrics.registerFont(TTFont("FB", path, subfontIndex=ib))
             else:
                 pdfmetrics.registerFont(TTFont("F",  path))
-                bp = path.replace(".ttf","Bold.ttf")
-                pdfmetrics.registerFont(TTFont("FB", bp if os.path.exists(bp) else path))
+                bp = path.replace(".ttf","Bold.ttf").replace("NanumGothic","NanumGothicBold")
+                bp2 = path.replace("NanumGothic.ttf","NanumGothicBold.ttf")
+                bold_path = bp if os.path.exists(bp) else (bp2 if os.path.exists(bp2) else path)
+                pdfmetrics.registerFont(TTFont("FB", bold_path))
             return ("F","FB")
         except: continue
     return ("Helvetica","Helvetica-Bold")
