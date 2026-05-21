@@ -1020,6 +1020,12 @@ div[data-testid="stChatInput"] {
     border: 1.5px solid #E5E8EB !important;
     background: white !important;
     padding: 4px 8px !important;
+    box-shadow: none !important;
+}
+div[data-testid="stBottom"] {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 div[data-testid="stChatInput"] textarea {
     font-size: 15px !important;
