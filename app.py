@@ -153,42 +153,7 @@ def sidebar():
             lbl={"daily_input":"← 금일 안전 업무 기록","zone_board":"← 구역 보드","main_board":"← 메인보드"}.get(back,"← 이전")
             if st.button(lbl, use_container_width=True): go(back)
         if z and st.button("메인보드", use_container_width=True): go("main_board",cur_zone=None)
-        # ── 날씨 위젯 ──
-        # ── 날씨 위젯 ──
-        st.divider()
-        try:
-            w = fetch_weather(p.get("district", "서울"))
-        except Exception:
-            w = {}
-        precip_icon = w.get("pty_icon") or w.get("sky_icon", "☀️")
-        wind_color = {"safe":"#0064FF","caution":"#F59E0B","warning":"#EF4444","danger":"#DC2626"}.get(w.get("wind_safe","safe"),"#8B95A1")
-        st.markdown(f"""<div style="background:#F2F4F6;border-radius:14px;padding:14px 16px;margin:0 8px;">
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-<span style="font-size:26px;line-height:1;">{precip_icon}</span>
-<div>
-<div style="font-size:22px;font-weight:700;color:#191F28;line-height:1;letter-spacing:-0.03em;">{f"{w['tmp']:.0f}°C" if w['tmp'] is not None else "—"}</div>
-<div style="font-size:12px;color:#8B95A1;margin-top:2px;">{w.get('sky','—')} · {p.get('district','')}</div>
-</div></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-<div style="background:#FFFFFF;border-radius:10px;padding:8px 10px;border:1px solid #E8EAED;">
-<div style="font-size:10px;color:#8B95A1;font-weight:600;margin-bottom:3px;">강수확률</div>
-<div style="font-size:13px;font-weight:600;color:#191F28;">{w.get('pop','—')}</div>
-</div>
-<div style="background:#FFFFFF;border-radius:10px;padding:8px 10px;border:1px solid #E8EAED;">
-<div style="font-size:10px;color:#8B95A1;font-weight:600;margin-bottom:3px;">습도</div>
-<div style="font-size:13px;font-weight:600;color:#191F28;">{w.get('reh','—')}</div>
-</div>
-<div style="background:#FFFFFF;border-radius:10px;padding:8px 10px;border:1px solid #E8EAED;">
-<div style="font-size:10px;color:#8B95A1;font-weight:600;margin-bottom:3px;">풍속</div>
-<div style="font-size:13px;font-weight:600;color:{wind_color};">{f"{w['wsd']} m/s" if w['wsd'] is not None else "—"}</div>
-</div>
-<div style="background:#FFFFFF;border-radius:10px;padding:8px 10px;border:1px solid #E8EAED;">
-<div style="font-size:10px;color:#8B95A1;font-weight:600;margin-bottom:3px;">풍향</div>
-<div style="font-size:13px;font-weight:600;color:#191F28;">{w.get('vec_str','—')}</div>
-</div>
-</div>
-{f'<div style="font-size:11px;color:#EF4444;margin-top:8px;font-weight:600;">⚠ {w["wind_level"]} — 고소작업 주의</div>' if w.get("wind_safe") in ("warning","danger") else f'<div style="font-size:11px;color:#0064FF;margin-top:8px;font-weight:600;">✔ 풍속 안전</div>'}
-</div>""", unsafe_allow_html=True)
+
         
 # ── 위치 선택 ─────────────────────────────────────────────────
 def location_selector(key_prefix="", cur_region="서울특별시", cur_dist="강남구"):
@@ -1011,14 +976,15 @@ def page_chatbot():
         if "global_chat" not in st.session_state: st.session_state.global_chat=[]
         chat_history=st.session_state.global_chat
 
+    st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:12px 0'>", unsafe_allow_html=True)
+    for msg in chat_history:
+        with st.chat_message(msg["role"]): st.markdown(msg["content"])
+    st.markdown("<div style='height:12px'>", unsafe_allow_html=True)
     col_input, col_btn = st.columns([.85, .15])
     with col_input:
         q = st.text_input("질문 입력", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key="chat_input_box")
     with col_btn:
         send = st.button("검색", type="primary", use_container_width=True)
-    st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:12px 0'>", unsafe_allow_html=True)
-    for msg in chat_history:
-        with st.chat_message(msg["role"]): st.markdown(msg["content"])
     if send and q:
         with st.chat_message("user"): st.markdown(q)
         with st.chat_message("assistant"):
@@ -1028,6 +994,7 @@ def page_chatbot():
         chat_history+=[{"role":"user","content":q},{"role":"assistant","content":r["answer"]}]
         if p_ and z_ and z_!="전체":
             zd=SS.get_zone_data(); zd[p_][z_]["chat"]=chat_history; SS.set_zone_data(zd)
+        st.rerun()
 
 # ══════════════════════════════════════════════════════════════
 # 라우터
