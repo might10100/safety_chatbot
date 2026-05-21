@@ -878,7 +878,8 @@ def page_accident_form():
         c1,c2=st.columns(2)
         wd=c1.date_input("작성 일자 *",value=date.today())
         pname=p.get("name","") or proj().get("name","")
-        c2.markdown(f'<div style="margin-top:4px"><label style="font-size:14px;color:#6B7684">현장명</label><div style="background:#F2F4F6;border:1px solid #E5E8EB;border-radius:8px;padding:9px 14px;font-size:15px;color:#191F28;margin-top:4px">{pname if pname else "현장명 없음"}</div></div>', unsafe_allow_html=True)
+        pname_full=f"{pname} - {zone()}" if pname else "현장명 없음"
+        c2.markdown(f'<div style="margin-top:4px"><label style="font-size:14px;color:#6B7684">현장명</label><div style="background:#F2F4F6;border:1px solid #E5E8EB;border-radius:8px;padding:9px 14px;font-size:15px;color:#191F28;margin-top:4px">{pname_full}</div></div>', unsafe_allow_html=True)
         c3,c4=st.columns(2)
         wpos=c3.text_input("작성자 직위 *",value=acc.get("writer_position",""),placeholder="예: 안전관리자")
         wname=c4.text_input("작성자 성명 *",value=acc.get("writer_name",""))
