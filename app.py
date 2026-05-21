@@ -1025,12 +1025,12 @@ div[data-testid="stChatInput"] textarea {
     box-shadow: none !important;
 }
 div[data-testid="stBottom"] > div {
-    border: none !important;
+    border: 1.5px solid #FFFFFF !important;
     box-shadow: none !important;
     background: #FFFFFF !important;
     background-color: #FFFFFF !important;
-    border-radius: 0 !important;
-    padding: 8px 0 !important;
+    border-radius: 16px !important;
+    padding: 8px 16px !important;
 }
 div[data-testid="stBottom"],
 div[data-testid="stBottom"] > div,
