@@ -1015,23 +1015,8 @@ def page_chatbot():
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
     st.markdown("""<style>
-div[data-testid="stChatInput"],
-div[data-testid="stChatInput"] > div,
-div[data-testid="stChatInput"] textarea {
-    background: #FFFFFF !important;
-    background-color: #FFFFFF !important;
-    border-radius: 12px !important;
-    border: 1.5px solid #E5E8EB !important;
-    box-shadow: none !important;
-}
-div[data-testid="stBottom"] > div {
-    border: 1.5px solid #FFFFFF !important;
-    box-shadow: none !important;
-    background: #FFFFFF !important;
-    background-color: #FFFFFF !important;
-    border-radius: 16px !important;
-    padding: 8px 16px !important;
-}
+div[data-testid="stBottom"] { display: none !important; }
+
 div[data-testid="stBottom"],
 div[data-testid="stBottom"] > div,
 div[data-testid="stBottom"] > div > div,
@@ -1077,8 +1062,13 @@ div[data-testid="stChatInput"] button::before {
 }
 div[data-testid="stChatInput"] button svg { display: none !important; }
 </style>""", unsafe_allow_html=True)
-    q = st.chat_input("건설 안전 법령에 대해 질문하세요...")
-    if q:
+    st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
+    col_input, col_btn = st.columns([.85, .15])
+    with col_input:
+        q = st.text_input("질문", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key="chat_input_box")
+    with col_btn:
+        send = st.button("검색", type="primary", use_container_width=True)
+    if send and q:
         with st.chat_message("user"): st.markdown(q)
         with st.chat_message("assistant"):
             with st.spinner("법령 검색 중..."): r=law_search(q)
