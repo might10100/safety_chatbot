@@ -979,7 +979,14 @@ def page_chatbot():
     st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:12px 0'>", unsafe_allow_html=True)
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
-    st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
+    st.markdown("""<style>
+section.main > div { padding-bottom: 100px; }
+div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"] input[aria-label="질문 입력"]) {
+    position: fixed; bottom: 24px; left: 350px; right: 24px; z-index: 999;
+    background: white; padding: 12px 16px; border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.10); border: 1.5px solid #E5E8EB;
+}
+</style>""", unsafe_allow_html=True)
     col_input, col_btn = st.columns([.85, .15])
     with col_input:
         q = st.text_input("질문 입력", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key="chat_input_box")
