@@ -233,7 +233,7 @@ def page_landing():
             st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">현장 위치 <span style="color:#0064FF">*</span></div>""", unsafe_allow_html=True)
             full_addr,sel_r,sel_d=location_selector("new_")
         with c2:
-            st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px;margin-top:12px">시공 기간 <span style="color:#FF3B30">*</span></div>""", unsafe_allow_html=True)
+            st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">시공 기간 <span style="color:#0064FF">*</span></div>""", unsafe_allow_html=True)
             p_start=st.date_input("착공일 *",value=date.today(),key="new_ps")
             p_end=st.date_input("완공일 *",value=date.today(),key="new_pe")
         st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px;margin-top:16px">구역 구획화</div>""", unsafe_allow_html=True)
@@ -301,7 +301,7 @@ def page_edit_project():
         st.markdown('<p style="font-weight:700;color:#0064FF;margin-bottom:4px">현장 위치 *</p>', unsafe_allow_html=True)
         full_addr,sel_r,sel_d=location_selector("edit_",p.get("region","서울특별시"),p.get("district","강남구"))
     with c2:
-        st.markdown("**시공 기간 ***")
+        st.markdown('<p style="font-weight:700;color:#0064FF;margin-bottom:4px">시공 기간 *</p>', unsafe_allow_html=True)
         try: ps=datetime.strptime(p.get("period_start",""),"%Y-%m-%d").date()
         except: ps=date.today()
         try: pe=datetime.strptime(p.get("period_end",""),"%Y-%m-%d").date()

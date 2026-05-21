@@ -459,3 +459,11 @@ div[data-testid="stWidgetLabel"] p {
     color: #0064FF !important;
     font-weight: 600 !important;
 }
+
+/* 상세주소, 구역명 라벨은 검정색 */
+div[data-testid="stTextInput"]:has(input[aria-label="상세 주소"]) label p,
+div[data-testid="stTextInput"]:has(input[placeholder="예: 역삼동 123-4"]) label p,
+div[data-testid="stTextInput"]:has(input[aria-label^="구역"]) label p {
+    color: #191F28 !important;
+    font-weight: 500 !important;
+}
