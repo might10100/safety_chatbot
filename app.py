@@ -1024,12 +1024,19 @@ div[data-testid="stChatInput"] {
 }
 div[data-testid="stBottom"],
 div[data-testid="stBottom"] > div,
-div[data-testid="stBottom"] > div > div {
+div[data-testid="stBottom"] > div > div,
+div[data-testid="stBottom"] > div > div > div {
     background: transparent !important;
     background-color: transparent !important;
     box-shadow: none !important;
     border: none !important;
     backdrop-filter: none !important;
+}
+.stChatInput, [data-testid="stChatInputContainer"] {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
 }
 div[data-testid="stChatInput"] textarea {
     font-size: 15px !important;
