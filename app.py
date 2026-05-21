@@ -1024,6 +1024,12 @@ div[data-testid="stChatInput"] textarea {
     border: 1.5px solid #E5E8EB !important;
     box-shadow: none !important;
 }
+div[data-testid="stBottom"] > div {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 8px 0 !important;
+}
 div[data-testid="stBottom"],
 div[data-testid="stBottom"] > div,
 div[data-testid="stBottom"] > div > div,
