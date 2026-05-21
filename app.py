@@ -961,23 +961,34 @@ def page_accident_form():
             st.rerun()
     else:
         acc=st.session_state.accident_input
-        st.markdown("### 보고서 확인 및 수정")
-        edited=st.text_area("",value=st.session_state.report_content,height=500,label_visibility="collapsed")
-        st.markdown("---")
-        c1,c2,c3=st.columns(3)
+        report_content=st.session_state.report_content
+        st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">보고서 확인</div>""", unsafe_allow_html=True)
+        lines=[l.strip() for l in report_content.split("\n")]
+        table_rows='<tr><td colspan="2" style="background:#1a1a2e;color:white;text-align:center;padding:12px;font-size:1.05rem;font-weight:bold;letter-spacing:.15em;">사 고  현 장  보 고 서</td></tr>'
+        for line in lines:
+            if not line or line=="---": continue
+            if line.startswith("[") and line.endswith("]"):
+                section=line[1:-1]
+                table_rows+=f'<tr><td colspan="2" style="background:#e8eaf6;font-weight:bold;padding:7px;border:1px solid #aaa;">{section}</td></tr>'
+            elif ":" in line:
+                key,_,val=line.partition(":")
+                table_rows+=f'<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;width:25%;white-space:nowrap">{key.strip()}</td><td style="padding:6px;border:1px solid #aaa">{val.strip()}</td></tr>'
+            else:
+                table_rows+=f'<tr><td colspan="2" style="padding:6px;border:1px solid #aaa">{line}</td></tr>'
+        st.markdown(f'<table style="width:100%;border-collapse:collapse;font-size:.88rem;margin:8px 0">{table_rows}</table>', unsafe_allow_html=True)
+        st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:16px 0'>", unsafe_allow_html=True)
+        c1,c2=st.columns(2)
         if c1.button("PDF로 저장",type="primary",use_container_width=True):
             with st.spinner("PDF 저장 중..."):
-                path=save_accident_form_pdf(acc,edited,st.session_state.pdf_save_dir)
-            st.markdown(f'<div class="ok">PDF 저장 완료: <b>{path}</b></div>',unsafe_allow_html=True)
-            if os.path.exists(path):
-                with open(path,"rb") as f_:
-                    st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(path),mime="application/pdf")
+                out_path=save_accident_form_pdf(acc,report_content,st.session_state.pdf_save_dir)
+            st.markdown(f'<div class="ok">PDF 저장 완료: <b>{out_path}</b></div>',unsafe_allow_html=True)
+            if os.path.exists(out_path):
+                with open(out_path,"rb") as f_:
+                    st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(out_path),mime="application/pdf")
             p_,z_=pid(),zone(); ensure_zd(p_,z_)
             zd=SS.get_zone_data(); zd[p_][z_]["accidents"].append(acc); SS.set_zone_data(zd)
             st.session_state.report_content=""
-        if c2.button("수정 저장",use_container_width=True):
-            st.session_state.report_content=edited; st.rerun()
-        if c3.button("다시 작성",use_container_width=True):
+        if c2.button("다시 작성",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; st.rerun()
 
 # ══════════════════════════════════════════════════════════════
