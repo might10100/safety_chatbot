@@ -1015,11 +1015,13 @@ def page_chatbot():
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
     st.markdown("""<style>
-div[data-testid="stChatInput"] {
+div[data-testid="stChatInput"],
+div[data-testid="stChatInput"] > div,
+div[data-testid="stChatInput"] textarea {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
     border-radius: 12px !important;
     border: 1.5px solid #E5E8EB !important;
-    background: white !important;
-    padding: 4px 8px !important;
     box-shadow: none !important;
 }
 div[data-testid="stBottom"],
