@@ -983,11 +983,12 @@ def page_chatbot():
 div[data-testid="stBottom"] { display: none !important; }
 .chat-fixed-bar {
     position: fixed; bottom: 0; left: 336px; right: 0; z-index: 9999;
-    background: white; padding: 14px 24px 18px 24px;
+    background: white; padding: 14px 24px 24px 24px;
     border-top: 1.5px solid #F2F4F6;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
 }
 </style>""", unsafe_allow_html=True)
-    st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:300px'></div>", unsafe_allow_html=True)
     st.markdown("<div class='chat-fixed-bar'>", unsafe_allow_html=True)
     col_input, col_btn = st.columns([.85, .15])
     with col_input:
