@@ -169,10 +169,12 @@ def sidebar():
 # ── 위치 선택 ─────────────────────────────────────────────────
 def location_selector(key_prefix="", cur_region="서울특별시", cur_dist="강남구"):
     regions=list(REGIONS.keys())
+    sel_r=st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">광역시/도 *</p>', unsafe_allow_html=True)
     sel_r=st.selectbox("광역시/도 *",regions,
         index=regions.index(cur_region) if cur_region in regions else 0,
         key=f"{key_prefix}region")
     dists=REGIONS[sel_r]
+    sel_d=st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">시/군/구 *</p>', unsafe_allow_html=True)
     sel_d=st.selectbox("시/군/구 *",dists,
         index=dists.index(cur_dist) if cur_dist in dists else 0,
         key=f"{key_prefix}district")
@@ -234,10 +236,13 @@ def page_landing():
             full_addr,sel_r,sel_d=location_selector("new_")
         with c2:
             st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">시공 기간 <span style="color:#0064FF">*</span></div>""", unsafe_allow_html=True)
-            p_start=st.date_input("착공일 *",value=date.today(),key="new_ps")
-            p_end=st.date_input("완공일 *",value=date.today(),key="new_pe")
+            st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">착공일 *</p>', unsafe_allow_html=True)
+            p_start=st.date_input("착공일 *",value=date.today(),key="new_ps",label_visibility="collapsed")
+            st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">완공일 *</p>', unsafe_allow_html=True)
+            p_end=st.date_input("완공일 *",value=date.today(),key="new_pe",label_visibility="collapsed")
         st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px;margin-top:16px">구역 구획화</div>""", unsafe_allow_html=True)
-        zone_count=st.number_input("구역 수 *",min_value=1,max_value=20,value=3,step=1)
+        st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">구역 수 *</p>', unsafe_allow_html=True)
+        zone_count=st.number_input("구역 수 *",min_value=1,max_value=20,value=3,step=1,label_visibility="collapsed")
         cols=st.columns(min(int(zone_count),4))
         zone_names=[]
         for i in range(int(zone_count)):
@@ -306,11 +311,14 @@ def page_edit_project():
         except: ps=date.today()
         try: pe=datetime.strptime(p.get("period_end",""),"%Y-%m-%d").date()
         except: pe=date.today()
-        p_start=st.date_input("착공일 *",value=ps,key="edit_ps")
-        p_end=st.date_input("완공일 *",value=pe,key="edit_pe")
+        st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">착공일 *</p>', unsafe_allow_html=True)
+        p_start=st.date_input("착공일 *",value=ps,key="edit_ps",label_visibility="collapsed")
+        st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">완공일 *</p>', unsafe_allow_html=True)
+        p_end=st.date_input("완공일 *",value=pe,key="edit_pe",label_visibility="collapsed")
     st.markdown("**구역 구획화** (변경 시 기존 데이터는 아카이브에 저장)")
     cur_zones=p.get("zones",[])
-    zone_count=st.number_input("구역 수 *",min_value=1,max_value=20,value=len(cur_zones),step=1)
+    st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">구역 수 *</p>', unsafe_allow_html=True)
+    zone_count=st.number_input("구역 수 *",min_value=1,max_value=20,value=len(cur_zones),step=1,label_visibility="collapsed")
     cols=st.columns(min(int(zone_count),4))
     new_zones=[]
     for i in range(int(zone_count)):

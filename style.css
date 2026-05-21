@@ -444,26 +444,10 @@ input:focus, textarea:focus, select:focus,
 }
 
 .req-label{font-weight:bold;font-size:1rem;margin:1rem 0 .3rem 0;color:#0064FF;}
-/* 모든 위젯 라벨 파란색 */
-div[data-testid="stTextInput"] label p,
-div[data-testid="stTextInput"] label div p,
-div[data-testid="stSelectbox"] label p,
-div[data-testid="stSelectbox"] label div p,
-div[data-testid="stDateInput"] label p,
-div[data-testid="stDateInput"] label div p,
-div[data-testid="stNumberInput"] label p,
-div[data-testid="stNumberInput"] label div p,
-div[data-testid="stTextArea"] label p,
-div[data-testid="stTextArea"] label div p,
+/* 위젯 라벨은 기본 색상 유지 */
 div[data-testid="stWidgetLabel"] p {
-    color: #0064FF !important;
-    font-weight: 600 !important;
-}
-
-/* 상세주소, 구역명 라벨은 검정색 */
-div[data-testid="stTextInput"]:has(input[aria-label="상세 주소"]) label p,
-div[data-testid="stTextInput"]:has(input[placeholder="예: 역삼동 123-4"]) label p,
-div[data-testid="stTextInput"]:has(input[aria-label^="구역"]) label p {
-    color: #191F28 !important;
+    color: #4E5968 !important;
     font-weight: 500 !important;
 }
+/* 숨긴 라벨 처리용 */
+.hide-label label { display: none !important; }
