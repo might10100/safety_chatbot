@@ -442,3 +442,5 @@ input:focus, textarea:focus, select:focus,
     outline: none !important;
     box-shadow: none !important;
 }
+
+.req-label{font-weight:bold;font-size:1rem;margin:1rem 0 .3rem 0;color:#0064FF;}

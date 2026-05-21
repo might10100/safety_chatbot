@@ -514,7 +514,7 @@ def page_daily_input():
     equipment_str=", ".join(eq_list) if eq_list else "없음"
 
     # ── 날씨 * ──
-    st.markdown('<p class="sec-label">날씨 *</p>',unsafe_allow_html=True)
+    st.markdown('<p class="req-label">날씨 *</p>',unsafe_allow_html=True)
     weather={}
     if st.toggle("기상청 자동 추출",value=True):
         p_=proj()
@@ -877,13 +877,13 @@ def page_accident_form():
         it_=c5.text_input("상해 종류",value=acc.get("injury_type",""),placeholder="예: 골절")
 
         # 작업 내용 및 과정 (필수)
-        st.markdown('<p class="sec-label">작업 내용 및 과정 *</p>',unsafe_allow_html=True)
+        st.markdown('<p class="req-label">작업 내용 및 과정 *</p>',unsafe_allow_html=True)
         wp_=st.text_area("",value=acc.get("work_process",""),height=100,
                           placeholder="사고 발생 전 작업 단계를 순서대로 기술해주세요.",
                           label_visibility="collapsed")
 
         # 재해 발생 개요 (필수)
-        st.markdown('<p class="sec-label">재해 발생 개요 *</p>',unsafe_allow_html=True)
+        st.markdown('<p class="req-label">재해 발생 개요 *</p>',unsafe_allow_html=True)
         ov=st.text_area("",value=acc.get("overview",""),height=100,
                          placeholder="자세히 기술해주세요.",
                          label_visibility="collapsed")
