@@ -444,3 +444,31 @@ input:focus, textarea:focus, select:focus,
 }
 
 .req-label{font-weight:bold;font-size:1rem;margin:1rem 0 .3rem 0;color:#0064FF;}
+
+/* 필수항목 * 포함 라벨 파란색 */
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] label,
+label[data-testid="stWidgetLabel"] {
+    color: #4E5968 !important;
+}
+[data-testid="stWidgetLabel"]:has(p:-webkit-any(p)):has(*) p {
+    color: #4E5968 !important;
+}
+div[data-testid="stTextInput"] label,
+div[data-testid="stSelectbox"] label,
+div[data-testid="stDateInput"] label,
+div[data-testid="stNumberInput"] label,
+div[data-testid="stTextArea"] label {
+    color: #4E5968 !important;
+}
+
+/* Streamlit 필수항목 * 빨간색을 파란색으로 */
+span[data-testid="stWidgetLabel"] span.required,
+.stTextInput label span, .stSelectbox label span,
+.stDateInput label span, .stNumberInput label span {
+    color: #0064FF !important;
+}
+/* * 가 포함된 라벨 전체를 파란색으로 */
+div:has(> label > div > p:contains("*")) label {
+    color: #0064FF !important;
+}

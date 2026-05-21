@@ -20,6 +20,18 @@ def load_css():
     st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 
 load_css()
+st.markdown("""<script>
+function colorRequiredLabels() {
+    document.querySelectorAll('label, p').forEach(el => {
+        if (el.textContent.includes('*')) {
+            el.style.color = '#0064FF';
+        }
+    });
+}
+colorRequiredLabels();
+const observer = new MutationObserver(colorRequiredLabels);
+observer.observe(document.body, {childList: true, subtree: true});
+</script>""", unsafe_allow_html=True)
 st.markdown("""<style>
 .title{font-size:1.8rem;font-weight:900;color:#1a1a2e;}
 .sub{font-size:.85rem;color:#888;margin-bottom:1rem;}
@@ -214,11 +226,11 @@ def page_landing():
         show=True
     if show:
         st.markdown("""<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px">새 공사 현장 등록</div>""", unsafe_allow_html=True)
-        st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px">시공명 <span style="color:#FF3B30">*</span></div>""", unsafe_allow_html=True)
+        st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px">시공명 <span style="color:#0064FF">*</span></div>""", unsafe_allow_html=True)
         name=st.text_input("시공명",placeholder="예: 강남 OO아파트 신축공사",label_visibility="collapsed")
         c1,c2=st.columns(2)
         with c1:
-            st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px;margin-top:12px">현장 위치 <span style="color:#FF3B30">*</span></div>""", unsafe_allow_html=True)
+            st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">현장 위치 <span style="color:#0064FF">*</span></div>""", unsafe_allow_html=True)
             full_addr,sel_r,sel_d=location_selector("new_")
         with c2:
             st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px;margin-top:12px">시공 기간 <span style="color:#FF3B30">*</span></div>""", unsafe_allow_html=True)
@@ -282,11 +294,11 @@ def page_main_board():
 def page_edit_project():
     p=proj()
     st.markdown("## 현장 정보 수정")
-    st.markdown("**시공명 ***")
+    st.markdown('<p style="font-weight:700;color:#0064FF;margin-bottom:4px">시공명 *</p>', unsafe_allow_html=True)
     name=st.text_input("시공명",value=p.get("name",""),label_visibility="collapsed")
     c1,c2=st.columns(2)
     with c1:
-        st.markdown("**현장 위치 ***")
+        st.markdown('<p style="font-weight:700;color:#0064FF;margin-bottom:4px">현장 위치 *</p>', unsafe_allow_html=True)
         full_addr,sel_r,sel_d=location_selector("edit_",p.get("region","서울특별시"),p.get("district","강남구"))
     with c2:
         st.markdown("**시공 기간 ***")
