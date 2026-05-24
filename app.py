@@ -841,13 +841,19 @@ def page_gen_checklist():
         st.markdown("---")
         c1,c2=st.columns(2)
         from pdf_utils import save_checklist_pdf
-        with st.spinner("PDF 생성 중..."):
-            pdf_bytes, fname = save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
-        save_report("checklist","안전 점검 체크리스트","",st.session_state.report_content,daily.get("date",""))
+        if "checklist_pdf_cache" not in st.session_state:
+            with st.spinner("PDF 생성 중..."):
+                pdf_bytes, fname = save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
+            st.session_state["checklist_pdf_cache"] = (pdf_bytes, fname)
+            save_report("checklist","안전 점검 체크리스트","",st.session_state.report_content,daily.get("date",""))
+        else:
+            pdf_bytes, fname = st.session_state["checklist_pdf_cache"]
         col_dl,col_edit=st.columns(2)
         col_dl.download_button("⬇ PDF 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
         if col_edit.button("수정하기",use_container_width=True):
-            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; go("daily_input")
+            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
+            if "checklist_pdf_cache" in st.session_state: del st.session_state["checklist_pdf_cache"]
+            go("daily_input")
 
 # ══════════════════════════════════════════════════════════════
 # 사고 보고서
