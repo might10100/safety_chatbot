@@ -295,12 +295,12 @@ def save_checklist_pdf(content: str, date: str,
         elif s[:2] in ("1.","2.","3.","4.","5.","6.","7.","8.","9.") and len(s)<25:
             story.append(Spacer(1,1*mm)); story.append(_p(s,9,bold=True))
         elif "[주의]" in s or "[!]" in s:
-            tb=Table([[_p(s,9,color=colors.red)]], colWidths=[W], rowHeights=[7*mm])
+            tb=Table([[_p(s,9,color=colors.red)]], colWidths=[W])
             tb.setStyle(_ts(("BACKGROUND",(0,0),(-1,-1),colors.HexColor("#fff0f0")),
                             ("BOX",(0,0),(-1,-1),0.5,colors.red)))
             story.append(tb)
         elif s.startswith("□"):
-            tb=Table([[_p(s,9)]], colWidths=[W], rowHeights=[7*mm])
+            tb=Table([[_p(s,9)]], colWidths=[W])
             tb.setStyle(_ts(("BOX",(0,0),(-1,-1),0.3,colors.HexColor("#cccccc"))))
             story.append(tb)
         else:
@@ -337,7 +337,7 @@ def save_accident_report_pdf(content: str, date: str,
                             ("TOPPADDING",(0,0),(-1,-1),3),("BOTTOMPADDING",(0,0),(-1,-1),3)))
             story.append(tb)
         elif s.startswith("-"):
-            tb=Table([[_p(s,9)]], colWidths=[W], rowHeights=[7*mm])
+            tb=Table([[_p(s,9)]], colWidths=[W])
             tb.setStyle(_ts(("BOX",(0,0),(-1,-1),0.3,colors.HexColor("#cccccc"))))
             story.append(tb)
         else: story.append(_p(s,9))
