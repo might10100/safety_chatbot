@@ -840,13 +840,12 @@ def page_gen_checklist():
         if c1.button("PDF로 저장",type="primary",use_container_width=True):
             with st.spinner("PDF 저장 중..."):
                 from pdf_utils import save_checklist_pdf
-                path=save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
-            st.markdown(f'<div class="ok">PDF 저장 완료: <b>{path}</b></div>',unsafe_allow_html=True)
-            if os.path.exists(path):
-                with open(path,"rb") as f_:
-                    st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(path),mime="application/pdf")
-            save_report("checklist","안전 점검 체크리스트",path,st.session_state.report_content,daily.get("date",""))
-            go("zone_board")
+                out_path=save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
+            save_report("checklist","안전 점검 체크리스트",out_path,st.session_state.report_content,daily.get("date",""))
+            st.success("PDF 저장 완료!")
+            if os.path.exists(out_path):
+                with open(out_path,"rb") as f_:
+                    st.download_button("⬇ PDF 다운로드",f_.read(),file_name=os.path.basename(out_path),mime="application/pdf",type="primary",use_container_width=True)
         if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; go("daily_input")
 
