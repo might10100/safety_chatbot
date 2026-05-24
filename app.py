@@ -169,15 +169,15 @@ def sidebar():
 # ── 위치 선택 ─────────────────────────────────────────────────
 def location_selector(key_prefix="", cur_region="서울특별시", cur_dist="강남구"):
     regions=list(REGIONS.keys())
-    sel_r=st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">광역시/도 *</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">광역시/도 *</p>', unsafe_allow_html=True)
     sel_r=st.selectbox("광역시/도 *",regions,
         index=regions.index(cur_region) if cur_region in regions else 0,
-        key=f"{key_prefix}region")
+        key=f"{key_prefix}region", label_visibility="collapsed")
     dists=REGIONS[sel_r]
-    sel_d=st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">시/군/구 *</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">시/군/구 *</p>', unsafe_allow_html=True)
     sel_d=st.selectbox("시/군/구 *",dists,
         index=dists.index(cur_dist) if cur_dist in dists else 0,
-        key=f"{key_prefix}district")
+        key=f"{key_prefix}district", label_visibility="collapsed")
     detail=st.text_input("상세 주소",placeholder="예: 역삼동 123-4",key=f"{key_prefix}detail")
     return f"{sel_r} {sel_d} {detail}".strip(), sel_r, sel_d
 
