@@ -837,16 +837,13 @@ def page_gen_checklist():
         st.markdown(f"""<div style="background:#FFFFFF;border:1.5px solid #E8EAED;border-radius:14px;padding:20px 24px;white-space:pre-wrap;font-size:14px;color:#191F28;line-height:1.7">{st.session_state.report_content}</div>""", unsafe_allow_html=True)
         st.markdown("---")
         c1,c2=st.columns(2)
-        if c1.button("PDF로 저장",type="primary",use_container_width=True):
-            with st.spinner("PDF 저장 중..."):
-                from pdf_utils import save_checklist_pdf
-                out_path=save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
-            save_report("checklist","안전 점검 체크리스트",out_path,st.session_state.report_content,daily.get("date",""))
-            st.success("PDF 저장 완료!")
-            if os.path.exists(out_path):
-                with open(out_path,"rb") as f_:
-                    st.download_button("⬇ PDF 다운로드",f_.read(),file_name=os.path.basename(out_path),mime="application/pdf",type="primary",use_container_width=True)
-        if c2.button("수정하기",use_container_width=True):
+        from pdf_utils import save_checklist_pdf
+        with st.spinner("PDF 생성 중..."):
+            pdf_bytes, fname = save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
+        save_report("checklist","안전 점검 체크리스트","",st.session_state.report_content,daily.get("date",""))
+        col_dl,col_edit=st.columns(2)
+        col_dl.download_button("⬇ PDF 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
+        if col_edit.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; go("daily_input")
 
 # ══════════════════════════════════════════════════════════════

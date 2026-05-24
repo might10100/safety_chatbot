@@ -260,6 +260,7 @@ def save_daily_log_pdf(daily: dict, report_text: str,
 
     doc.build(story)
     _open(path)
+    with open(path,"rb") as f: return f.read(), os.path.basename(path)
     return path
 
 
@@ -308,6 +309,7 @@ def save_checklist_pdf(content: str, date: str,
 
     doc.build(story)
     _open(path)
+    with open(path,"rb") as f: return f.read(), os.path.basename(path)
     return path
 
 
@@ -344,4 +346,5 @@ def save_accident_report_pdf(content: str, date: str,
 
     doc.build(story)
     _open(path)
+    with open(path,"rb") as f: return f.read(), os.path.basename(path)
     return path
