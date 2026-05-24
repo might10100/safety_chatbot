@@ -544,9 +544,11 @@ def page_daily_input():
     weather={}
     if st.toggle("기상청 자동 추출",value=True):
         p_=proj()
-        addr=f"{p_.get('region','')} {p_.get('district','')}"
-        with st.spinner("날씨 정보 가져오는 중..."):
-            weather=fetch_weather(addr)
+        cache_key=f"weather_cache_{addr}"
+        if cache_key not in st.session_state:
+            with st.spinner("날씨 정보 가져오는 중..."):
+                st.session_state[cache_key]=fetch_weather(addr)
+        weather=st.session_state[cache_key]
         if weather.get("error"):
             st.warning(weather.get("error","날씨 정보를 가져올 수 없습니다.")); weather=_mw()
         else:
