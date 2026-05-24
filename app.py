@@ -201,7 +201,7 @@ def page_landing():
 </div>""", unsafe_allow_html=True)
             c1,c2=st.columns([.85,.15])
             with c1:
-                if st.button("입장하기 →", key=f"p_{pid_}", use_container_width=True, type="primary"):
+                if st.button(f"{p_.get('name','입장하기')} →", key=f"p_{pid_}", use_container_width=True, type="primary"):
                     st.session_state.cur_proj_id=pid_
                     with st.spinner("AI 모델 로딩 중..."): load_resources()
                     go("main_board")
