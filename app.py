@@ -967,18 +967,21 @@ def page_accident_form():
         report_content=st.session_state.report_content
         st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">보고서 확인</div>""", unsafe_allow_html=True)
         lines=[l.strip() for l in report_content.split("\n")]
-        table_rows='<tr><td colspan="2" style="background:#1a1a2e;color:white;text-align:center;padding:12px;font-size:1.05rem;font-weight:bold;letter-spacing:.15em;">사 고  현 장  보 고 서</td></tr>'
+        table_rows='<tr><td colspan="2" style="background:#0064FF;color:white;text-align:center;padding:14px;font-size:1.1rem;font-weight:800;letter-spacing:.08em;border-radius:8px 8px 0 0">사고 현장 보고서</td></tr>'
         for line in lines:
             if not line or line=="---": continue
             if line.startswith("[") and line.endswith("]"):
                 section=line[1:-1]
-                table_rows+=f'<tr><td colspan="2" style="background:#e8eaf6;font-weight:bold;padding:7px;border:1px solid #aaa;">{section}</td></tr>'
+                table_rows+=f'<tr><td colspan="2" style="background:#EFF4FF;color:#0064FF;font-weight:700;font-size:.9rem;padding:10px 14px;border-bottom:1px solid #C2D8FF;border-top:2px solid #C2D8FF;letter-spacing:0.02em">{section}</td></tr>'
             elif ":" in line:
                 key,_,val=line.partition(":")
-                table_rows+=f'<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;width:25%;white-space:nowrap">{key.strip()}</td><td style="padding:6px;border:1px solid #aaa">{val.strip()}</td></tr>'
+                val_clean=val.strip()
+                is_empty = not val_clean or val_clean in ["[현장 확인 필요]","없음","—",""]
+                val_style = "color:#B0B8C1;font-style:italic" if is_empty else "color:#191F28"
+                table_rows+=f'<tr><td style="background:#FAFBFC;font-weight:600;font-size:.85rem;color:#4E5968;padding:10px 14px;border-bottom:1px solid #F2F4F6;width:28%;vertical-align:top">{key.strip()}</td><td style="padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;{val_style};line-height:1.6">{val_clean if val_clean else "미입력"}</td></tr>'
             else:
-                table_rows+=f'<tr><td colspan="2" style="padding:6px;border:1px solid #aaa">{line}</td></tr>'
-        st.markdown(f'<table style="width:100%;border-collapse:collapse;font-size:.88rem;margin:8px 0">{table_rows}</table>', unsafe_allow_html=True)
+                table_rows+=f'<tr><td colspan="2" style="padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;color:#191F28;line-height:1.6">{line}</td></tr>'
+        st.markdown(f'<div style="border:1.5px solid #E5E8EB;border-radius:10px;overflow:hidden;margin-bottom:16px"><table style="width:100%;border-collapse:collapse">{table_rows}</table></div>', unsafe_allow_html=True)
         st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:16px 0'>", unsafe_allow_html=True)
         c1,c2=st.columns(2)
         if c1.button("PDF로 저장",type="primary",use_container_width=True):
