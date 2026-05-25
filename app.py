@@ -985,7 +985,7 @@ def page_accident_form():
                 is_required = "*" in key
                 key_style = "color:#C62828;font-weight:700" if is_required else "font-weight:600;color:#4E5968"
                 val_style = "color:#191F28"
-                table_rows+=f'<tr><td style="background:#FAFBFC;font-size:.85rem;{key_style};padding:10px 14px;border-bottom:1px solid #F2F4F6;width:28%;vertical-align:top">{key.strip()}</td><td style="padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;{val_style};line-height:1.6">{val_clean if val_clean else "미입력"}</td></tr>'
+                table_rows+=f'<tr><td style="background:#FAFBFC;font-size:.85rem;{key_style};padding:10px 14px;border-bottom:1px solid #F2F4F6;width:28%;vertical-align:top">{key.strip()}</td><td style="padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;{val_style};line-height:1.6">{val_clean}</td></tr>'
             else:
                 is_note = line.startswith("※") or line.startswith("*") or line.startswith("주의")
                 note_style = "color:#C62828;font-weight:600" if is_note else "color:#191F28"
