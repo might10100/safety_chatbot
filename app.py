@@ -969,9 +969,14 @@ def page_accident_form():
         st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">보고서 확인</div>""", unsafe_allow_html=True)
         lines=[l.strip() for l in report_content.split("\n")]
         table_rows='<tr><td colspan="2" style="background:#0064FF;color:white;text-align:center;padding:14px;font-size:1.1rem;font-weight:800;letter-spacing:.08em;border-radius:8px 8px 0 0">사고 현장 보고서</td></tr>'
+        skip_first_section = True
         for line in lines:
             if not line or line=="---": continue
             if line.startswith("[") and line.endswith("]"):
+                if skip_first_section and line == "[사고 보고서]":
+                    skip_first_section = False
+                    continue
+                skip_first_section = False
                 section=line[1:-1]
                 table_rows+=f'<tr><td colspan="2" style="background:#EFF4FF;color:#0064FF;font-weight:700;font-size:.9rem;padding:10px 14px;border-bottom:1px solid #C2D8FF;border-top:2px solid #C2D8FF;letter-spacing:0.02em">{section}</td></tr>'
             elif ":" in line:
