@@ -1000,7 +1000,7 @@ def page_accident_form():
             p_,z_=pid(),zone(); ensure_zd(p_,z_)
             zd=SS.get_zone_data(); zd[p_][z_]["accidents"].append(acc); SS.set_zone_data(zd)
             st.session_state.report_content=""
-        if c2.button("다시 작성",use_container_width=True):
+        if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; st.rerun()
 
 # ══════════════════════════════════════════════════════════════
