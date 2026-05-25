@@ -982,9 +982,10 @@ def page_accident_form():
             elif ":" in line:
                 key,_,val=line.partition(":")
                 val_clean=val.strip()
-                is_empty = not val_clean or val_clean in ["[현장 확인 필요]","없음","—",""]
-                val_style = "color:#B0B8C1;font-style:italic" if is_empty else "color:#191F28"
-                table_rows+=f'<tr><td style="background:#FAFBFC;font-weight:600;font-size:.85rem;color:#4E5968;padding:10px 14px;border-bottom:1px solid #F2F4F6;width:28%;vertical-align:top">{key.strip()}</td><td style="padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;{val_style};line-height:1.6">{val_clean if val_clean else "미입력"}</td></tr>'
+                is_required = "*" in key
+                key_style = "color:#C62828;font-weight:700" if is_required else "font-weight:600;color:#4E5968"
+                val_style = "color:#191F28"
+                table_rows+=f'<tr><td style="background:#FAFBFC;font-size:.85rem;{key_style};padding:10px 14px;border-bottom:1px solid #F2F4F6;width:28%;vertical-align:top">{key.strip()}</td><td style="padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;{val_style};line-height:1.6">{val_clean if val_clean else "미입력"}</td></tr>'
             else:
                 table_rows+=f'<tr><td colspan="2" style="padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;color:#191F28;line-height:1.6">{line}</td></tr>'
         st.markdown(f'<div style="border:1.5px solid #E5E8EB;border-radius:10px;overflow:hidden;margin-bottom:16px"><table style="width:100%;border-collapse:collapse">{table_rows}</table></div>', unsafe_allow_html=True)
