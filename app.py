@@ -900,7 +900,8 @@ def page_accident_form():
         adt_time=f"{adt_h}:{adt_m}"
         loc=c2.text_input("작업 장소",value=acc.get("location",""))
         cobj=c2.text_input("기인물",value=acc.get("cause_object",""),placeholder="예: 갱폼")
-        atype=c1.selectbox("발생 형태",["추락","낙하","감전","협착","충돌","화재·폭발","기타"])
+        c1.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">발생 형태 *</p>', unsafe_allow_html=True)
+        atype=c1.selectbox("발생 형태 *",["추락","낙하","감전","협착","충돌","화재·폭발","기타"],label_visibility="collapsed")
 
         # 재해자 정보 (발생형태와 상해부위 사이)
         st.markdown('<p class="sec-label">재해자 정보</p>',unsafe_allow_html=True)
@@ -942,7 +943,7 @@ def page_accident_form():
 
         # 필수 항목 체크
         basic_required=[("작성자 직위",wpos),("작성자 성명",wname)]
-        scene_required=[("사고 발생 일자",str(adt_date)),("사고 발생 시분",adt_time)]
+        scene_required=[("사고 발생 일자",str(adt_date)),("사고 발생 시분",adt_time),("발생 형태",atype)]
         content_required=[("작업 내용 및 과정",wp_),("재해 발생 개요",ov)]
         all_required=basic_required+scene_required+content_required
         missing=[n for n,v in all_required if not v]
