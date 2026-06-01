@@ -1001,10 +1001,8 @@ def page_accident_form():
                 # 보고서 생성 시점에 사고 데이터 저장
                 p_,z_=pid(),zone(); ensure_zd(p_,z_)
                 zd=SS.get_zone_data()
-                already=any(a.get("accident_datetime")==new_acc.get("accident_datetime") and a.get("writer_name")==new_acc.get("writer_name") for a in zd[p_][z_]["accidents"])
-                acc_with_report={**new_acc,"report_content":st.session_state.report_content}
-                if not already:
-                    zd[p_][z_]["accidents"].append(acc_with_report); SS.set_zone_data(zd)
+                acc_with_report={**new_acc,"report_content":st.session_state.report_content,"acc_id":str(uuid.uuid4())[:8]}
+                zd[p_][z_]["accidents"].append(acc_with_report); SS.set_zone_data(zd)
                 save_report("accident","사고 보고서","",st.session_state.report_content,new_acc.get("write_date",""))
                 st.rerun()
     else:
