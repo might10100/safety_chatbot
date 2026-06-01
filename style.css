@@ -443,7 +443,7 @@ input:focus, textarea:focus, select:focus,
     box-shadow: none !important;
 }
 
-.req-label{font-weight:bold;font-size:1rem;margin:1rem 0 .3rem 0;color:#0064FF;}
+.req-label{font-weight:bold;font-size:1rem;margin:1rem 0 .3rem 0;color:#191F28;}
 /* 위젯 라벨은 기본 색상 유지 */
 div[data-testid="stWidgetLabel"] p {
     color: #4E5968 !important;
