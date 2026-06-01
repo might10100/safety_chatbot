@@ -356,7 +356,8 @@ def page_zone_board():
         st.markdown("""<div class='warn'><b>전일 미조치 사항</b> — 이행 여부를 확인하세요.</div>""",unsafe_allow_html=True)
         for i,item in enumerate(prev_unresolved):
             if st.checkbox(item["text"],key=f"pck_{i}"): _mark_resolved(item["text"])
-    # 사고 건수 + 파이차트
+    # 사고 건수 + 파이차트 (매번 최신 데이터 로드)
+    ac=zdata().get("accidents",[])
     col_stat, col_chart = st.columns([1,1])
     with col_stat:
         acc_cnt=len(ac)
@@ -381,7 +382,8 @@ def page_zone_board():
                 marker=dict(colors=["#FF3B30","#FF9500","#FFCC00","#34C759","#007AFF"],
                             line=dict(color="white",width=2)),
                 textinfo="label+percent",
-                textfont=dict(size=12),
+                textfont=dict(size=11),
+                insidetextorientation="horizontal",
                 hovertemplate="%{label}: %{value}건<extra></extra>"
             )])
             fig.update_layout(
