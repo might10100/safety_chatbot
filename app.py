@@ -962,6 +962,12 @@ def page_accident_form():
                 st.session_state["show_accident_warning"] = False
             with st.spinner("AI가 보고서를 작성 중입니다..."):
                 st.session_state.report_content=generate_accident_report(new_acc,st.session_state.selected_laws)
+            # 보고서 생성 시점에 사고 데이터 저장
+            p_,z_=pid(),zone(); ensure_zd(p_,z_)
+            zd=SS.get_zone_data()
+            already=any(a.get("accident_datetime")==new_acc.get("accident_datetime") and a.get("writer_name")==new_acc.get("writer_name") for a in zd[p_][z_]["accidents"])
+            if not already:
+                zd[p_][z_]["accidents"].append(new_acc); SS.set_zone_data(zd)
             st.rerun()
     else:
         acc=st.session_state.accident_input
