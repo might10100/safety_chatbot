@@ -750,7 +750,7 @@ def save_report(rtype,label,path,content,rdate):
     p_,z_=pid(),zone(); ensure_zd(p_,z_)
     zd=SS.get_zone_data()
     zd[p_][z_]["reports"].append({"id":str(uuid.uuid4())[:8],"type":rtype,"label":label,"date":rdate,"path":path,"content":content})
-    SS.set_zone_data(zd); st.session_state.report_content=""
+    SS.set_zone_data(zd)
 
 # ══════════════════════════════════════════════════════════════
 # 금일 안전 일지 생성
@@ -847,6 +847,7 @@ def page_gen_daily_log():
                 with open(path,"rb") as f_:
                     st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(path),mime="application/pdf")
             save_report("daily","금일 안전 일지",path,st.session_state.report_content,daily["date"])
+            st.session_state.report_content=""
             go("daily_input")
         if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; go("daily_input")
@@ -880,6 +881,7 @@ def page_gen_checklist():
                 pdf_bytes, fname = save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
             st.session_state["checklist_pdf_cache"] = (pdf_bytes, fname)
             save_report("checklist","안전 점검 체크리스트","",st.session_state.report_content,daily.get("date",""))
+            st.session_state.report_content=""
         else:
             pdf_bytes, fname = st.session_state["checklist_pdf_cache"]
         col_dl,col_edit=st.columns(2)
