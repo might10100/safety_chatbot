@@ -228,10 +228,10 @@ def page_landing():
         name=st.text_input("시공명",placeholder="예: 강남 OO아파트 신축공사",label_visibility="collapsed")
         c1,c2=st.columns(2)
         with c1:
-            st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">현장 위치 <span style="color:#0064FF">*</span></div>""", unsafe_allow_html=True)
+            st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">현장 위치</div>""", unsafe_allow_html=True)
             full_addr,sel_r,sel_d=location_selector("new_")
         with c2:
-            st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">시공 기간 <span style="color:#0064FF">*</span></div>""", unsafe_allow_html=True)
+            st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">시공 기간</div>""", unsafe_allow_html=True)
             st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">착공일 *</p>', unsafe_allow_html=True)
             p_start=st.date_input("착공일 *",value=date.today(),key="new_ps",label_visibility="collapsed")
             st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">완공일 *</p>', unsafe_allow_html=True)
