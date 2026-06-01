@@ -435,11 +435,28 @@ def page_zone_board():
                     if r.get("path") and os.path.exists(r.get("path","")):
                         with open(r["path"],"rb") as f_:
                             st.download_button("⬇ PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{r.get('id','')}")
-                    elif r.get("content"):
-                        # PDF 없는 보고서(사고보고서 등)는 텍스트 파일로 다운로드
-                        rtype=r.get("type","")
-                        fname=f"{r.get('date','').replace('-','')}_{'사고보고서' if rtype=='accident' else r.get('label','보고서')}.txt"
-                        st.download_button("⬇ 텍스트 다운로드",r.get("content","").encode("utf-8"),file_name=fname,mime="text/plain",key=f"dl_{r.get('id','')}")
+                    elif r.get("content") and r.get("type")=="accident":
+                        from accident_form import save_accident_form_pdf
+                        import tempfile, os as _os
+                        acc_data={}
+                        rep_content=r.get("content","")
+                        # content에서 기본 정보 파싱
+                        for line in rep_content.split("\n"):
+                            line=line.strip()
+                            if "작성 일자:" in line:
+                                acc_data["write_date"]=line.split("작성 일자:")[-1].split("/")[0].strip()
+                            if "현장명:" in line:
+                                acc_data["project_name"]=line.split("현장명:")[-1].strip()
+                        if not acc_data.get("write_date"): acc_data["write_date"]=r.get("date","")
+                        fname=f"{r.get('date','').replace('-','')}_사고보고서_양식.pdf"
+                        try:
+                            tmp_dir=tempfile.mkdtemp()
+                            pdf_path=save_accident_form_pdf(acc_data, rep_content, tmp_dir)
+                            if _os.path.exists(pdf_path):
+                                with open(pdf_path,"rb") as f_: pdf_bytes=f_.read()
+                                st.download_button("⬇ PDF 다운로드",pdf_bytes,file_name=fname,mime="application/pdf",key=f"dl_{r.get('id','')}")
+                        except Exception as e:
+                            st.download_button("⬇ 텍스트 다운로드",rep_content.encode("utf-8"),file_name=fname.replace(".pdf",".txt"),mime="text/plain",key=f"dl_{r.get('id','')}")
         else:
             st.info("최근 1주일 내 보고서가 없습니다.")
     else:
@@ -977,17 +994,17 @@ def page_accident_form():
                 st.rerun()
             else:
                 st.session_state["show_accident_warning"] = False
-            with st.spinner("AI가 보고서를 작성 중입니다..."):
-                st.session_state.report_content=generate_accident_report(new_acc,st.session_state.selected_laws)
-            # 보고서 생성 시점에 사고 데이터 저장
-            p_,z_=pid(),zone(); ensure_zd(p_,z_)
-            zd=SS.get_zone_data()
-            already=any(a.get("accident_datetime")==new_acc.get("accident_datetime") and a.get("writer_name")==new_acc.get("writer_name") for a in zd[p_][z_]["accidents"])
-            acc_with_report={**new_acc,"report_content":st.session_state.report_content}
-            if not already:
-                zd[p_][z_]["accidents"].append(acc_with_report); SS.set_zone_data(zd)
-            save_report("accident","사고 보고서","",st.session_state.report_content,new_acc.get("write_date",""))
-            st.rerun()
+                with st.spinner("AI가 보고서를 작성 중입니다..."):
+                    st.session_state.report_content=generate_accident_report(new_acc,st.session_state.selected_laws)
+                # 보고서 생성 시점에 사고 데이터 저장
+                p_,z_=pid(),zone(); ensure_zd(p_,z_)
+                zd=SS.get_zone_data()
+                already=any(a.get("accident_datetime")==new_acc.get("accident_datetime") and a.get("writer_name")==new_acc.get("writer_name") for a in zd[p_][z_]["accidents"])
+                acc_with_report={**new_acc,"report_content":st.session_state.report_content}
+                if not already:
+                    zd[p_][z_]["accidents"].append(acc_with_report); SS.set_zone_data(zd)
+                save_report("accident","사고 보고서","",st.session_state.report_content,new_acc.get("write_date",""))
+                st.rerun()
     else:
         acc=st.session_state.accident_input
         report_content=st.session_state.report_content
