@@ -154,7 +154,7 @@ def sidebar():
             if st.button("금일 안전 업무 기록", type="primary" if page=="daily_input" else "secondary", use_container_width=True):
                 go("daily_input")
             if st.button("사고 보고서", type="primary" if page=="accident_form" else "secondary", use_container_width=True):
-                go("accident_form", accident_input={}, report_content="")
+                go("accident_form") if st.session_state.get("report_content") else go("accident_form", accident_input={}, report_content="")
         st.divider()
         back_map={"gen_daily_log":"daily_input","gen_checklist":"daily_input",
                   "accident_form":"zone_board","chatbot":"zone_board",
