@@ -404,8 +404,18 @@ def page_zone_board():
         for a in reversed(ac):
             atype=a.get("accident_type","")
             adtime=a.get("accident_datetime","")
-            aloc=a.get("location","")
-            acause=a.get("cause_object","")
+            aloc=a.get("location","") or a.get("accident_location","")
+            acause=a.get("cause_object","") or a.get("accident_cause","")
+            # 보고서 내용에서 장소/기인물 파싱
+            if not aloc or not acause:
+                rep_content=a.get("report_content","")
+                for line in rep_content.split("\n"):
+                    if "작업 장소:" in line and not aloc:
+                        parts=line.split("작업 장소:")
+                        if len(parts)>1: aloc=parts[1].split("/")[0].strip().replace("[현장 확인 필요]","")
+                    if "기인물:" in line and not acause:
+                        parts=line.split("기인물:")
+                        if len(parts)>1: acause=parts[1].strip().split("\n")[0].replace("[현장 확인 필요]","")
             st.markdown(f"""<div style="background:#FFF2F2;border:1.5px solid #FFCDD2;border-radius:12px;padding:14px 18px;margin-bottom:8px">
 <div style="font-size:15px;font-weight:700;color:#C62828">{atype}</div>
 <div style="font-size:13px;color:#8B95A1;margin-top:4px">{adtime} · 장소: {aloc} · 기인물: {acause}</div>
@@ -420,11 +430,16 @@ def page_zone_board():
         recent=[r for r in rs if _pd(r.get("date",""))>=one_week_ago]
         if recent:
             for r in reversed(recent[-7:]):
-                with st.expander(f"보고서 - {r.get('label','')} / {r.get('date','')}"):
+                with st.expander(f"{r.get('label','')} — {r.get('date','')}"):
                     st.text_area("",value=r.get("content",""),height=200,key=f"rv_{r.get('id','')}",disabled=True,label_visibility="collapsed")
                     if r.get("path") and os.path.exists(r.get("path","")):
                         with open(r["path"],"rb") as f_:
-                            st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{r.get('id','')}")
+                            st.download_button("⬇ PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{r.get('id','')}")
+                    elif r.get("content"):
+                        # PDF 없는 보고서(사고보고서 등)는 텍스트 파일로 다운로드
+                        rtype=r.get("type","")
+                        fname=f"{r.get('date','').replace('-','')}_{'사고보고서' if rtype=='accident' else r.get('label','보고서')}.txt"
+                        st.download_button("⬇ 텍스트 다운로드",r.get("content","").encode("utf-8"),file_name=fname,mime="text/plain",key=f"dl_{r.get('id','')}")
         else:
             st.info("최근 1주일 내 보고서가 없습니다.")
     else:
@@ -968,8 +983,10 @@ def page_accident_form():
             p_,z_=pid(),zone(); ensure_zd(p_,z_)
             zd=SS.get_zone_data()
             already=any(a.get("accident_datetime")==new_acc.get("accident_datetime") and a.get("writer_name")==new_acc.get("writer_name") for a in zd[p_][z_]["accidents"])
+            acc_with_report={**new_acc,"report_content":st.session_state.report_content}
             if not already:
-                zd[p_][z_]["accidents"].append(new_acc); SS.set_zone_data(zd)
+                zd[p_][z_]["accidents"].append(acc_with_report); SS.set_zone_data(zd)
+            save_report("accident","사고 보고서","",st.session_state.report_content,new_acc.get("write_date",""))
             st.rerun()
     else:
         acc=st.session_state.accident_input
