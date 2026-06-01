@@ -145,7 +145,7 @@ def sidebar():
         st.markdown(f"""<div style="padding:20px 20px 4px 20px">
 <div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px">공사 현장</div>
 <div style="font-size:15px;font-weight:800;color:#191F28;letter-spacing:-0.02em">{p.get('name','')}</div>
-{"<div style='font-size:12px;color:#0064FF;font-weight:600;margin-top:3px'>● " + z + "</div>" if z else ""}
+{"<div style='font-size:12px;color:#191F28;font-weight:600;margin-top:3px'>● " + z + "</div>" if z else ""}
 </div>""", unsafe_allow_html=True)
         st.divider()
         if st.button("Chatbot", type="primary" if page=="chatbot" else "secondary", use_container_width=True):
@@ -169,12 +169,12 @@ def sidebar():
 # ── 위치 선택 ─────────────────────────────────────────────────
 def location_selector(key_prefix="", cur_region="서울특별시", cur_dist="강남구"):
     regions=list(REGIONS.keys())
-    st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">광역시/도 *</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">광역시/도 *</p>', unsafe_allow_html=True)
     sel_r=st.selectbox("광역시/도 *",regions,
         index=regions.index(cur_region) if cur_region in regions else 0,
         key=f"{key_prefix}region", label_visibility="collapsed")
     dists=REGIONS[sel_r]
-    st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">시/군/구 *</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">시/군/구 *</p>', unsafe_allow_html=True)
     sel_d=st.selectbox("시/군/구 *",dists,
         index=dists.index(cur_dist) if cur_dist in dists else 0,
         key=f"{key_prefix}district", label_visibility="collapsed")
@@ -224,20 +224,20 @@ def page_landing():
         show=True
     if show:
         st.markdown("""<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px">새 공사 현장 등록</div>""", unsafe_allow_html=True)
-        st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px">시공명 <span style="color:#0064FF">*</span></div>""", unsafe_allow_html=True)
+        st.markdown("""<div style="font-size:13px;font-weight:600;color:#191F28;margin-bottom:6px">시공명 *</div>""", unsafe_allow_html=True)
         name=st.text_input("시공명",placeholder="예: 강남 OO아파트 신축공사",label_visibility="collapsed")
         c1,c2=st.columns(2)
         with c1:
-            st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">현장 위치</div>""", unsafe_allow_html=True)
+            st.markdown("""<div style="font-size:13px;font-weight:600;color:#191F28;margin-bottom:6px;margin-top:12px">현장 위치</div>""", unsafe_allow_html=True)
             full_addr,sel_r,sel_d=location_selector("new_")
         with c2:
-            st.markdown("""<div style="font-size:13px;font-weight:600;color:#0064FF;margin-bottom:6px;margin-top:12px">시공 기간</div>""", unsafe_allow_html=True)
-            st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">착공일 *</p>', unsafe_allow_html=True)
+            st.markdown("""<div style="font-size:13px;font-weight:600;color:#191F28;margin-bottom:6px;margin-top:12px">시공 기간</div>""", unsafe_allow_html=True)
+            st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">착공일 *</p>', unsafe_allow_html=True)
             p_start=st.date_input("착공일 *",value=date.today(),key="new_ps",label_visibility="collapsed")
-            st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">완공일 *</p>', unsafe_allow_html=True)
+            st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">완공일 *</p>', unsafe_allow_html=True)
             p_end=st.date_input("완공일 *",value=date.today(),key="new_pe",label_visibility="collapsed")
         st.markdown("""<div style="font-size:13px;font-weight:600;color:#333D4B;margin-bottom:6px;margin-top:16px">구역 구획화</div>""", unsafe_allow_html=True)
-        st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">구역 수 *</p>', unsafe_allow_html=True)
+        st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">구역 수 *</p>', unsafe_allow_html=True)
         zone_count=st.number_input("구역 수 *",min_value=1,max_value=20,value=3,step=1,label_visibility="collapsed")
         cols=st.columns(min(int(zone_count),4))
         zone_names=[]
@@ -295,25 +295,25 @@ def page_main_board():
 def page_edit_project():
     p=proj()
     st.markdown("## 현장 정보 수정")
-    st.markdown('<p style="font-weight:700;color:#0064FF;margin-bottom:4px">시공명 *</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-weight:700;color:#191F28;margin-bottom:4px">시공명 *</p>', unsafe_allow_html=True)
     name=st.text_input("시공명",value=p.get("name",""),label_visibility="collapsed")
     c1,c2=st.columns(2)
     with c1:
-        st.markdown('<p style="font-weight:700;color:#0064FF;margin-bottom:4px">현장 위치 *</p>', unsafe_allow_html=True)
+        st.markdown('<p style="font-weight:700;color:#191F28;margin-bottom:4px">현장 위치 *</p>', unsafe_allow_html=True)
         full_addr,sel_r,sel_d=location_selector("edit_",p.get("region","서울특별시"),p.get("district","강남구"))
     with c2:
-        st.markdown('<p style="font-weight:700;color:#0064FF;margin-bottom:4px">시공 기간 *</p>', unsafe_allow_html=True)
+        st.markdown('<p style="font-weight:700;color:#191F28;margin-bottom:4px">시공 기간 *</p>', unsafe_allow_html=True)
         try: ps=datetime.strptime(p.get("period_start",""),"%Y-%m-%d").date()
         except: ps=date.today()
         try: pe=datetime.strptime(p.get("period_end",""),"%Y-%m-%d").date()
         except: pe=date.today()
-        st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">착공일 *</p>', unsafe_allow_html=True)
+        st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">착공일 *</p>', unsafe_allow_html=True)
         p_start=st.date_input("착공일 *",value=ps,key="edit_ps",label_visibility="collapsed")
-        st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">완공일 *</p>', unsafe_allow_html=True)
+        st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">완공일 *</p>', unsafe_allow_html=True)
         p_end=st.date_input("완공일 *",value=pe,key="edit_pe",label_visibility="collapsed")
     st.markdown("**구역 구획화** (변경 시 기존 데이터는 아카이브에 저장)")
     cur_zones=p.get("zones",[])
-    st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">구역 수 *</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">구역 수 *</p>', unsafe_allow_html=True)
     zone_count=st.number_input("구역 수 *",min_value=1,max_value=20,value=len(cur_zones),step=1,label_visibility="collapsed")
     cols=st.columns(min(int(zone_count),4))
     new_zones=[]
@@ -472,38 +472,38 @@ def page_daily_input():
     c1,c2=st.columns(2)
     try: d_def=datetime.strptime(di.get("date",""),"%Y-%m-%d").date()
     except: d_def=date.today()
-    c1.markdown(f'<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">작성 일자 *</p>', unsafe_allow_html=True)
+    c1.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성 일자 *</p>', unsafe_allow_html=True)
     d=c1.date_input("작성 일자 *",value=d_def,label_visibility="collapsed")
 
     hours=[f"{h:02d}" for h in range(6,21)]; mins=["00","30"]
     tc1,tc2,tc3,tc4=st.columns(4)
-    tc1.markdown(f'<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">시작 시 *</p>', unsafe_allow_html=True)
+    tc1.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">시작 시 *</p>', unsafe_allow_html=True)
     sh=tc1.selectbox("시작 시 *",hours,index=hours.index("08"),key="sh",label_visibility="collapsed")
-    tc2.markdown(f'<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">시작 분 *</p>', unsafe_allow_html=True)
+    tc2.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">시작 분 *</p>', unsafe_allow_html=True)
     sm=tc2.selectbox("시작 분 *",mins,key="sm",label_visibility="collapsed")
-    tc3.markdown(f'<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">종료 시 *</p>', unsafe_allow_html=True)
+    tc3.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">종료 시 *</p>', unsafe_allow_html=True)
     eh=tc3.selectbox("종료 시 *",hours,index=hours.index("17"),key="eh",label_visibility="collapsed")
-    tc4.markdown(f'<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">종료 분 *</p>', unsafe_allow_html=True)
+    tc4.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">종료 분 *</p>', unsafe_allow_html=True)
     em=tc4.selectbox("종료 분 *",mins,key="em",label_visibility="collapsed")
     work_time=f"{sh}:{sm} ~ {eh}:{em}"
 
     c3,c4=st.columns(2)
     _m_label="관리자 *"
-    c3.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">관리자 *</p>', unsafe_allow_html=True)
+    c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">관리자 *</p>', unsafe_allow_html=True)
     manager=c3.text_input(_m_label,value=di.get("manager",""),placeholder="예: 김성균",key="inp_manager",label_visibility="collapsed")
     _l_label="작업 위치 *"
-    c4.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">작업 위치 *</p>', unsafe_allow_html=True)
+    c4.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작업 위치 *</p>', unsafe_allow_html=True)
     location=c4.text_input(_l_label,value=di.get("location",""),placeholder="예: A동 12층 외벽",key="inp_location",label_visibility="collapsed")
-    c3.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">작업 환경 *</p>', unsafe_allow_html=True)
+    c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작업 환경 *</p>', unsafe_allow_html=True)
     env=c3.selectbox("작업 환경 *",["지상","고소","밀폐","지하","수중","기타"],label_visibility="collapsed")
     materials=c4.text_input("주요 자재",value=di.get("materials",""),placeholder="예: 철근, 거푸집")
 
     _w_label="투입 인원 현황 (공종별) *"
-    st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">투입 인원 현황 (공종별) *</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">투입 인원 현황 (공종별) *</p>', unsafe_allow_html=True)
     workers=st.text_area(_w_label,value=di.get("workers",""),key="inp_workers",
                           placeholder="예: 철근공 10명, 형틀공 5명",height=65,label_visibility="collapsed")
     _wp_label="주요 작업 내용 *"
-    st.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">주요 작업 내용 *</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">주요 작업 내용 *</p>', unsafe_allow_html=True)
     wp=st.text_area(_wp_label,value=di.get("work_process",""),key="inp_wp",
                      placeholder="예: 12층 외부 갱폼 인양 및 설치",height=65,label_visibility="collapsed")
 
@@ -871,15 +871,15 @@ def page_accident_form():
         # 기본 정보 (모두 필수)
         st.markdown('<p class="sec-label">기본 정보</p>',unsafe_allow_html=True)
         c1,c2=st.columns(2)
-        c1.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">작성 일자 *</p>', unsafe_allow_html=True)
+        c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성 일자 *</p>', unsafe_allow_html=True)
         wd=c1.date_input("작성 일자 *",value=date.today(),label_visibility="collapsed")
         pname=p.get("name","") or proj().get("name","")
         pname_full=f"{pname} - {zone()}" if pname else "현장명 없음"
         c2.markdown(f'<div style="margin-top:4px"><label style="font-size:14px;color:#6B7684">현장명</label><div style="background:#F2F4F6;border:1px solid #E5E8EB;border-radius:8px;padding:9px 14px;font-size:15px;color:#191F28;margin-top:4px">{pname_full}</div></div>', unsafe_allow_html=True)
         c3,c4=st.columns(2)
-        c3.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">작성자 직위 *</p>', unsafe_allow_html=True)
+        c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성자 직위 *</p>', unsafe_allow_html=True)
         wpos=c3.text_input("작성자 직위 *",value=acc.get("writer_position",""),placeholder="예: 안전관리자",label_visibility="collapsed")
-        c4.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">작성자 성명 *</p>', unsafe_allow_html=True)
+        c4.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성자 성명 *</p>', unsafe_allow_html=True)
         wname=c4.text_input("작성자 성명 *",value=acc.get("writer_name",""),label_visibility="collapsed")
 
         # 사고 현장 정보
@@ -887,20 +887,20 @@ def page_accident_form():
         c1,c2=st.columns(2)
         try: adf=datetime.strptime(acc.get("accident_date",""),"%Y-%m-%d").date()
         except: adf=date.today()
-        c1.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">사고 발생 일자 *</p>', unsafe_allow_html=True)
+        c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">사고 발생 일자 *</p>', unsafe_allow_html=True)
         adt_date=c1.date_input("사고 발생 일자 *",value=adf,label_visibility="collapsed")
         hours_a=[f"{h:02d}" for h in range(0,24)]; mins_a=["00","10","20","30","40","50"]
         tc1,tc2=c1.columns(2)
         sh_=acc.get("accident_time","14:00").split(":")[0] if acc.get("accident_time") else "14"
         sm_=acc.get("accident_time","14:00").split(":")[-1] if acc.get("accident_time") else "00"
-        tc1.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">시 *</p>', unsafe_allow_html=True)
+        tc1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">시 *</p>', unsafe_allow_html=True)
         adt_h=tc1.selectbox("시 *",hours_a,index=hours_a.index(sh_) if sh_ in hours_a else 14,key="adt_h",label_visibility="collapsed")
-        tc2.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">분 *</p>', unsafe_allow_html=True)
+        tc2.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">분 *</p>', unsafe_allow_html=True)
         adt_m=tc2.selectbox("분 *",mins_a,index=mins_a.index(sm_) if sm_ in mins_a else 0,key="adt_m",label_visibility="collapsed")
         adt_time=f"{adt_h}:{adt_m}"
         loc=c2.text_input("작업 장소",value=acc.get("location",""))
         cobj=c2.text_input("기인물",value=acc.get("cause_object",""),placeholder="예: 갱폼")
-        c1.markdown('<p style="font-size:14px;font-weight:600;color:#0064FF;margin-bottom:2px">발생 형태 *</p>', unsafe_allow_html=True)
+        c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">발생 형태 *</p>', unsafe_allow_html=True)
         atype=c1.selectbox("발생 형태 *",["추락","낙하","감전","협착","충돌","화재·폭발","기타"],label_visibility="collapsed")
 
         # 재해자 정보 (발생형태와 상해부위 사이)
@@ -978,7 +978,7 @@ def page_accident_form():
                     continue
                 skip_first_section = False
                 section=line[1:-1]
-                table_rows+=f'<tr><td colspan="2" style="background:#EFF4FF;color:#0064FF;font-weight:700;font-size:.9rem;padding:10px 14px;border-bottom:1px solid #C2D8FF;border-top:2px solid #C2D8FF;letter-spacing:0.02em">{section}</td></tr>'
+                table_rows+=f'<tr><td colspan="2" style="background:#EFF4FF;color:#191F28;font-weight:700;font-size:.9rem;padding:10px 14px;border-bottom:1px solid #C2D8FF;border-top:2px solid #C2D8FF;letter-spacing:0.02em">{section}</td></tr>'
             elif ":" in line:
                 key,_,val=line.partition(":")
                 val_clean=val.strip()
