@@ -53,14 +53,22 @@ def get_law_candidates(query: str) -> list:
         return []
 
 def _call_claude(system: str, user: str, max_tokens: int = 2500) -> str:
+    import time
     load_resources()
-    resp = _client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=max_tokens,
-        system=system,
-        messages=[{"role": "user", "content": user}],
-    )
-    return resp.content[0].text
+    for attempt in range(3):
+        try:
+            resp = _client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=max_tokens,
+                system=system,
+                messages=[{"role": "user", "content": user}],
+            )
+            return resp.content[0].text
+        except Exception as e:
+            if "overloaded" in str(e).lower() and attempt < 2:
+                time.sleep(10 * (attempt + 1))
+            else:
+                raise
 
 def law_search(question: str) -> dict:
     sources = retrieve(question)
