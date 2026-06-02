@@ -65,7 +65,7 @@ def _call_claude(system: str, user: str, max_tokens: int = 2500) -> str:
             )
             return resp.content[0].text
         except Exception as e:
-            if "overloaded" in str(e).lower() and attempt < 2:
+            if attempt < 2:
                 time.sleep(10 * (attempt + 1))
             else:
                 raise
