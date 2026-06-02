@@ -124,7 +124,9 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
                 if line and not line.startswith("[") or not end_markers:
                     if line.startswith("→"): line = line[1:].strip()
                     if line.startswith("•"): line = line[1:].strip()
-                    if line: result.append(line)
+                    skip_kw = ["빈칸으로 표시", "현장 확인 후 반드시", "현장명,", "현장소장,", "즉시 확인하여"]
+                    if line and not any(k in line for k in skip_kw):
+                        result.append(line)
         return "\n".join(result[:8])
 
     overview     = extract(ai_content, ["재해 발생 개요","[재해 발생 개요]"],
@@ -184,7 +186,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
          _p("(인)", align="CENTER")],
     ]
     sc = [W*0.13, W*0.22, W*0.07, W*0.07, W*0.1, W*0.09, W*0.17, W*0.07]
-    s_t = Table(site_data, colWidths=sc, rowHeights=[8*mm])
+    s_t = Table(site_data, colWidths=sc, rowHeights=[10*mm])
     s_t.setStyle(_ts(("ALIGN",(1,0),(1,0),"LEFT")))
     story.append(s_t)
 
@@ -283,7 +285,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
         [_p("재해발생 개요(상세히 기술요함) :", bold=True, align="LEFT")],
         [_p(overview, align="LEFT")],
     ]
-    ov_t = Table(ov_data, colWidths=[W], rowHeights=[7*mm, 30*mm])
+    ov_t = Table(ov_data, colWidths=[W], rowHeights=[7*mm, None])
     ov_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),
                       ("VALIGN",(0,1),(0,1),"TOP")))
     story.append(ov_t)
@@ -293,7 +295,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
         [_p("사고 직접원인 :", bold=True, align="LEFT")],
         [_p(direct_cause, align="LEFT")],
     ]
-    dc_t = Table(dc_data, colWidths=[W], rowHeights=[7*mm, 22*mm])
+    dc_t = Table(dc_data, colWidths=[W], rowHeights=[7*mm, None])
     dc_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),
                       ("VALIGN",(0,1),(0,1),"TOP")))
     story.append(dc_t)
@@ -303,7 +305,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
         [_p("작업내용 및 과정 :", bold=True, align="LEFT")],
         [_p(work_proc, align="LEFT")],
     ]
-    wp_t = Table(wp_data, colWidths=[W], rowHeights=[7*mm, 22*mm])
+    wp_t = Table(wp_data, colWidths=[W], rowHeights=[7*mm, None])
     wp_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),
                       ("VALIGN",(0,1),(0,1),"TOP")))
     story.append(wp_t)
@@ -317,7 +319,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
          _p(f"(예:머리,눈,팔,다리,등으로 기술요)\n\n{acc.get('injury_part','')}", align="CENTER"),
          _p(f"(예:골절,타박상,화상 등으로 기술요)\n\n{acc.get('injury_type','')}", align="CENTER")],
     ]
-    bt_t = Table(bt_data, colWidths=[W/3, W/3, W/3], rowHeights=[7*mm, 20*mm])
+    bt_t = Table(bt_data, colWidths=[W/3, W/3, W/3], rowHeights=[7*mm, None])
     bt_t.setStyle(_ts(("VALIGN",(0,1),(-1,1),"TOP")))
     story.append(bt_t)
 
@@ -327,7 +329,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
             [_p("관련 법규 검토", bold=True, align="LEFT")],
             [_p(law_review, align="LEFT")],
         ]
-        lr_t = Table(lr_data, colWidths=[W], rowHeights=[7*mm, 18*mm])
+        lr_t = Table(lr_data, colWidths=[W], rowHeights=[7*mm, None])
         lr_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),
                           ("VALIGN",(0,1),(0,1),"TOP"),
                           ("BACKGROUND",(0,0),(0,0),colors.HexColor("#f0f4ff"))))
