@@ -404,14 +404,14 @@ def page_zone_board():
                 hole=0.55,
                 marker=dict(colors=["#FF3B30","#FF9500","#FFCC00","#34C759","#007AFF"],
                             line=dict(color="white",width=2)),
-                textinfo="label+percent",
+                textinfo="none",
                 textfont=dict(size=11),
                 insidetextorientation="horizontal",
                 hovertemplate="%{label}: %{value}건<extra></extra>"
             )])
             fig.update_layout(
                 title=dict(text="유형별 사고", x=0.5, font=dict(size=13, color="#191F28")),
-                showlegend=False,
+                showlegend=True,
                 margin=dict(t=40,b=10,l=10,r=10),
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
