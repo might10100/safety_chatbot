@@ -350,6 +350,29 @@ def page_zone_board():
 <div style="font-size:14px;color:#8B95A1;margin-top:6px">{p.get('address','')}</div>
 </div>""", unsafe_allow_html=True)
 
+    # accidents → reports 누락분 자동 동기화
+    zd_sync = zdata()
+    ac_sync = zd_sync.get("accidents", [])
+    rs_sync = zd_sync.get("reports", [])
+    report_ids = set(r.get("content","")[:30] for r in rs_sync if r.get("type")=="accident")
+    added = False
+    p_s, z_s = pid(), zone(); ensure_zd(p_s, z_s)
+    zd_full = SS.get_zone_data()
+    for a in ac_sync:
+        rc = a.get("report_content", "")
+        if rc and rc[:30] not in report_ids:
+            zd_full[p_s][z_s]["reports"].append({
+                "id": str(uuid.uuid4())[:8],
+                "type": "accident",
+                "label": "사고 보고서",
+                "date": a.get("write_date", a.get("accident_date", "")),
+                "path": "",
+                "content": rc
+            })
+            added = True
+    if added:
+        SS.set_zone_data(zd_full)
+
     # 전일 미조치 확인
     prev_unresolved=_get_prev_unresolved()
     if prev_unresolved:
