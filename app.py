@@ -429,7 +429,7 @@ def page_zone_board():
         one_week_ago=datetime.now()-timedelta(days=7)
         recent=[r for r in rs if _pd(r.get("date",""))>=one_week_ago]
         if recent:
-            for r in reversed(recent[-7:]):
+            for r in reversed(recent):
                 with st.expander(f"{r.get('label','')} — {r.get('date','')}"):
                     st.text_area("",value=r.get("content",""),height=200,key=f"rv_{r.get('id','')}",disabled=True,label_visibility="collapsed")
                     if r.get("path") and os.path.exists(r.get("path","")):
@@ -1044,6 +1044,7 @@ def page_accident_form():
                     st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(out_path),mime="application/pdf")
             p_,z_=pid(),zone(); ensure_zd(p_,z_)
             zd=SS.get_zone_data(); zd[p_][z_]["accidents"].append(acc); SS.set_zone_data(zd)
+            save_report("accident","사고 보고서",out_path if os.path.exists(out_path) else "",report_content,acc.get("write_date",""))
             st.session_state.report_content=""
         if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; st.rerun()
