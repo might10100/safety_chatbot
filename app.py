@@ -986,7 +986,7 @@ def page_accident_form():
                          label_visibility="collapsed")
 
         new_acc={
-            "write_date":wd.strftime("%Y-%m-%d"),"project_name":pname,
+            "write_date":wd.strftime("%Y-%m-%d"),"project_name":pname_full,
             "writer_position":wpos,"writer_name":wname,
             "subcontractor":sub,"victim_name":vn,"hire_date":hd,
             "accident_datetime":f"{adt_date.strftime('%Y-%m-%d')} {adt_time}",
