@@ -933,8 +933,9 @@ def page_accident_form():
         c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성 일자 *</p>', unsafe_allow_html=True)
         wd=c1.date_input("작성 일자 *",value=date.today(),label_visibility="collapsed")
         pname=p.get("name","") or proj().get("name","")
-        pname_full=f"{pname} - {zone()}" if pname else "현장명 없음"
-        c2.markdown(f'<div style="margin-top:4px"><label style="font-size:14px;color:#6B7684">현장명</label><div style="background:#F2F4F6;border:1px solid #E5E8EB;border-radius:8px;padding:9px 14px;font-size:15px;color:#191F28;margin-top:4px">{pname_full}</div></div>', unsafe_allow_html=True)
+        pname_full=f"{pname} - {zone()}" if pname else ""
+        c2.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">현장명</p>', unsafe_allow_html=True)
+        pname_full=c2.text_input("현장명",value=pname_full,placeholder="현장명을 입력하세요",label_visibility="collapsed")
         c3,c4=st.columns(2)
         c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성자 직위 *</p>', unsafe_allow_html=True)
         wpos=c3.text_input("작성자 직위 *",value=acc.get("writer_position",""),placeholder="예: 안전관리자",label_visibility="collapsed")
