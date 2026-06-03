@@ -290,6 +290,8 @@ def save_checklist_pdf(content: str, date: str,
     story.append(t)
     if manager:
         content = re.sub(r"(안전관리자\s*서명\s*[:：]\s*)_+", lambda m: m.group(1)+manager+" ", content)
+    if manager:
+        content = re.sub(r"(안전관리자\s*서명\s*[:：]\s*)_+", lambda m: m.group(1)+manager+" ", content)
     _dd = re.sub(r"\D","",date or "")
     _ds = f"{_dd[:4]}년 {_dd[4:6]}월 {_dd[6:8]}일" if len(_dd)>=8 else date
     if len(_dd)>=8:
@@ -330,7 +332,7 @@ def save_checklist_pdf(content: str, date: str,
 
 
 def save_accident_report_pdf(content: str, date: str,
-                              project: str = "", save_dir: str = "") -> str:
+                              project: str = "", save_dir: str = "", manager: str = "") -> str:
     FN, FNB = _get_fonts()
     path = _out(f"{date}_사고보고서.pdf", save_dir)
     doc  = _doc(path)
