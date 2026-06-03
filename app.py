@@ -1151,27 +1151,15 @@ div[data-testid="stChatInput"] button svg { display: none !important; }
 </style>""", unsafe_allow_html=True)
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
-    st.markdown("""<style>
-.fixed-chat-bar {
-    position: fixed; bottom: 0; left: 240px; right: 0; z-index: 9999;
-    background: white; padding: 12px 24px 20px 24px;
-    border-top: 1.5px solid #F2F4F6;
-}
-.block-container { padding-bottom: 100px !important; }
-</style>""", unsafe_allow_html=True)
-    with st.container():
-        col_input, col_btn = st.columns([.85, .15])
-        with col_input:
-            q = st.text_input("질문", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key=f"chat_input_{len(chat_history)}")
-        with col_btn:
-            send = st.button("검색", type="primary", use_container_width=True, key=f"chat_send_{len(chat_history)}")
+    col_input, col_btn = st.columns([.85, .15])
+    with col_input:
+        q = st.text_input("질문", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key=f"chat_input_{len(chat_history)}")
+    with col_btn:
+        send = st.button("검색", type="primary", use_container_width=True, key=f"chat_send_{len(chat_history)}")
     if send and q:
-        with st.chat_message("user"): st.markdown(q)
-        with st.chat_message("assistant"):
-            with st.spinner("법령 검색 중..."): r=law_search(q)
-            st.markdown(r["answer"])
-            if r["count"]: st.caption(f"참조 청크: {r['count']}개")
-        chat_history+=[{"role":"user","content":q},{"role":"assistant","content":r["answer"]}]
+        chat_history+=[{"role":"user","content":q}]
+        with st.spinner("법령 검색 중..."): r=law_search(q)
+        chat_history+=[{"role":"assistant","content":r["answer"]}]
         if p_ and z_ and z_!="전체":
             zd=SS.get_zone_data(); zd[p_][z_]["chat"]=chat_history; SS.set_zone_data(zd)
         st.rerun()
