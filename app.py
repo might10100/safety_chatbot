@@ -782,6 +782,7 @@ def page_gen_daily_log():
     daily=st.session_state.daily_input
     st.markdown(f"## 금일 안전 일지 — {zone()}")
     if not st.session_state.report_content:
+        st.session_state.pop("daily_pdf_cache",None)
         with st.spinner("AI가 법규를 분석하고 안전 일지를 작성 중입니다..."):
             st.session_state.report_content=generate_daily_log(daily, None)
             # 위험요인 별도 생성
@@ -862,15 +863,17 @@ def page_gen_daily_log():
 
         st.markdown("---")
         c1,c2,c3=st.columns(3)
-        if c1.button("PDF로 저장",type="primary",use_container_width=True):
-            with st.spinner("PDF 저장 중..."):
-                rc = st.session_state.report_content
-                pdf_bytes, fname = save_daily_log_pdf(daily,rc,proj().get("name",""),st.session_state.pdf_save_dir,risk_sets=st.session_state.get("risk_sets"),tbm=st.session_state.get("tbm_message",""))
-            st.download_button("⬇ PDF 다운로드",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
+        if "daily_pdf_cache" not in st.session_state:
+            with st.spinner("PDF 생성 중..."):
+                pdf_bytes, fname = save_daily_log_pdf(daily,st.session_state.report_content,proj().get("name",""),st.session_state.pdf_save_dir,risk_sets=st.session_state.get("risk_sets"),tbm=st.session_state.get("tbm_message",""))
+            st.session_state["daily_pdf_cache"]=(pdf_bytes,fname)
             save_report("daily","금일 안전 일지","",st.session_state.report_content,daily["date"])
-            st.session_state.report_content=""
+        else:
+            pdf_bytes, fname = st.session_state["daily_pdf_cache"]
+        c1.download_button("⬇ PDF로 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
         if c2.button("수정하기",use_container_width=True):
-            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; go("daily_input")
+            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
+            st.session_state.pop("daily_pdf_cache",None); go("daily_input")
         tbm_text=st.session_state.get("tbm_message","")
         if c3.button("TBM 메시지 복사", use_container_width=True):
             st.session_state["tbm_copied"]=True
@@ -886,6 +889,7 @@ def page_gen_checklist():
     daily=st.session_state.daily_input
     st.markdown(f"## 안전 점검 체크리스트 — {zone()}")
     if not st.session_state.report_content:
+        st.session_state.pop("checklist_pdf_cache",None)
         with st.spinner("AI가 법규를 분석하고 체크리스트를 작성 중입니다..."):
             st.session_state.report_content=generate_checklist(daily, None)
         st.rerun()
@@ -901,14 +905,12 @@ def page_gen_checklist():
                 pdf_bytes, fname = save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
             st.session_state["checklist_pdf_cache"] = (pdf_bytes, fname)
             save_report("checklist","안전 점검 체크리스트","",st.session_state.report_content,daily.get("date",""))
-            st.session_state.report_content=""
         else:
             pdf_bytes, fname = st.session_state["checklist_pdf_cache"]
-        col_dl,col_edit=st.columns(2)
-        col_dl.download_button("⬇ PDF 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
-        if col_edit.button("수정하기",use_container_width=True):
+        c1.download_button("⬇ PDF로 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
+        if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
-            if "checklist_pdf_cache" in st.session_state: del st.session_state["checklist_pdf_cache"]
+            st.session_state.pop("checklist_pdf_cache",None)
             go("daily_input")
 
 # ══════════════════════════════════════════════════════════════
@@ -1019,6 +1021,7 @@ def page_accident_form():
                 st.session_state["show_accident_warning"] = False
                 with st.spinner("AI가 보고서를 작성 중입니다..."):
                     st.session_state.report_content=generate_accident_report(new_acc,st.session_state.selected_laws)
+                st.session_state.pop("accident_pdf_cache",None)
                 # 보고서 생성 시점에 사고 데이터 저장
                 p_,z_=pid(),zone(); ensure_zd(p_,z_)
                 zd=SS.get_zone_data()
@@ -1056,19 +1059,16 @@ def page_accident_form():
         st.markdown(f'<div style="border:1.5px solid #E5E8EB;border-radius:10px;overflow:hidden;margin-bottom:16px"><table style="width:100%;border-collapse:collapse">{table_rows}</table></div>', unsafe_allow_html=True)
         st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:16px 0'>", unsafe_allow_html=True)
         c1,c2=st.columns(2)
-        if c1.button("PDF로 저장",type="primary",use_container_width=True):
-            with st.spinner("PDF 저장 중..."):
+        if "accident_pdf_cache" not in st.session_state:
+            with st.spinner("PDF 생성 중..."):
                 out_path=save_accident_form_pdf(acc,report_content,st.session_state.pdf_save_dir)
-            st.markdown(f'<div class="ok">PDF 저장 완료: <b>{out_path}</b></div>',unsafe_allow_html=True)
-            if os.path.exists(out_path):
-                with open(out_path,"rb") as f_:
-                    st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(out_path),mime="application/pdf")
-            p_,z_=pid(),zone(); ensure_zd(p_,z_)
-            zd=SS.get_zone_data(); zd[p_][z_]["accidents"].append(acc); SS.set_zone_data(zd)
-            save_report("accident","사고 보고서",out_path if os.path.exists(out_path) else "",report_content,acc.get("write_date",""))
-            st.session_state.report_content=""
+            with open(out_path,"rb") as f_:
+                st.session_state["accident_pdf_cache"]=(f_.read(),os.path.basename(out_path))
+        _ab,_afn=st.session_state["accident_pdf_cache"]
+        c1.download_button("⬇ PDF로 저장",_ab,file_name=_afn,mime="application/pdf",type="primary",use_container_width=True)
         if c2.button("수정하기",use_container_width=True):
-            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; st.rerun()
+            st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
+            st.session_state.pop("accident_pdf_cache",None); st.rerun()
 
 # ══════════════════════════════════════════════════════════════
 # Chatbot
