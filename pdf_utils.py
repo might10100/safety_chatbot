@@ -160,7 +160,7 @@ def save_daily_log_pdf(daily: dict, report_text: str,
     GRAY = colors.HexColor("#e8eaf6")
 
     # 제목
-    t = Table([[_p("금 일  안 전  일 지", 15, bold=True, align="CENTER")]],
+    t = Table([[_p("금 일  안 전  일 지", 15, bold=True, align="CENTER",color=colors.white)]],
               colWidths=[A4[0]-30*mm])
     t.setStyle(_ts(("BACKGROUND",(0,0),(-1,-1),HDR),
                    ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
@@ -284,12 +284,16 @@ def save_checklist_pdf(content: str, date: str,
     HDR  = colors.HexColor("#1a1a2e")
     GRAY = colors.HexColor("#e8eaf6")
 
-    t = Table([[_p("현장 안전 점검 체크리스트",14,bold=True,align="CENTER")]], colWidths=[W])
+    t = Table([[_p("현장 안전 점검 체크리스트",14,bold=True,align="CENTER",color=colors.white)]], colWidths=[W])
     t.setStyle(_ts(("BACKGROUND",(0,0),(-1,-1),HDR),("TEXTCOLOR",(0,0),(-1,-1),colors.white),
                    ("FONTNAME",(0,0),(-1,-1),FNB),("TOPPADDING",(0,0),(-1,-1),7),("BOTTOMPADDING",(0,0),(-1,-1),7)))
     story.append(t)
+    _dd = re.sub(r"\D","",date or "")
+    _ds = f"{_dd[:4]}년 {_dd[4:6]}월 {_dd[6:8]}일" if len(_dd)>=8 else date
+    if len(_dd)>=8:
+        content = re.sub(r"작성\s*일자\s*[:：]\s*[^/\n]*", f"작성 일자: {_ds} ", content, count=1)
     if project or date:
-        ti = Table([[_p(f"현장명: {project}  |  점검일: {date}",8,align="CENTER")]], colWidths=[W], rowHeights=[6*mm])
+        ti = Table([[_p(f"현장명: {project}  |  점검일: {_ds}",8,align="CENTER")]], colWidths=[W], rowHeights=[6*mm])
         ti.setStyle(_ts(("BACKGROUND",(0,0),(-1,-1),GRAY)))
         story.append(ti)
     story.append(Spacer(1,2*mm))
