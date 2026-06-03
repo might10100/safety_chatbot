@@ -1142,13 +1142,8 @@ div[data-testid="stChatInput"] button::before {
 }
 div[data-testid="stChatInput"] button svg { display: none !important; }
 </style>""", unsafe_allow_html=True)
-    st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
-    col_input, col_btn = st.columns([.85, .15])
-    with col_input:
-        q = st.text_input("질문", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key="chat_input_box")
-    with col_btn:
-        send = st.button("검색", type="primary", use_container_width=True)
-    if send and q:
+    q = st.chat_input("건설 안전 법령에 대해 질문하세요...")
+    if q:
         with st.chat_message("user"): st.markdown(q)
         with st.chat_message("assistant"):
             with st.spinner("법령 검색 중..."): r=law_search(q)
