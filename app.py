@@ -1095,7 +1095,7 @@ def page_chatbot():
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
     st.markdown("""<style>
-div[data-testid="stBottom"] { display: none !important; }
+div[data-testid="stBottom"] { background: transparent !important; }
 
 div[data-testid="stBottom"],
 div[data-testid="stBottom"] > div,
