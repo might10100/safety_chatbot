@@ -766,7 +766,7 @@ def render_daily_log_html(daily,report_text):
 <tr><td colspan="4" style="background:#e8eaf6;font-weight:bold;padding:7px;border:1px solid #aaa;">4. TBM 메시지</td></tr>
 <tr><td colspan="4" style="background:#fff8e1;padding:16px;border:2px solid #ffc107;">{tbm}</td></tr>
 <tr><td colspan="4" style="text-align:center;padding:10px;border:1px solid #aaa;background:#fafafa;">
-관리자 서명 (인): &nbsp;&nbsp;{daily.get("manager","")}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+관리자 서명: &nbsp;&nbsp;{daily.get("manager","")}&nbsp;(인)</td></tr>
 </table>"""
 
 def save_report(rtype,label,path,content,rdate):
