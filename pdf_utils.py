@@ -151,7 +151,8 @@ def save_daily_log_pdf(daily: dict, report_text: str,
     FN, FNB = _get_fonts()
     date_c  = daily.get("date_c", datetime.today().strftime("%Y%m%d"))
     manager = daily.get("manager","")
-    path    = _out(f"{date_c}_일일안전일지_{manager}.pdf", save_dir)
+    manager_safe = re.sub(r'[^\w가-힣]', '', manager)
+    path    = _out(f"{date_c}_일일안전일지_{manager_safe}.pdf", save_dir)
     doc     = _doc(path)
     story   = []
     HDR  = colors.HexColor("#1a1a2e")
