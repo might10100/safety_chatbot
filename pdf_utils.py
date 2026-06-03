@@ -290,8 +290,7 @@ def save_checklist_pdf(content: str, date: str,
     story.append(t)
     if manager:
         content = re.sub(r"(안전관리자\s*서명\s*[:：]\s*)_+", lambda m: m.group(1)+manager+" ", content)
-    if manager:
-        content = re.sub(r"(안전관리자\s*서명\s*[:：]\s*)_+", lambda m: m.group(1)+manager+" ", content)
+    content = re.sub(r"안전관리자\s*서명\s*[:：][^\n]*\n?", "", content).rstrip()
     _dd = re.sub(r"\D","",date or "")
     _ds = f"{_dd[:4]}년 {_dd[4:6]}월 {_dd[6:8]}일" if len(_dd)>=8 else date
     if len(_dd)>=8:
@@ -325,6 +324,16 @@ def save_checklist_pdf(content: str, date: str,
         else:
             story.append(_p(s,9))
 
+    story.append(Spacer(1,8*mm))
+    sig = Table([[_p("점검 일자",9,bold=True), _p(_ds,9),
+                  _p("안전관리자",9,bold=True), _p(f"{manager}  (인)" if manager else "(인)",9)]],
+                colWidths=[W*0.18,W*0.32,W*0.18,W*0.32], rowHeights=[12*mm])
+    sig.setStyle(_ts(("BACKGROUND",(0,0),(0,0),GRAY),("BACKGROUND",(2,0),(2,0),GRAY),
+                     ("FONTNAME",(0,0),(0,0),FNB),("FONTNAME",(2,0),(2,0),FNB),
+                     ("GRID",(0,0),(-1,-1),0.5,colors.HexColor("#aaaaaa")),
+                     ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+                     ("LEFTPADDING",(0,0),(-1,-1),6),("RIGHTPADDING",(0,0),(-1,-1),6)))
+    story.append(sig)
     doc.build(story)
     _open(path)
     with open(path,"rb") as f: return f.read(), os.path.basename(path)

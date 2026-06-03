@@ -899,6 +899,9 @@ def page_gen_checklist():
         import re as _re
         _mgr=daily.get("manager",""); _pname=proj().get("name","")
         _ck=st.session_state.report_content
+        _dd2=_re.sub(r"\D","",daily.get("date_c",daily.get("date","")) or "")
+        if len(_dd2)>=8:
+            _ck=_re.sub(r"작성\s*일자\s*[:：]\s*[^/\n]*", f"작성 일자: {_dd2[:4]}년 {_dd2[4:6]}월 {_dd2[6:8]}일 ", _ck, count=1)
         if _mgr:
             _ck=_re.sub(r"(안전관리자\s*서명\s*[:：]\s*)_+", lambda m:m.group(1)+_mgr+" ", _ck)
         _hdr=f'<div style="background:#F2F4F6;border-radius:10px;padding:10px 14px;font-size:13px;color:#4E5968;margin-bottom:10px">현장명: <b>{_pname}</b> &nbsp;|&nbsp; 작성자: <b>{_mgr}</b> &nbsp;|&nbsp; 점검일: {fmt_date(daily.get("date",""))}</div>'
