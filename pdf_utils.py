@@ -275,7 +275,7 @@ def save_daily_log_pdf(daily: dict, report_text: str,
 
 
 def save_checklist_pdf(content: str, date: str,
-                        project: str = "", save_dir: str = "") -> str:
+                        project: str = "", save_dir: str = "", manager: str = "") -> str:
     FN, FNB = _get_fonts()
     path = _out(f"{date}_안전점검체크리스트.pdf", save_dir)
     doc  = _doc(path)
@@ -288,12 +288,14 @@ def save_checklist_pdf(content: str, date: str,
     t.setStyle(_ts(("BACKGROUND",(0,0),(-1,-1),HDR),("TEXTCOLOR",(0,0),(-1,-1),colors.white),
                    ("FONTNAME",(0,0),(-1,-1),FNB),("TOPPADDING",(0,0),(-1,-1),7),("BOTTOMPADDING",(0,0),(-1,-1),7)))
     story.append(t)
+    if manager:
+        content = re.sub(r"(안전관리자\s*서명\s*[:：]\s*)_+", lambda m: m.group(1)+manager+" ", content)
     _dd = re.sub(r"\D","",date or "")
     _ds = f"{_dd[:4]}년 {_dd[4:6]}월 {_dd[6:8]}일" if len(_dd)>=8 else date
     if len(_dd)>=8:
         content = re.sub(r"작성\s*일자\s*[:：]\s*[^/\n]*", f"작성 일자: {_ds} ", content, count=1)
     if project or date:
-        ti = Table([[_p(f"현장명: {project}  |  점검일: {_ds}",8,align="CENTER")]], colWidths=[W], rowHeights=[6*mm])
+        ti = Table([[_p(f"현장명: {project}  |  작성자: {manager}  |  점검일: {_ds}",8,align="CENTER")]], colWidths=[W], rowHeights=[6*mm])
         ti.setStyle(_ts(("BACKGROUND",(0,0),(-1,-1),GRAY)))
         story.append(ti)
     story.append(Spacer(1,2*mm))

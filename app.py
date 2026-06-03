@@ -896,13 +896,19 @@ def page_gen_checklist():
     else:
         daily=st.session_state.daily_input
         st.markdown("### 보고서 확인 및 수정")
-        st.markdown(f"""<div style="background:#FFFFFF;border:1.5px solid #E8EAED;border-radius:14px;padding:20px 24px;white-space:pre-wrap;font-size:14px;color:#191F28;line-height:1.7">{st.session_state.report_content}</div>""", unsafe_allow_html=True)
+        import re as _re
+        _mgr=daily.get("manager",""); _pname=proj().get("name","")
+        _ck=st.session_state.report_content
+        if _mgr:
+            _ck=_re.sub(r"(안전관리자\s*서명\s*[:：]\s*)_+", lambda m:m.group(1)+_mgr+" ", _ck)
+        _hdr=f'<div style="background:#F2F4F6;border-radius:10px;padding:10px 14px;font-size:13px;color:#4E5968;margin-bottom:10px">현장명: <b>{_pname}</b> &nbsp;|&nbsp; 작성자: <b>{_mgr}</b> &nbsp;|&nbsp; 점검일: {fmt_date(daily.get("date",""))}</div>'
+        st.markdown(_hdr+f"""<div style="background:#FFFFFF;border:1.5px solid #E8EAED;border-radius:14px;padding:20px 24px;white-space:pre-wrap;font-size:14px;color:#191F28;line-height:1.7">{_ck}</div>""", unsafe_allow_html=True)
         st.markdown("---")
         c1,c2=st.columns(2)
         from pdf_utils import save_checklist_pdf
         if "checklist_pdf_cache" not in st.session_state:
             with st.spinner("PDF 생성 중..."):
-                pdf_bytes, fname = save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir)
+                pdf_bytes, fname = save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir,manager=daily.get("manager",""))
             st.session_state["checklist_pdf_cache"] = (pdf_bytes, fname)
             save_report("checklist","안전 점검 체크리스트","",st.session_state.report_content,daily.get("date",""))
         else:
