@@ -1095,7 +1095,14 @@ def page_chatbot():
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
     st.markdown("""<style>
-div[data-testid="stBottom"] { background: transparent !important; }
+div[data-testid="stBottom"] > div {
+    border: 1.5px solid #FFFFFF !important;
+    box-shadow: none !important;
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    border-radius: 16px !important;
+    padding: 8px 16px !important;
+}
 
 div[data-testid="stBottom"],
 div[data-testid="stBottom"] > div,
