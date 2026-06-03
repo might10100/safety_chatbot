@@ -253,6 +253,7 @@ def save_daily_log_pdf(daily: dict, report_text: str,
             if "TBM 메시지" in line: in_tbm=True; continue
             if in_tbm and line.strip() and not line.strip().startswith("["): tbm+=line.strip()+" "
         tbm=_clean(tbm.strip()) or "(TBM 메시지 없음)"
+    tbm=re.split(r"관리자\s*서명|서명\s*\(인\)|_{3,}", tbm)[0].strip() or "(TBM 메시지 없음)"
     t8 = Table([[_p(tbm,9)]], colWidths=[W], rowHeights=[28*mm])
     t8.setStyle(_ts(("VALIGN",(0,0),(-1,-1),"TOP"),
                     ("BACKGROUND",(0,0),(-1,-1),colors.HexColor("#fff8e1")),
