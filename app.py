@@ -896,6 +896,7 @@ def page_gen_checklist():
     else:
         daily=st.session_state.daily_input
         st.markdown("### 보고서 확인 및 수정")
+        st.warning(f"🔧 진단: pid={pid()} / proj={proj()}")
         import re as _re
         _mgr=daily.get("manager",""); _pname=proj().get("name","")
         _ck=st.session_state.report_content
