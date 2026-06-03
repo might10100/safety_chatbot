@@ -156,7 +156,7 @@ def sidebar():
             if st.button("사고 보고서", type="primary" if page=="accident_form" else "secondary", use_container_width=True):
                 go("accident_form", accident_input={}, report_content="")
         st.divider()
-        back_map={"gen_daily_log":"daily_input","gen_checklist":"daily_input",
+        back_map={"gen_daily_log":"zone_board","gen_checklist":"zone_board",
                   "accident_form":"zone_board","chatbot":"zone_board",
                   "daily_input":"zone_board","zone_board":"main_board"}
         back=back_map.get(page)
