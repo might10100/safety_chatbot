@@ -889,7 +889,7 @@ def page_gen_checklist():
     daily=st.session_state.daily_input
     st.markdown(f"## 안전 점검 체크리스트 — {zone()}")
     if not st.session_state.report_content:
-        st.session_state.pop("checklist_pdf_cache",None)
+        st.session_state.pop("checklist_saved",None)
         with st.spinner("AI가 법규를 분석하고 체크리스트를 작성 중입니다..."):
             st.session_state.report_content=generate_checklist(daily, None)
         st.rerun()
@@ -909,17 +909,15 @@ def page_gen_checklist():
         st.markdown("---")
         c1,c2=st.columns(2)
         from pdf_utils import save_checklist_pdf
-        if "checklist_pdf_cache" not in st.session_state:
-            with st.spinner("PDF 생성 중..."):
-                pdf_bytes, fname = save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir,manager=daily.get("manager",""))
-            st.session_state["checklist_pdf_cache"] = (pdf_bytes, fname)
+        with st.spinner("PDF 생성 중..."):
+            pdf_bytes, fname = save_checklist_pdf(st.session_state.report_content,daily.get("date_c",daily.get("date","")),proj().get("name",""),st.session_state.pdf_save_dir,manager=daily.get("manager",""))
+        if not st.session_state.get("checklist_saved"):
             save_report("checklist","안전 점검 체크리스트","",st.session_state.report_content,daily.get("date",""))
-        else:
-            pdf_bytes, fname = st.session_state["checklist_pdf_cache"]
+            st.session_state["checklist_saved"]=True
         c1.download_button("⬇ PDF로 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
         if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
-            st.session_state.pop("checklist_pdf_cache",None)
+            st.session_state.pop("checklist_saved",None)
             go("daily_input")
 
 # ══════════════════════════════════════════════════════════════
