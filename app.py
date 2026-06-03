@@ -1149,12 +1149,8 @@ div[data-testid="stChatInput"] button svg { display: none !important; }
 </style>""", unsafe_allow_html=True)
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
-    col_input, col_btn = st.columns([.85, .15])
-    with col_input:
-        q = st.text_input("질문", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key=f"chat_input_{len(chat_history)}")
-    with col_btn:
-        send = st.button("검색", type="primary", use_container_width=True, key=f"chat_send_{len(chat_history)}")
-    if send and q:
+    q = st.chat_input("건설 안전 법령에 대해 질문하세요...")
+    if q:
         chat_history+=[{"role":"user","content":q}]
         with st.spinner("법령 검색 중..."): r=law_search(q)
         chat_history+=[{"role":"assistant","content":r["answer"]}]
