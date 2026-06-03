@@ -1151,12 +1151,20 @@ div[data-testid="stChatInput"] button svg { display: none !important; }
 </style>""", unsafe_allow_html=True)
     for msg in chat_history:
         with st.chat_message(msg["role"]): st.markdown(msg["content"])
-    st.markdown("<div style='height:60px'></div>", unsafe_allow_html=True)
-    col_input, col_btn = st.columns([.85, .15])
-    with col_input:
-        q = st.text_input("질문", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key="chat_input_box")
-    with col_btn:
-        send = st.button("검색", type="primary", use_container_width=True)
+    st.markdown("""<style>
+.fixed-chat-bar {
+    position: fixed; bottom: 0; left: 240px; right: 0; z-index: 9999;
+    background: white; padding: 12px 24px 20px 24px;
+    border-top: 1.5px solid #F2F4F6;
+}
+.block-container { padding-bottom: 100px !important; }
+</style>""", unsafe_allow_html=True)
+    with st.container():
+        col_input, col_btn = st.columns([.85, .15])
+        with col_input:
+            q = st.text_input("질문", placeholder="건설 안전 법령에 대해 질문하세요...", label_visibility="collapsed", key=f"chat_input_{len(chat_history)}")
+        with col_btn:
+            send = st.button("검색", type="primary", use_container_width=True, key=f"chat_send_{len(chat_history)}")
     if send and q:
         with st.chat_message("user"): st.markdown(q)
         with st.chat_message("assistant"):
