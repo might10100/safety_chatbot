@@ -267,12 +267,15 @@ button[kind="primary"],
 .stTextInput label,
 .stTextArea label,
 .stSelectbox label,
-.stNumberInput label,
-.stDateInput label {
+.stNumberInput label {
     font-size: 13px !important;
     font-weight: 600 !important;
     color: #333D4B !important;
     margin-bottom: 6px !important;
+}
+/* date_input collapsed된 경우 기본 라벨 숨기기 */
+div[data-testid="stDateInput"] label[data-testid="stWidgetLabel"] {
+    display: none !important;
 }
 
 [data-testid="stMetric"] {
