@@ -457,3 +457,13 @@ div[data-testid="stWidgetLabel"] p {
 }
 /* 숨긴 라벨 처리용 */
 .hide-label label { display: none !important; }
+
+/* 챗봇 입력창 한 줄 정렬 */
+div[data-testid="stChatInput"] textarea {
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding-top: 10px !important;
+    resize: none !important;
+    overflow: hidden !important;
+}
