@@ -161,7 +161,7 @@ def sidebar():
                   "daily_input":"zone_board","zone_board":"main_board"}
         back=back_map.get(page)
         if back:
-            lbl={"daily_input":"← 금일 안전 업무 기록","zone_board":"← 구역 보드","main_board":"← 메인보드"}.get(back,"← 이전")
+            lbl={"daily_input":"← 금일 안전 업무 기록","zone_board":"구역 보드","main_board":"← 메인보드"}.get(back,"← 이전")
             if st.button(lbl, use_container_width=True): go(back)
         if z and st.button("메인보드", use_container_width=True): go("main_board",cur_zone=None)
 
