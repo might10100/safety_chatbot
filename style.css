@@ -467,3 +467,11 @@ div[data-testid="stChatInput"] textarea {
     resize: none !important;
     overflow: hidden !important;
 }
+div[data-testid="stChatInput"] > div {
+    align-items: center !important;
+    flex-direction: row !important;
+}
+div[data-testid="stChatInput"] button {
+    margin-bottom: 0 !important;
+    align-self: center !important;
+}
