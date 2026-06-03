@@ -253,7 +253,7 @@ def save_daily_log_pdf(daily: dict, report_text: str,
     story.append(Spacer(1,4*mm))
 
     # 확인자
-    sig = Table([[_p(f"확인자 (관리자):  {manager}                              (인)",9,align="CENTER")]],
+    sig = Table([[_p(f"관리자 서명:  {manager} (인)",9,align="CENTER")]],
                 colWidths=[W], rowHeights=[8*mm])
     sig.setStyle(_ts(("BOX",(0,0),(-1,-1),0.5,colors.black)))
     story.append(sig)
