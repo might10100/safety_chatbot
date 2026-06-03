@@ -1092,8 +1092,6 @@ def page_chatbot():
         chat_history=st.session_state.global_chat
 
     st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:12px 0'>", unsafe_allow_html=True)
-    for msg in chat_history:
-        with st.chat_message(msg["role"]): st.markdown(msg["content"])
     st.markdown("""<style>
 div[data-testid="stBottom"] > div {
     border: 1.5px solid #FFFFFF !important;
