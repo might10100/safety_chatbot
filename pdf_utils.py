@@ -25,7 +25,7 @@ def _clean(text: str) -> str:
     emoji_pat = re.compile(
         "[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF"
         "\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF"
-        "\U00002702-\U000027B0\U000024C2-\U0001F251"
+        "\U00002702-\U000027B0\U0001FA70-\U0001FAFF"
         "\U0001F900-\U0001F9FF\U00002600-\U000026FF]+",
         flags=re.UNICODE)
     text = emoji_pat.sub('', text)
@@ -147,7 +147,8 @@ def _doc(path):
 
 
 def save_daily_log_pdf(daily: dict, report_text: str,
-                        project: str = "", save_dir: str = "") -> str:
+                        project: str = "", save_dir: str = "",
+                        risk_sets=None, tbm="") -> str:
     FN, FNB = _get_fonts()
     date_c  = daily.get("date_c", datetime.today().strftime("%Y%m%d"))
     manager = daily.get("manager","")
@@ -213,15 +214,18 @@ def save_daily_log_pdf(daily: dict, report_text: str,
     story.append(t5)
 
     lines = report_text.split("\n")
-    risk_sets=[]; risk=law=action=""
-    for line in lines:
-        s=line.strip()
-        if s.startswith("[위험요인]"):
-            if risk: risk_sets.append((risk,law,action))
-            risk=_clean(s.replace("[위험요인]","").strip()); law=""; action=""
-        elif s.startswith("[법적 근거]"): law=_clean(s.replace("[법적 근거]","").strip())
-        elif s.startswith("[안전 조치]"): action=_clean(s.replace("[안전 조치]","").strip())
-    if risk: risk_sets.append((risk,law,action))
+    if risk_sets:
+        risk_sets = [(_clean(r), _clean(l), _clean(a)) for r, l, a in risk_sets]
+    else:
+        risk_sets=[]; risk=law=action=""
+        for line in lines:
+            s=line.strip()
+            if s.startswith("[위험요인]"):
+                if risk: risk_sets.append((risk,law,action))
+                risk=_clean(s.replace("[위험요인]","").strip()); law=""; action=""
+            elif s.startswith("[법적 근거]"): law=_clean(s.replace("[법적 근거]","").strip())
+            elif s.startswith("[안전 조치]"): action=_clean(s.replace("[안전 조치]","").strip())
+        if risk: risk_sets.append((risk,law,action))
     if not risk_sets: risk_sets=[("(위험 요인 없음)","","")]
 
     for r,l,a in risk_sets:
@@ -240,12 +244,15 @@ def save_daily_log_pdf(daily: dict, report_text: str,
                     ("TOPPADDING",(0,0),(-1,-1),4),("BOTTOMPADDING",(0,0),(-1,-1),4)))
     story.append(t7)
 
-    tbm=""
-    in_tbm=False
-    for line in lines:
-        if "TBM 메시지" in line: in_tbm=True; continue
-        if in_tbm and line.strip() and not line.strip().startswith("["): tbm+=line.strip()+" "
-    tbm=_clean(tbm.strip()) or "(TBM 메시지 없음)"
+    if tbm:
+        tbm=_clean(tbm.strip()) or "(TBM 메시지 없음)"
+    else:
+        tbm=""
+        in_tbm=False
+        for line in lines:
+            if "TBM 메시지" in line: in_tbm=True; continue
+            if in_tbm and line.strip() and not line.strip().startswith("["): tbm+=line.strip()+" "
+        tbm=_clean(tbm.strip()) or "(TBM 메시지 없음)"
     t8 = Table([[_p(tbm,9)]], colWidths=[W], rowHeights=[28*mm])
     t8.setStyle(_ts(("VALIGN",(0,0),(-1,-1),"TOP"),
                     ("BACKGROUND",(0,0),(-1,-1),colors.HexColor("#fff8e1")),
