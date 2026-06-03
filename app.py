@@ -864,14 +864,10 @@ def page_gen_daily_log():
         c1,c2,c3=st.columns(3)
         if c1.button("PDF로 저장",type="primary",use_container_width=True):
             with st.spinner("PDF 저장 중..."):
-                path=save_daily_log_pdf(daily,st.session_state.report_content,proj().get("name",""),st.session_state.pdf_save_dir)
-            st.markdown(f'<div class="ok">PDF 저장 완료: <b>{path}</b></div>',unsafe_allow_html=True)
-            if os.path.exists(path):
-                with open(path,"rb") as f_:
-                    st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(path),mime="application/pdf")
-            save_report("daily","금일 안전 일지",path,st.session_state.report_content,daily["date"])
+                pdf_bytes, fname = save_daily_log_pdf(daily,st.session_state.report_content,proj().get("name",""),st.session_state.pdf_save_dir)
+            st.download_button("⬇ PDF 다운로드",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
+            save_report("daily","금일 안전 일지","",st.session_state.report_content,daily["date"])
             st.session_state.report_content=""
-            go("daily_input")
         if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]; go("daily_input")
         tbm_text=st.session_state.get("tbm_message","")
