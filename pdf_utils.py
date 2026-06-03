@@ -198,8 +198,7 @@ def save_daily_log_pdf(daily: dict, report_text: str,
          _p("공종 시간",9,bold=True,align="CENTER"), _p(daily.get("work_time",""),9,align="CENTER")],
         [_p("현장 특이사항",9,bold=True,align="CENTER"), _p(ws,9), "",""],
     ]
-    t4 = Table(rows1, colWidths=[W*0.14,W*0.36,W*0.14,W*0.36],
-               rowHeights=[8*mm,12*mm,8*mm,10*mm])
+    t4 = Table(rows1, colWidths=[W*0.14,W*0.36,W*0.14,W*0.36])
     t4.setStyle(_ts(("BACKGROUND",(0,0),(0,-1),GRAY),("BACKGROUND",(2,0),(2,-1),GRAY),
                     ("FONTNAME",(0,0),(0,-1),FNB),("FONTNAME",(2,0),(2,-1),FNB),
                     ("SPAN",(1,1),(3,1)),("SPAN",(1,3),(3,3)),
@@ -232,9 +231,11 @@ def save_daily_log_pdf(daily: dict, report_text: str,
         t6 = Table([[_p("위험 요인",9,bold=True,align="CENTER"), _p(r,9)],
                     [_p("법적 근거",9,bold=True,align="CENTER"), _p(l,9)],
                     [_p("안전 조치 사항",9,bold=True,align="CENTER"), _p(a,9)]],
-                   colWidths=[W*0.18,W*0.82], rowHeights=[9*mm,8*mm,9*mm])
+                   colWidths=[W*0.18,W*0.82])
         t6.setStyle(_ts(("BACKGROUND",(0,0),(0,-1),GRAY),("FONTNAME",(0,0),(0,-1),FNB),
-                        ("VALIGN",(0,0),(-1,-1),"MIDDLE")))
+                        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+                        ("TOPPADDING",(0,0),(-1,-1),5),("BOTTOMPADDING",(0,0),(-1,-1),5),
+                        ("LEFTPADDING",(0,0),(-1,-1),6),("RIGHTPADDING",(0,0),(-1,-1),6)))
         story.append(t6)
     story.append(Spacer(1,2*mm))
 
