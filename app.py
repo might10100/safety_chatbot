@@ -865,7 +865,7 @@ def page_gen_daily_log():
         if c1.button("PDF로 저장",type="primary",use_container_width=True):
             with st.spinner("PDF 저장 중..."):
                 rc = st.session_state.report_content
-                pdf_bytes, fname = save_daily_log_pdf(daily,rc,proj().get("name",""),st.session_state.pdf_save_dir)
+                pdf_bytes, fname = save_daily_log_pdf(daily,rc,proj().get("name",""),st.session_state.pdf_save_dir,risk_sets=st.session_state.get("risk_sets"),tbm=st.session_state.get("tbm_message",""))
             st.download_button("⬇ PDF 다운로드",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
             save_report("daily","금일 안전 일지","",st.session_state.report_content,daily["date"])
             st.session_state.report_content=""
