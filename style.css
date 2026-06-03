@@ -236,13 +236,16 @@ button[kind="primary"],
     color: #191F28 !important;
 }
 
-[data-testid="stDateInput"] input,
-[data-testid="stDateInput"] > div > div {
+[data-testid="stDateInput"] input {
     border: 1.5px solid #E8EAED !important;
     border-radius: 10px !important;
     background: #FAFBFC !important;
     color: #191F28 !important;
     font-size: 14px !important;
+}
+[data-testid="stDateInput"] > div > div {
+    border: none !important;
+    background: transparent !important;
 }
 
 [data-testid="stNumberInput"] > div {
