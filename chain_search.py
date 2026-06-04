@@ -1,4 +1,4 @@
-import os, json
+import os, json, unicodedata
 from dotenv import load_dotenv
 import anthropic
 from langchain_community.vectorstores import FAISS
@@ -35,8 +35,9 @@ def retrieve(query: str, top_k: int = 5) -> list:
     out = []
     for doc, score in docs:
         if score < 100.0:
-            src = (doc.metadata or {}).get("source", "").replace(".pdf", "")
-            out.append(f"[출처: {src}]\n{doc.page_content}" if src else doc.page_content)
+            src = unicodedata.normalize("NFC", (doc.metadata or {}).get("source", "")).replace(".pdf", "")
+            content = unicodedata.normalize("NFC", doc.page_content)
+            out.append(f"[출처: {src}]\n{content}" if src else content)
     return out
 
 def get_law_candidates(query: str) -> list:
