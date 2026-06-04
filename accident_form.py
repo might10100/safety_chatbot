@@ -132,11 +132,9 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
     overview     = extract(ai_content, ["재해 발생 개요","[재해 발생 개요]"],
                            ["사고 직접원인","[사고 직접 원인]"]) or acc.get("overview","")
     direct_cause = extract(ai_content, ["사고 직접원인","[사고 직접 원인]"],
-                           ["관련 법규","[관련 법규"]) or acc.get("direct_cause","")
-    law_review   = extract(ai_content, ["관련 법규 검토","[관련 법규"],
-                           ["담당","─────"])
-    if law_review:
-        law_review = re.sub(r"\s*[-•]\s*(?=(산업안전|건설공사|KOSHA|중대재해|고용노동|시행령|시행규칙))", "\n- ", law_review).strip()
+                           ["유의 사항","[유의","담당","─────"]) or acc.get("direct_cause","")
+    if direct_cause:
+        direct_cause = re.sub(r"\s*[-•]\s*(?=(산업안전|건설공사|KOSHA|중대재해|고용노동|시행령|시행규칙))", "\n- ", direct_cause).strip()
 
     # ── 제목 ────────────────────────────────────────────────
     title_data = [[_p("사  고  현  장  보  고  서", 14, bold=True, align="CENTER")]]
@@ -312,18 +310,6 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
     bt_t = Table(bt_data, colWidths=[W/3, W/3, W/3], rowHeights=[7*mm, None])
     bt_t.setStyle(_ts(("VALIGN",(0,1),(-1,1),"TOP")))
     story.append(bt_t)
-
-    # ── 관련 법규 검토 ───────────────────────────────────────
-    if law_review:
-        lr_data = [
-            [_p("관련 법규 검토", bold=True, align="LEFT")],
-            [_p(law_review.replace("\n","<br/>"), align="LEFT")],
-        ]
-        lr_t = Table(lr_data, colWidths=[W], rowHeights=[7*mm, None])
-        lr_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),
-                          ("VALIGN",(0,1),(0,1),"TOP"),
-                          ("BACKGROUND",(0,0),(0,0),colors.HexColor("#f0f4ff"))))
-        story.append(lr_t)
 
     doc.build(story)
     _open(path)
