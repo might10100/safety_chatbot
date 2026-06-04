@@ -79,6 +79,8 @@ def law_search(question: str) -> dict:
     sources = retrieve(question, top_k=12)
     if not sources:
         return {"answer": "해당 내용은 DB에서 찾을 수 없습니다.\nlaw.go.kr 또는 kosha.or.kr을 직접 확인해 주세요.", "sources": [], "count": 0}
+    _P1 = ("산업안전보건기준", "산업안전보건법", "시행규칙", "중대재해 처벌")
+    sources = sorted(sources, key=lambda s: 0 if any(k in s.split("\n")[0] for k in _P1) else 1)
     context = "\n\n---\n\n".join(sources)
     answer = _call_claude(LAW_SEARCH_PROMPT, f"[질문]\n{question}\n\n[검색된 법령 조문]\n{context}")
     return {"answer": answer, "sources": sources, "count": len(sources)}
