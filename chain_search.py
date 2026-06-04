@@ -71,7 +71,7 @@ def _call_claude(system: str, user: str, max_tokens: int = 2500) -> str:
                 raise
 
 def law_search(question: str) -> dict:
-    sources = retrieve(question)
+    sources = retrieve(question, top_k=12)
     if not sources:
         return {"answer": "해당 내용은 DB에서 찾을 수 없습니다.\nlaw.go.kr 또는 kosha.or.kr을 직접 확인해 주세요.", "sources": [], "count": 0}
     context = "\n\n---\n\n".join(sources)
