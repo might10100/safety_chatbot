@@ -457,7 +457,7 @@ def page_zone_board():
                     st.text_area("",value=r.get("content",""),height=200,key=f"rv_{r.get('id','')}",disabled=True,label_visibility="collapsed")
                     if r.get("path") and os.path.exists(r.get("path","")):
                         with open(r["path"],"rb") as f_:
-                            st.download_button("⬇ PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{r.get('id','')}")
+                            st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{r.get('id','')}")
                     elif r.get("content") and r.get("type")=="accident":
                         from accident_form import save_accident_form_pdf
                         import tempfile, os as _os
@@ -477,9 +477,9 @@ def page_zone_board():
                             pdf_path=save_accident_form_pdf(acc_data, rep_content, tmp_dir)
                             if _os.path.exists(pdf_path):
                                 with open(pdf_path,"rb") as f_: pdf_bytes=f_.read()
-                                st.download_button("⬇ PDF 다운로드",pdf_bytes,file_name=fname,mime="application/pdf",key=f"dl_{r.get('id','')}")
+                                st.download_button("PDF 다운로드",pdf_bytes,file_name=fname,mime="application/pdf",key=f"dl_{r.get('id','')}")
                         except Exception as e:
-                            st.download_button("⬇ 텍스트 다운로드",rep_content.encode("utf-8"),file_name=fname.replace(".pdf",".txt"),mime="text/plain",key=f"dl_{r.get('id','')}")
+                            st.download_button("텍스트 다운로드",rep_content.encode("utf-8"),file_name=fname.replace(".pdf",".txt"),mime="text/plain",key=f"dl_{r.get('id','')}")
         else:
             st.info("최근 1주일 내 보고서가 없습니다.")
     else:
@@ -870,7 +870,7 @@ def page_gen_daily_log():
             save_report("daily","금일 안전 일지","",st.session_state.report_content,daily["date"])
         else:
             pdf_bytes, fname = st.session_state["daily_pdf_cache"]
-        c1.download_button("⬇ PDF로 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
+        c1.download_button("PDF로 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
         if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
             st.session_state.pop("daily_pdf_cache",None); go("daily_input")
@@ -915,7 +915,7 @@ def page_gen_checklist():
         if not st.session_state.get("checklist_saved"):
             save_report("checklist","안전 점검 체크리스트","",st.session_state.report_content,daily.get("date",""))
             st.session_state["checklist_saved"]=True
-        c1.download_button("⬇ PDF로 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
+        c1.download_button("PDF로 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)
         if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
             st.session_state.pop("checklist_saved",None)
@@ -1071,7 +1071,7 @@ def page_accident_form():
             with open(out_path,"rb") as f_:
                 st.session_state["accident_pdf_cache"]=(f_.read(),os.path.basename(out_path))
         _ab,_afn=st.session_state["accident_pdf_cache"]
-        c1.download_button("⬇ PDF로 저장",_ab,file_name=_afn,mime="application/pdf",type="primary",use_container_width=True)
+        c1.download_button("PDF로 저장",_ab,file_name=_afn,mime="application/pdf",type="primary",use_container_width=True)
         if c2.button("수정하기",use_container_width=True):
             st.session_state.report_content=""; st.session_state.selected_laws=[]; st.session_state.law_candidates=[]
             st.session_state.pop("accident_pdf_cache",None); st.rerun()
