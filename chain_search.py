@@ -32,7 +32,12 @@ def load_resources():
 def retrieve(query: str, top_k: int = 5) -> list:
     load_resources()
     docs = _db.similarity_search_with_score(query, k=top_k)
-    return [doc.page_content for doc, score in docs if score < 100.0]
+    out = []
+    for doc, score in docs:
+        if score < 100.0:
+            src = (doc.metadata or {}).get("source", "").replace(".pdf", "")
+            out.append(f"[출처: {src}]\n{doc.page_content}" if src else doc.page_content)
+    return out
 
 def get_law_candidates(query: str) -> list:
     sources = retrieve(query, top_k=8)
