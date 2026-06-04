@@ -281,7 +281,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
     # ── 재해발생 개요 ────────────────────────────────────────
     ov_data = [
         [_p("재해발생 개요(상세히 기술요함) :", bold=True, align="LEFT")],
-        [_p(overview, align="LEFT")],
+        [_p(overview.replace("\n","<br/>"), align="LEFT")],
     ]
     ov_t = Table(ov_data, colWidths=[W], rowHeights=[7*mm, None])
     ov_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),
@@ -291,7 +291,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
     # ── 사고 직접원인 ────────────────────────────────────────
     dc_data = [
         [_p("사고 직접원인 :", bold=True, align="LEFT")],
-        [_p(direct_cause, align="LEFT")],
+        [_p(direct_cause.replace("\n","<br/>"), align="LEFT")],
     ]
     dc_t = Table(dc_data, colWidths=[W], rowHeights=[7*mm, None])
     dc_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),
@@ -315,7 +315,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
     if law_review:
         lr_data = [
             [_p("관련 법규 검토", bold=True, align="LEFT")],
-            [_p(law_review, align="LEFT")],
+            [_p(law_review.replace("\n","<br/>"), align="LEFT")],
         ]
         lr_t = Table(lr_data, colWidths=[W], rowHeights=[7*mm, None])
         lr_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),

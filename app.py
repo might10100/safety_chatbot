@@ -701,7 +701,7 @@ def _save_dh(daily):
 def law_ui(query):
     if not st.session_state.law_candidates:
         with st.spinner("법령 검색 중..."): st.session_state.law_candidates=get_law_candidates(query)
-    candidates=st.session_state.law_candidates[:3]
+    candidates=st.session_state.law_candidates[:8]
     if not candidates: st.info("관련 법령 후보를 찾지 못했습니다."); return []
     st.markdown("**준거 기준 선택**")
     selected=[]
@@ -1034,6 +1034,10 @@ def page_accident_form():
     else:
         acc=st.session_state.accident_input
         report_content=st.session_state.report_content
+        import re as _re3
+        _wn=acc.get("writer_name","")
+        if _wn:
+            report_content=_re3.sub(r"(현장\s*관리자\s*서명\s*[:：]\s*)_+", lambda m:m.group(1)+_wn+" ", report_content)
         st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">보고서 확인</div>""", unsafe_allow_html=True)
         lines=[l.strip() for l in report_content.split("\n")]
         table_rows='<tr><td colspan="2" style="background:#0064FF;color:white;text-align:center;padding:14px;font-size:1.1rem;font-weight:800;letter-spacing:.08em;border-radius:8px 8px 0 0">사고 현장 보고서</td></tr>'
