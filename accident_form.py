@@ -2,7 +2,7 @@
 accident_form.py
 사고현장 보고서 — 공식 양식 PDF 생성
 """
-import os, platform, subprocess
+import os, platform, subprocess, re
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib import colors
@@ -135,6 +135,8 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
                            ["관련 법규","[관련 법규"]) or acc.get("direct_cause","")
     law_review   = extract(ai_content, ["관련 법규 검토","[관련 법규"],
                            ["담당","─────"])
+    if law_review:
+        law_review = re.sub(r"\s*[-•]\s*(?=(산업안전|건설공사|KOSHA|중대재해|고용노동|시행령|시행규칙))", "\n- ", law_review).strip()
 
     # ── 제목 ────────────────────────────────────────────────
     title_data = [[_p("사  고  현  장  보  고  서", 14, bold=True, align="CENTER")]]
