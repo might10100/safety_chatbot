@@ -138,6 +138,5 @@ def generate_accident_report(acc: dict, selected_laws: list = None) -> str:
 상해부위: {acc.get('injury_part','')} / 상해종류: {acc.get('injury_type','')}
 재해개요: {acc.get('overview','')}
 직접원인: {acc.get('direct_cause','')}
-작업과정: {acc.get('work_process','')}
 {law_ctx}"""
     return _call_claude(ACCIDENT_REPORT_PROMPT, msg, max_tokens=3000)

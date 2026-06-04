@@ -967,8 +967,8 @@ def page_accident_form():
         adt_time=f"{adt_h}:{adt_m}"
         loc=c2.text_input("작업 장소",value=acc.get("location",""))
         cobj=c2.text_input("기인물",value=acc.get("cause_object",""),placeholder="예: 갱폼")
-        c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">발생 형태 *</p>', unsafe_allow_html=True)
-        atype=c1.selectbox("발생 형태 *",["추락","낙하","감전","협착","충돌","화재·폭발","기타"],label_visibility="collapsed")
+        c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">발생 형태</p>', unsafe_allow_html=True)
+        atype=c1.selectbox("발생 형태",["추락","낙하","감전","협착","충돌","화재·폭발","기타"],label_visibility="collapsed")
 
         # 재해자 정보 (발생형태와 상해부위 사이)
         st.markdown('<p class="sec-label">재해자 정보</p>',unsafe_allow_html=True)
@@ -980,12 +980,6 @@ def page_accident_form():
         c4,c5=st.columns(2)
         ip=c4.text_input("상해 부위",value=acc.get("injury_part",""),placeholder="예: 우측 하지")
         it_=c5.text_input("상해 종류",value=acc.get("injury_type",""),placeholder="예: 골절")
-
-        # 작업 내용 및 과정 (필수)
-        st.markdown('<p class="req-label">작업 내용 및 과정 *</p>',unsafe_allow_html=True)
-        wp_=st.text_area("",value=acc.get("work_process",""),height=100,
-                          placeholder="사고 발생 전 작업 단계를 순서대로 기술해주세요.",
-                          label_visibility="collapsed")
 
         # 재해 발생 개요 (필수)
         st.markdown('<p class="req-label">재해 발생 개요 *</p>',unsafe_allow_html=True)
@@ -1000,7 +994,7 @@ def page_accident_form():
             "accident_datetime":f"{adt_date.strftime('%Y-%m-%d')} {adt_time}",
             "accident_date":adt_date.strftime("%Y-%m-%d"),"accident_time":adt_time,
             "location":loc,"cause_object":cobj,"accident_type":atype,
-            "injury_part":ip,"injury_type":it_,"overview":ov,"work_process":wp_,
+            "injury_part":ip,"injury_type":it_,"overview":ov,
         }
         st.session_state.accident_input=new_acc
 
@@ -1010,8 +1004,8 @@ def page_accident_form():
 
         # 필수 항목 체크
         basic_required=[("작성자 직위",wpos),("작성자 성명",wname)]
-        scene_required=[("사고 발생 일자",str(adt_date)),("사고 발생 시분",adt_time),("발생 형태",atype)]
-        content_required=[("작업 내용 및 과정",wp_),("재해 발생 개요",ov)]
+        scene_required=[("사고 발생 일자",str(adt_date)),("사고 발생 시분",adt_time)]
+        content_required=[("재해 발생 개요",ov)]
         all_required=basic_required+scene_required+content_required
         missing=[n for n,v in all_required if not v]
 

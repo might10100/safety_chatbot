@@ -132,9 +132,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
     overview     = extract(ai_content, ["재해 발생 개요","[재해 발생 개요]"],
                            ["사고 직접원인","[사고 직접 원인]"]) or acc.get("overview","")
     direct_cause = extract(ai_content, ["사고 직접원인","[사고 직접 원인]"],
-                           ["작업내용","[작업 내용"]) or acc.get("direct_cause","")
-    work_proc    = extract(ai_content, ["작업내용","[작업 내용"],
-                           ["발생 형태","─────"]) or acc.get("work_process","")
+                           ["관련 법규","[관련 법규"]) or acc.get("direct_cause","")
     law_review   = extract(ai_content, ["관련 법규 검토","[관련 법규"],
                            ["담당","─────"])
 
@@ -299,16 +297,6 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
     dc_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),
                       ("VALIGN",(0,1),(0,1),"TOP")))
     story.append(dc_t)
-
-    # ── 작업내용 및 과정 ─────────────────────────────────────
-    wp_data = [
-        [_p("작업내용 및 과정 :", bold=True, align="LEFT")],
-        [_p(work_proc, align="LEFT")],
-    ]
-    wp_t = Table(wp_data, colWidths=[W], rowHeights=[7*mm, None])
-    wp_t.setStyle(_ts(("ALIGN",(0,0),(-1,-1),"LEFT"),
-                      ("VALIGN",(0,1),(0,1),"TOP")))
-    story.append(wp_t)
 
     # ── 발생형태 / 상해부위 / 상해종류 ──────────────────────
     bt_data = [
