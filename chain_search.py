@@ -76,14 +76,24 @@ def _call_claude(system: str, user: str, max_tokens: int = 2500) -> str:
                 raise
 
 def law_search(question: str) -> dict:
-    sources = retrieve(question, top_k=12)
-    if not sources:
+    sources = retrieve(question, top_k=18)
+    # 1순위 법령(산업안전보건기준 등) 원문이 누락되지 않도록 보강 검색
+    try:
+        boost = retrieve(f"{question} 산업안전보건기준에 관한 규칙", top_k=6)
+    except Exception:
+        boost = []
+    merged, seen = [], set()
+    for s in (sources + boost):
+        key = s[:100]
+        if key not in seen:
+            seen.add(key); merged.append(s)
+    if not merged:
         return {"answer": "해당 내용은 DB에서 찾을 수 없습니다.\nlaw.go.kr 또는 kosha.or.kr을 직접 확인해 주세요.", "sources": [], "count": 0}
     _P1 = ("산업안전보건기준", "산업안전보건법", "시행규칙", "중대재해 처벌")
-    sources = sorted(sources, key=lambda s: 0 if any(k in s.split("\n")[0] for k in _P1) else 1)
-    context = "\n\n---\n\n".join(sources)
+    merged = sorted(merged, key=lambda s: 0 if any(k in s.split("\n")[0] for k in _P1) else 1)[:18]
+    context = "\n\n---\n\n".join(merged)
     answer = _call_claude(LAW_SEARCH_PROMPT, f"[질문]\n{question}\n\n[검색된 법령 조문]\n{context}")
-    return {"answer": answer, "sources": sources, "count": len(sources)}
+    return {"answer": answer, "sources": merged, "count": len(merged)}
 
 def generate_daily_log(daily: dict, selected_laws: list = None) -> str:
     query = f"{daily.get('work_process','')} {daily.get('location','')} 안전"
