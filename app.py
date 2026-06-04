@@ -564,6 +564,19 @@ def page_daily_input():
     wp=st.text_area(_wp_label,value=di.get("work_process",""),key="inp_wp",
                      placeholder="예: 12층 외부 갱폼 인양 및 설치",height=65,label_visibility="collapsed")
 
+    # ── 장비 현황 ──
+    st.markdown('<p class="sec-label">장비 현황</p>',unsafe_allow_html=True)
+    eq_counts=di.get("equipment_counts",{})
+    eq_cols=st.columns(5)
+    for i,eq in enumerate(EQUIPMENT_TYPES):
+        with eq_cols[i%5]:
+            n=st.number_input(eq,min_value=0,max_value=99,value=int(eq_counts.get(eq,0)),step=1,key=f"eq_{eq}")
+            eq_counts[eq]=n
+    eq_custom=st.text_input("기타 장비",value=di.get("equipment_custom",""),placeholder="예: 특수차량 1대")
+    eq_list=[f"{k} {v}대" for k,v in eq_counts.items() if v>0]
+    if eq_custom.strip(): eq_list.append(eq_custom.strip())
+    equipment_str=", ".join(eq_list) if eq_list else "없음"
+
     # ── 특이 사항 ──
     st.markdown('<p class="sec-label">특이 사항</p>',unsafe_allow_html=True)
     prev_unresolved=_get_prev_unresolved()
@@ -582,19 +595,6 @@ def page_daily_input():
     prev=c7.text_area("전일 미조치 사항",value=prev_default,height=65,placeholder="없으면 공백")
     nearby=c8.text_area("주변 구역 간섭",value=di.get("nearby_interference",""),height=65,placeholder="없으면 공백")
     nw=st.text_input("신규 인원",value=di.get("new_workers",""),placeholder="없으면 공백")
-
-    # ── 장비 현황 ──
-    st.markdown('<p class="sec-label">장비 현황</p>',unsafe_allow_html=True)
-    eq_counts=di.get("equipment_counts",{})
-    eq_cols=st.columns(5)
-    for i,eq in enumerate(EQUIPMENT_TYPES):
-        with eq_cols[i%5]:
-            n=st.number_input(eq,min_value=0,max_value=99,value=int(eq_counts.get(eq,0)),step=1,key=f"eq_{eq}")
-            eq_counts[eq]=n
-    eq_custom=st.text_input("기타 장비",value=di.get("equipment_custom",""),placeholder="예: 특수차량 1대")
-    eq_list=[f"{k} {v}대" for k,v in eq_counts.items() if v>0]
-    if eq_custom.strip(): eq_list.append(eq_custom.strip())
-    equipment_str=", ".join(eq_list) if eq_list else "없음"
 
     # ── 날씨 * ──
     st.markdown('<p class="req-label">날씨 *</p>',unsafe_allow_html=True)
