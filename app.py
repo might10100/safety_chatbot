@@ -379,47 +379,68 @@ def page_zone_board():
         st.markdown("""<div class='warn'><b>전일 미조치 사항</b> — 이행 여부를 확인하세요.</div>""",unsafe_allow_html=True)
         for i,item in enumerate(prev_unresolved):
             if st.checkbox(item["text"],key=f"pck_{i}"): _mark_resolved(item["text"])
-    # 사고 건수 + 파이차트 (매번 최신 데이터 로드)
+    # 사고 건수 + 파이차트 (통합 카드)
     ac=zdata().get("accidents",[])
-    col_stat, col_chart = st.columns([1,1])
+    acc_cnt=len(ac)
+    color="#FF3B30" if acc_cnt>0 else "#0064FF"
+    badge_bg="#FFF5F5" if acc_cnt>0 else "#F0F4FF"
+    border_color="#FFD6D6" if acc_cnt>0 else "#BDD1FF"
+    status_text="사고 발생" if acc_cnt>0 else "안전 운영 중"
+    status_dot="#FF3B30" if acc_cnt>0 else "#34C759"
+
+    st.markdown('''<style>
+div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) {
+    background: white;
+    border: 1.5px solid #E5E8EB;
+    border-radius: 20px;
+    overflow: hidden;
+    gap: 0 !important;
+    padding: 0 !important;
+}
+div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) > div {
+    padding: 0 !important;
+}
+</style>''', unsafe_allow_html=True)
+
+    col_stat, col_chart = st.columns([1, 1.4])
     with col_stat:
-        acc_cnt=len(ac)
-        color="#FF3B30" if acc_cnt>0 else "#0064FF"
-        badge_bg="#FFF2F2" if acc_cnt>0 else "#EFF4FF"
-        border_color="#FFCDD2" if acc_cnt>0 else "#C2D8FF"
-        status_text="사고 발생" if acc_cnt>0 else "안전 운영 중"
-        st.markdown(f"""<div style="background:{badge_bg};border:1.5px solid {border_color};border-radius:16px;padding:24px 28px">
-<div style="font-size:12px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">사고 건수</div>
-<div style="font-size:3rem;font-weight:800;color:{color};letter-spacing:-0.04em">{acc_cnt}</div>
-<div style="font-size:13px;color:#8B95A1;margin-top:4px">{status_text}</div>
+        st.markdown(f"""<div class="acc-unified-left" style="padding:28px 28px;border-right:1.5px solid #F2F4F6;height:100%;box-sizing:border-box">
+<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px">사고 건수</div>
+<div style="font-size:3.2rem;font-weight:800;color:{color};letter-spacing:-0.04em;line-height:1;margin-bottom:12px">{acc_cnt}</div>
+<div style="display:inline-flex;align-items:center;gap:6px;background:{badge_bg};border:1px solid {border_color};border-radius:20px;padding:4px 12px">
+  <div style="width:7px;height:7px;border-radius:50%;background:{status_dot}"></div>
+  <span style="font-size:12px;font-weight:600;color:{color}">{status_text}</span>
+</div>
 </div>""", unsafe_allow_html=True)
     with col_chart:
         if ac:
             types={}
             for a in ac: types[a.get("accident_type","기타")]=types.get(a.get("accident_type","기타"),0)+1
             import plotly.graph_objects as go
+            palette=["#FF3B30","#FF9500","#FFCC00","#34C759","#007AFF","#AF52DE"]
             fig=go.Figure(data=[go.Pie(
                 labels=list(types.keys()),
                 values=list(types.values()),
-                hole=0.55,
-                marker=dict(colors=["#FF3B30","#FF9500","#FFCC00","#34C759","#007AFF"],
-                            line=dict(color="white",width=2)),
+                hole=0.58,
+                marker=dict(colors=palette[:len(types)],
+                            line=dict(color="white",width=2.5)),
                 textinfo="none",
-                textfont=dict(size=11),
-                insidetextorientation="horizontal",
                 hovertemplate="%{label}: %{value}건<extra></extra>"
             )])
             fig.update_layout(
-                title=dict(text="유형별 사고", x=0.5, font=dict(size=13, color="#191F28")),
+                title=dict(text="유형별 사고", x=0.5, xanchor="center",
+                           font=dict(size=12, color="#8B95A1", family="Pretendard")),
                 showlegend=True,
-                margin=dict(t=40,b=10,l=10,r=10),
+                legend=dict(font=dict(size=11, color="#191F28"),
+                            orientation="v", x=1, y=0.5, xanchor="left"),
+                margin=dict(t=36,b=16,l=16,r=16),
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                height=220,
+                height=200,
             )
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         else:
-            st.markdown("""<div style="background:#F2F4F6;border-radius:16px;padding:24px;text-align:center;color:#8B95A1;font-size:14px">
+            st.markdown("""<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#C4CAD4;font-size:14px;font-weight:500">
 사고 기록 없음</div>""", unsafe_allow_html=True)
     st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:24px 0'>", unsafe_allow_html=True)
     st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">사고 기록</div>""", unsafe_allow_html=True)
