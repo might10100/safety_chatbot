@@ -48,7 +48,9 @@ def _semantic_p1(query: str, top_n: int = 6, fetch_k: int = 50) -> list:
         key = content[:80]
         if key in seen: continue
         seen.add(key)
-        out.append(f"[출처: {src.replace('.pdf','')}]\n{content}")
+        first_jo = next(iter(__import__("re").findall(r"제\d+조", content)), "")
+        tag = f"[출처: {src.replace('.pdf','')}{'  |  시작조: '+first_jo if first_jo else ''}]"
+        out.append(f"{tag}\n{content}")
         if len(out) >= top_n: break
     return out
 
@@ -84,7 +86,9 @@ def _keyword_p1(query: str, top_n: int = 2) -> list:
         key = content[:80]
         if key in seen: continue
         seen.add(key)
-        out.append(f"[출처: {src.replace('.pdf','')}]\n{content}")
+        first_jo2 = next(iter(__import__("re").findall(r"제\d+조", content)), "")
+        tag2 = f"[출처: {src.replace('.pdf','')}{'  |  시작조: '+first_jo2 if first_jo2 else ''}]"
+        out.append(f"{tag2}\n{content}")
         if len(out) >= top_n: break
     return out
 
@@ -96,7 +100,9 @@ def retrieve(query: str, top_k: int = 5) -> list:
         if score < 100.0:
             src = unicodedata.normalize("NFC", (doc.metadata or {}).get("source", "")).replace(".pdf", "")
             content = unicodedata.normalize("NFC", doc.page_content)
-            out.append(f"[출처: {src}]\n{content}" if src else content)
+            first_jo = next(iter(__import__("re").findall(r"제\d+조", content)), "")
+            tag = f"[출처: {src}{'  |  시작조: '+first_jo if first_jo else ''}]"
+            out.append(f"{tag}\n{content}" if src else content)
     return out
 
 def get_law_candidates(query: str) -> list:
