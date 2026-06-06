@@ -264,7 +264,7 @@ def page_landing():
 # ══════════════════════════════════════════════════════════════
 def page_main_board():
     p=proj()
-    c1,c2=st.columns([.8,.2])
+    c1,c2,c3=st.columns([.6,.2,.2])
     with c1:
         st.markdown(f"""<div style="padding:8px 0 20px 0">
 <div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">공사 현장</div>
@@ -274,6 +274,11 @@ def page_main_board():
     with c2:
         st.markdown("<div style='padding-top:28px'>", unsafe_allow_html=True)
         if st.button("현장 정보 변경", use_container_width=True): go("edit_project")
+        st.markdown("</div>", unsafe_allow_html=True)
+    with c3:
+        st.markdown("<div style='padding-top:28px'>", unsafe_allow_html=True)
+        if st.button("+ 새 현장 추가", use_container_width=True):
+            st.session_state.show_new_proj=True; go("landing")
         st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:4px 0 24px 0'>", unsafe_allow_html=True)
     st.markdown("""<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px">구역 현황</div>""", unsafe_allow_html=True)
