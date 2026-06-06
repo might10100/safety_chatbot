@@ -35,6 +35,13 @@ def load_resources():
             raise EnvironmentError("❌ .env 파일에 ANTHROPIC_API_KEY가 없습니다.")
         _client = anthropic.Anthropic(api_key=key)
 
+def _clean_chunk(content: str) -> str:
+    """법제처 페이지 헤더 줄 제거 후 실제 조문 내용만 반환"""
+    import re as _re
+    cleaned = [l for l in content.split("\n")
+               if not _re.match(r"법제처\s+\d+\s+국가법령정보센터", l.strip())]
+    return "\n".join(cleaned).strip()
+
 def _semantic_p1(query: str, top_n: int = 6, fetch_k: int = 50) -> list:
     load_resources()
     _P1 = ("산업안전보건기준에 관한 규칙", "산업안전보건법", "중대재해 처벌")
@@ -44,7 +51,7 @@ def _semantic_p1(query: str, top_n: int = 6, fetch_k: int = 50) -> list:
         if score >= 100.0: continue
         src = unicodedata.normalize("NFC", doc.metadata.get("source", ""))
         if not any(p in src for p in _P1): continue
-        content = unicodedata.normalize("NFC", doc.page_content)
+        content = _clean_chunk(unicodedata.normalize("NFC", doc.page_content))
         key = content[:80]
         if key in seen: continue
         seen.add(key)
@@ -73,9 +80,9 @@ def _keyword_p1(query: str, top_n: int = 2) -> list:
     long_kws = [k for k in expanded if len(k) >= 3]
     if not long_kws: return []
     scored = []
-    for src, content in _p1_chunks:
-        if content.strip().startswith("법제처"): continue
-        if len(content) < 100: continue
+    for src, raw_content in _p1_chunks:
+        content = _clean_chunk(raw_content)
+        if len(content) < 80: continue
         조cnt = len(_re.findall(r"제\d+조", content))
         if 조cnt >= 6 and len(content) < 조cnt * 30: continue
         if not any(k in content for k in long_kws): continue
@@ -99,7 +106,7 @@ def retrieve(query: str, top_k: int = 5) -> list:
     for doc, score in docs:
         if score < 100.0:
             src = unicodedata.normalize("NFC", (doc.metadata or {}).get("source", "")).replace(".pdf", "")
-            content = unicodedata.normalize("NFC", doc.page_content)
+            content = _clean_chunk(unicodedata.normalize("NFC", doc.page_content))
             first_jo = next(iter(__import__("re").findall(r"제\d+조", content)), "")
             tag = f"[출처: {src}{'  |  시작조: '+first_jo if first_jo else ''}]"
             out.append(f"{tag}\n{content}" if src else content)
