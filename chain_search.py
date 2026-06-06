@@ -179,7 +179,7 @@ def generate_daily_log(daily: dict, selected_laws: list = None) -> str:
 날짜: {daily.get('date','')} / 관리자: {daily.get('manager','')}
 인원: {daily.get('workers','')} / 장비: {daily.get('equipment','')}
 공정시간: {daily.get('work_time','')}
-작업위치: {daily.get('location','')} / 환경: {daily.get('env','')}
+작업위치: {daily.get('location','')}
 자재: {daily.get('materials','')}
 날씨: {weather_str}
 진행공정: {daily.get('work_process','')}
@@ -198,7 +198,7 @@ def generate_checklist(daily: dict, selected_laws: list = None) -> str:
     w = daily.get("weather", {})
     msg = f"""[현장 데이터]
 공종: {daily.get('work_process','')} / 위치: {daily.get('location','')}
-환경: {daily.get('env','')} / 장비: {daily.get('equipment','')}
+장비: {daily.get('equipment','')}
 최고풍속: {w.get('wind_max','-')} ({w.get('peak_time','-')})
 주변간섭: {daily.get('nearby_interference','없음')}
 전일미조치: {daily.get('prev_issues','없음')}

@@ -151,7 +151,7 @@ def sidebar():
         if st.button("Chatbot", type="primary" if page=="chatbot" else "secondary", use_container_width=True):
             go("chatbot")
         if z:
-            if st.button("금일 안전 업무 기록", type="primary" if page=="daily_input" else "secondary", use_container_width=True):
+            if st.button("금일 안전보드", type="primary" if page=="daily_input" else "secondary", use_container_width=True):
                 go("daily_input")
             if st.button("사고 보고서", type="primary" if page=="accident_form" else "secondary", use_container_width=True):
                 go("accident_form", accident_input={}, report_content="")
@@ -161,7 +161,7 @@ def sidebar():
                   "daily_input":"zone_board","zone_board":"main_board"}
         back=back_map.get(page)
         if back:
-            lbl={"daily_input":"← 금일 안전 업무 기록","zone_board":"구역 보드","main_board":"← 메인보드"}.get(back,"← 이전")
+            lbl={"daily_input":"← 금일 안전보드","zone_board":"구역 보드","main_board":"← 메인보드"}.get(back,"← 이전")
             if st.button(lbl, use_container_width=True): go(back)
         if z and st.button("메인보드", use_container_width=True): go("main_board",cur_zone=None)
 
@@ -539,7 +539,7 @@ def page_daily_input():
     if "daily_input_visited" not in st.session_state:
         st.session_state["show_missing_warning"] = False
         st.session_state["daily_input_visited"] = True
-    st.markdown(f"## 금일 안전 업무 기록 — {z}")
+    st.markdown(f"## 금일 안전보드 — {z}")
     di=st.session_state.daily_input
 
     # 필수 항목 안내
@@ -572,8 +572,7 @@ def page_daily_input():
     _l_label="작업 위치 *"
     c4.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작업 위치 *</p>', unsafe_allow_html=True)
     location=c4.text_input(_l_label,value=di.get("location",""),placeholder="예: A동 12층 외벽",key="inp_location",label_visibility="collapsed")
-    c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작업 환경 *</p>', unsafe_allow_html=True)
-    env=c3.selectbox("작업 환경 *",["지상","고소","밀폐","지하","수중","기타"],label_visibility="collapsed")
+
     materials=c4.text_input("주요 자재",value=di.get("materials",""),placeholder="예: 철근, 거푸집")
 
     _w_label="투입 인원 현황 (공종별) *"
@@ -586,7 +585,7 @@ def page_daily_input():
                      placeholder="예: 12층 외부 갱폼 인양 및 설치",height=65,label_visibility="collapsed")
 
     # ── 장비 현황 ──
-    st.markdown('<p class="sec-label">장비 현황</p>',unsafe_allow_html=True)
+    st.markdown('<p class="sec-label">장비 현황 *</p>',unsafe_allow_html=True)
     eq_counts=di.get("equipment_counts",{})
     eq_cols=st.columns(5)
     for i,eq in enumerate(EQUIPMENT_TYPES):
@@ -643,7 +642,8 @@ def page_daily_input():
         weather=_mw()
 
     # 필수 항목 체크
-    required_checks=[("관리자",manager),("작업 위치",location),("투입 인원 현황",workers),("주요 작업 내용",wp)]
+    _eq_ok = equipment_str != "없음"
+    required_checks=[("관리자",manager),("작업 위치",location),("투입 인원 현황",workers),("주요 작업 내용",wp),("장비 현황",_eq_ok or None)]
     weather_ok=any(weather.get(k) for k in ["tmp","wsd","temp_avg","wind_max"])
     if not weather_ok: required_checks.append(("날씨",None))
     missing=[n for n,v in required_checks if not v]
@@ -666,7 +666,7 @@ def page_daily_input():
         "date":d.strftime("%Y-%m-%d"),"date_c":d.strftime("%Y%m%d"),
         "manager":manager,"workers":workers,"equipment":equipment_str,
         "equipment_counts":eq_counts,"equipment_custom":eq_custom,
-        "work_time":work_time,"location":location,"env":env,
+        "work_time":work_time,"location":location,
         "materials":materials,"weather":weather,"work_process":wp,
         "prev_issues":prev.strip() or "없음","prev_issues_items":prev_items,
         "nearby_interference":nearby.strip() or "없음","new_workers":nw.strip() or "없음",
@@ -810,14 +810,13 @@ def page_gen_daily_log():
             try:
                 import anthropic as _ac3
                 _wp3=daily.get("work_process",""); _loc3=daily.get("location","")
-                _env3=daily.get("env",""); _equip3=daily.get("equipment","")
+                _equip3=daily.get("equipment","")
                 _prev3=daily.get("prev_issues","없음"); _new3=daily.get("new_workers","없음")
                 _mat3=daily.get("materials","없음"); _wk3=daily.get("workers","")
                 _prompt3=f"""건설안전기술사로서 아래 현장 정보를 분석하여 위험요인 3개를 도출하세요.
 
 작업내용: {_wp3}
 작업위치: {_loc3}
-작업환경: {_env3}
 장비현황: {_equip3}
 주요자재: {_mat3}
 투입인원: {_wk3}
