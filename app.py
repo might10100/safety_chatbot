@@ -555,33 +555,33 @@ def page_daily_input():
 
     # ── 기본 사항 ──
     st.markdown('<p class="sec-label">기본 사항</p>',unsafe_allow_html=True)
-    c1,c2=st.columns(2)
+    # 작성 일자 (전체 너비)
     try: d_def=datetime.strptime(di.get("date",""),"%Y-%m-%d").date()
     except: d_def=date.today()
-    c1.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성 일자 *</p>', unsafe_allow_html=True)
-    d=c1.date_input("작성 일자 *",value=d_def,label_visibility="collapsed")
+    st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성 일자 *</p>', unsafe_allow_html=True)
+    d=st.date_input("작성 일자 *",value=d_def,label_visibility="collapsed")
 
+    # 시작/종료 시분 (4열)
     hours=[f"{h:02d}" for h in range(6,21)]; mins=["00","30"]
     tc1,tc2,tc3,tc4=st.columns(4)
-    tc1.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">시작 시 *</p>', unsafe_allow_html=True)
+    tc1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">시작 시 *</p>', unsafe_allow_html=True)
     sh=tc1.selectbox("시작 시 *",hours,index=hours.index("08"),key="sh",label_visibility="collapsed")
-    tc2.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">시작 분 *</p>', unsafe_allow_html=True)
+    tc2.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">시작 분 *</p>', unsafe_allow_html=True)
     sm=tc2.selectbox("시작 분 *",mins,key="sm",label_visibility="collapsed")
-    tc3.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">종료 시 *</p>', unsafe_allow_html=True)
+    tc3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">종료 시 *</p>', unsafe_allow_html=True)
     eh=tc3.selectbox("종료 시 *",hours,index=hours.index("17"),key="eh",label_visibility="collapsed")
-    tc4.markdown(f'<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">종료 분 *</p>', unsafe_allow_html=True)
+    tc4.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">종료 분 *</p>', unsafe_allow_html=True)
     em=tc4.selectbox("종료 분 *",mins,key="em",label_visibility="collapsed")
     work_time=f"{sh}:{sm} ~ {eh}:{em}"
 
-    c3,c4=st.columns(2)
-    _m_label="관리자 *"
+    # 관리자 / 작업 위치 / 주요 자재 (3열)
+    c3,c4,c5=st.columns(3)
     c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">관리자 *</p>', unsafe_allow_html=True)
-    manager=c3.text_input(_m_label,value=di.get("manager",""),placeholder="예: 김성균",key="inp_manager",label_visibility="collapsed")
-    _l_label="작업 위치 *"
+    manager=c3.text_input("관리자 *",value=di.get("manager",""),placeholder="예: 김성균",key="inp_manager",label_visibility="collapsed")
     c4.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작업 위치 *</p>', unsafe_allow_html=True)
-    location=c4.text_input(_l_label,value=di.get("location",""),placeholder="예: A동 12층 외벽",key="inp_location",label_visibility="collapsed")
-
-    materials=c4.text_input("주요 자재",value=di.get("materials",""),placeholder="예: 철근, 거푸집")
+    location=c4.text_input("작업 위치 *",value=di.get("location",""),placeholder="예: A동 12층 외벽",key="inp_location",label_visibility="collapsed")
+    c5.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">주요 자재</p>', unsafe_allow_html=True)
+    materials=c5.text_input("주요 자재",value=di.get("materials",""),placeholder="예: 철근, 거푸집",label_visibility="collapsed")
 
     _w_label="투입 인원 현황 (공종별) *"
     st.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">투입 인원 현황 (공종별) *</p>', unsafe_allow_html=True)
