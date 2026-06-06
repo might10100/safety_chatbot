@@ -450,7 +450,7 @@ div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) > div {
             adtime=a.get("accident_datetime","")
             aloc=a.get("location","") or a.get("accident_location","")
             acause=a.get("cause_object","") or a.get("accident_cause","")
-            # 보고서 내용에서 장소/기인물 파싱
+            # 문서 내용에서 장소/기인물 파싱
             if not aloc or not acause:
                 rep_content=a.get("report_content","")
                 for line in rep_content.split("\n"):
@@ -468,7 +468,7 @@ div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) > div {
         st.info("기록된 사고가 없습니다.")
     rs=zd.get("reports",[])
     st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:24px 0'>", unsafe_allow_html=True)
-    st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">최근 1주일 보고서</div>""", unsafe_allow_html=True)
+    st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">최근 1주일 문서</div>""", unsafe_allow_html=True)
     if rs:
         one_week_ago=datetime.now()-timedelta(days=7)
         recent=[r for r in rs if _pd(r.get("date",""))>=one_week_ago]
@@ -502,9 +502,9 @@ div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) > div {
                         except Exception as e:
                             st.download_button("텍스트 다운로드",rep_content.encode("utf-8"),file_name=fname.replace(".pdf",".txt"),mime="text/plain",key=f"dl_{r.get('id','')}")
         else:
-            st.info("최근 1주일 내 보고서가 없습니다.")
+            st.info("최근 1주일 내 문서가 없습니다.")
     else:
-        st.info("작성된 보고서가 없습니다.")
+        st.info("작성된 문서가 없습니다.")
     zd=zdata(); history=zd.get("daily_history",[])
     if not history: return []
     yesterday=(datetime.now()-timedelta(days=1)).strftime("%Y-%m-%d")
@@ -607,7 +607,7 @@ def page_daily_input():
             c1_,c2_=st.columns([.12,.88])
             done=c1_.checkbox("완료",key=f"dn_{i}")
             c2_.markdown(f"{'~~'+item['text']+'~~' if done else item['text']}")
-            if not done and st.checkbox("오늘 보고서에 반영",key=f"cr_{i}",value=True):
+            if not done and st.checkbox("오늘 문서에 반영",key=f"cr_{i}",value=True):
                 carry_over.append(item["text"])
 
     prev_default="\n".join(carry_over) if carry_over else di.get("prev_issues","")
@@ -877,7 +877,7 @@ def page_gen_daily_log():
         st.rerun()
     else:
         daily=st.session_state.daily_input
-        st.markdown("### 보고서 확인 및 수정")
+        st.markdown("### 문서 확인 및 수정")
         st.markdown(render_daily_log_html(daily,st.session_state.report_content),unsafe_allow_html=True)
 
         st.markdown("---")
@@ -914,7 +914,7 @@ def page_gen_checklist():
         st.rerun()
     else:
         daily=st.session_state.daily_input
-        st.markdown("### 보고서 확인 및 수정")
+        st.markdown("### 문서 확인 및 수정")
         st.warning(f"🔧 진단: pid={pid()} / proj={proj()}")
         import re as _re
         _mgr=daily.get("manager",""); _pname=proj().get("name","")
@@ -1041,10 +1041,10 @@ def page_accident_form():
                 st.rerun()
             else:
                 st.session_state["show_accident_warning"] = False
-                with st.spinner("AI가 보고서를 작성 중입니다..."):
+                with st.spinner("AI가 문서를 작성 중입니다..."):
                     st.session_state.report_content=generate_accident_report(new_acc,st.session_state.selected_laws)
                 st.session_state.pop("accident_pdf_cache",None)
-                # 보고서 생성 시점에 사고 데이터 저장
+                # 문서 생성 시점에 사고 데이터 저장
                 p_,z_=pid(),zone(); ensure_zd(p_,z_)
                 zd=SS.get_zone_data()
                 acc_with_report={**new_acc,"report_content":st.session_state.report_content,"acc_id":str(uuid.uuid4())[:8]}
@@ -1058,9 +1058,9 @@ def page_accident_form():
         _wn=acc.get("writer_name","")
         if _wn:
             report_content=_re3.sub(r"(현장\s*관리자\s*서명\s*[:：]\s*)_+", lambda m:m.group(1)+_wn+" ", report_content)
-        st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">보고서 확인</div>""", unsafe_allow_html=True)
+        st.markdown("""<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">문서 확인</div>""", unsafe_allow_html=True)
         lines=[l.strip() for l in report_content.split("\n")]
-        table_rows='<tr><td colspan="2" style="background:#0064FF;color:white;text-align:center;padding:14px;font-size:1.1rem;font-weight:800;letter-spacing:.08em;border-radius:8px 8px 0 0">사고 현장 보고서</td></tr>'
+        table_rows='<tr><td colspan="2" style="background:#0064FF;color:white;text-align:center;padding:14px;font-size:1.1rem;font-weight:800;letter-spacing:.08em;border-radius:8px 8px 0 0">사고 현장 문서</td></tr>'
         skip_first_section = True
         for line in lines:
             if not line or line=="---": continue

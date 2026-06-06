@@ -343,7 +343,7 @@ def save_checklist_pdf(content: str, date: str,
 def save_accident_report_pdf(content: str, date: str,
                               project: str = "", save_dir: str = "", manager: str = "") -> str:
     FN, FNB = _get_fonts()
-    path = _out(f"{date}_사고보고서.pdf", save_dir)
+    path = _out(f"{date}_사고문서.pdf", save_dir)
     doc  = _doc(path)
     story= []
     W    = A4[0]-30*mm

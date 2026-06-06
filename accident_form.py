@@ -1,6 +1,6 @@
 """
 accident_form.py
-사고현장 보고서 — 공식 양식 PDF 생성
+사고현장 문서 — 공식 양식 PDF 생성
 """
 import os, platform, subprocess, re
 from reportlab.lib.pagesizes import A4
@@ -95,7 +95,7 @@ def _out(filename, save_dir):
 def save_accident_form_pdf(acc: dict, ai_content: str = "",
                             save_dir: str = "") -> str:
     """
-    사고현장 보고서를 공식 양식 PDF로 저장합니다.
+    사고현장 문서를 공식 양식 PDF로 저장합니다.
     acc: 사고 입력 딕셔너리
     ai_content: AI 생성 텍스트 (개요/원인/과정 파싱용)
     """
