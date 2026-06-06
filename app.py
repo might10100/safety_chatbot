@@ -475,7 +475,15 @@ div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) > div {
         if recent:
             for r in reversed(recent):
                 with st.expander(f"{r.get('label','')} — {r.get('date','')}"):
-                    st.text_area("",value=r.get("content",""),height=200,key=f"rv_{r.get('id','')}",disabled=True,label_visibility="collapsed")
+                    _rc=r.get("content",""); _rt=r.get("type","")
+                    if _rt=="accident":
+                        _ah='<div style="background:#0064FF;color:white;text-align:center;padding:11px 16px;font-size:14px;font-weight:800;border-radius:10px 10px 0 0;letter-spacing:.06em">사고 원인 분석</div>'
+                        st.markdown(_ah+f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:0 0 10px 10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
+                    elif _rt=="daily":
+                        _dh=f'<div style="background:#1a1a2e;color:white;text-align:center;padding:11px;font-size:13px;font-weight:700;border-radius:10px 10px 0 0;letter-spacing:.12em">금 일  안 전  일 지</div>'
+                        st.markdown(_dh+f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:0 0 10px 10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
+                    else:
+                        st.markdown(f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
                     if r.get("path") and os.path.exists(r.get("path","")):
                         with open(r["path"],"rb") as f_:
                             st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{r.get('id','')}")
