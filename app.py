@@ -480,7 +480,7 @@ div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) > div {
                         _ah='<div style="background:#0064FF;color:white;text-align:center;padding:11px 16px;font-size:14px;font-weight:800;border-radius:10px 10px 0 0;letter-spacing:.06em">사고 원인 분석</div>'
                         st.markdown(_ah+f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:0 0 10px 10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
                     elif _rt=="daily":
-                        _dh=f'<div style="background:#1a1a2e;color:white;text-align:center;padding:11px;font-size:13px;font-weight:700;border-radius:10px 10px 0 0;letter-spacing:.12em">금 일  안 전  일 지</div>'
+                        _dh=f'<div style="background:#1a1a2e;color:white;text-align:center;padding:11px;font-size:13px;font-weight:700;border-radius:10px 10px 0 0;letter-spacing:.12em">위 험  요 인  분 석</div>'
                         st.markdown(_dh+f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:0 0 10px 10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
                     else:
                         st.markdown(f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
@@ -685,7 +685,7 @@ def page_daily_input():
     st.markdown("---")
     c1,c2=st.columns(2)
     with c1:
-        if st.button("금일 안전 일지 작성",type="primary",use_container_width=True):
+        if st.button("위험 요인 분석 작성",type="primary",use_container_width=True):
             if missing:
                 st.session_state["show_missing_warning"]=True; st.rerun()
             else:
@@ -764,7 +764,7 @@ def render_daily_log_html(daily,report_text):
 <tr><td colspan="4" style="padding:2px;background:#f0f0f0;"></td></tr>"""
 
     return f"""<table style="width:100%;border-collapse:collapse;font-size:.88rem;margin:8px 0;">
-<tr><td colspan="4" style="background:#1a1a2e;color:white;text-align:center;padding:12px;font-size:1.05rem;font-weight:bold;letter-spacing:.15em;">금 일  안 전  일 지</td></tr>
+<tr><td colspan="4" style="background:#1a1a2e;color:white;text-align:center;padding:12px;font-size:1.05rem;font-weight:bold;letter-spacing:.15em;">위 험  요 인  분 석</td></tr>
 <tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;width:15%;">작성 일자</td>
 <td style="padding:6px;border:1px solid #aaa;width:35%;">{fmt_date(daily.get("date",""))}</td>
 <td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;width:15%;">관리자</td>
@@ -804,11 +804,11 @@ def save_report(rtype,label,path,content,rdate):
     SS.set_zone_data(zd)
 
 # ══════════════════════════════════════════════════════════════
-# 금일 안전 일지 생성
+# 위험 요인 분석 생성
 # ══════════════════════════════════════════════════════════════
 def page_gen_daily_log():
     daily=st.session_state.daily_input
-    st.markdown(f"## 금일 안전 일지 — {zone()}")
+    st.markdown(f"## 위험 요인 분석 — {zone()}")
     if not st.session_state.report_content:
         st.session_state.pop("daily_pdf_cache",None)
         with st.spinner("AI가 법규를 분석하고 안전 일지를 작성 중입니다..."):
@@ -894,7 +894,7 @@ def page_gen_daily_log():
             with st.spinner("PDF 생성 중..."):
                 pdf_bytes, fname = save_daily_log_pdf(daily,st.session_state.report_content,proj().get("name",""),st.session_state.pdf_save_dir,risk_sets=st.session_state.get("risk_sets"),tbm=st.session_state.get("tbm_message",""))
             st.session_state["daily_pdf_cache"]=(pdf_bytes,fname)
-            save_report("daily","금일 안전 일지","",st.session_state.report_content,daily["date"])
+            save_report("daily","위험 요인 분석","",st.session_state.report_content,daily["date"])
         else:
             pdf_bytes, fname = st.session_state["daily_pdf_cache"]
         c1.download_button("PDF로 저장",pdf_bytes,file_name=fname,mime="application/pdf",type="primary",use_container_width=True)

@@ -160,7 +160,7 @@ def save_daily_log_pdf(daily: dict, report_text: str,
     GRAY = colors.HexColor("#e8eaf6")
 
     # 제목
-    t = Table([[_p("금 일  안 전  일 지", 15, bold=True, align="CENTER",color=colors.white)]],
+    t = Table([[_p("위 험  요 인  분 석", 15, bold=True, align="CENTER",color=colors.white)]],
               colWidths=[A4[0]-30*mm])
     t.setStyle(_ts(("BACKGROUND",(0,0),(-1,-1),HDR),
                    ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
