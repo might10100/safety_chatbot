@@ -13,9 +13,10 @@ DB_PATH     = "db"
 EMBED_MODEL = "jhgan/ko-sroberta-multitask"
 _db = None
 _client = None
+_p1_chunks: list = []
 
 def load_resources():
-    global _db, _client
+    global _db, _client, _p1_chunks
     if _db is None:
         emb = HuggingFaceEmbeddings(
             model_name=EMBED_MODEL,
@@ -23,11 +24,69 @@ def load_resources():
             encode_kwargs={"normalize_embeddings": True}
         )
         _db = FAISS.load_local(DB_PATH, emb, allow_dangerous_deserialization=True)
+        _P1_SRC = ("산업안전보건기준에 관한 규칙", "산업안전보건법", "중대재해 처벌")
+        for _d in _db.docstore._dict.values():
+            _s = unicodedata.normalize("NFC", _d.metadata.get("source", ""))
+            if any(_p in _s for _p in _P1_SRC):
+                _p1_chunks.append((_s, unicodedata.normalize("NFC", _d.page_content)))
     if _client is None:
         key = os.getenv("ANTHROPIC_API_KEY")
         if not key:
             raise EnvironmentError("❌ .env 파일에 ANTHROPIC_API_KEY가 없습니다.")
         _client = anthropic.Anthropic(api_key=key)
+
+def _semantic_p1(query: str, top_n: int = 6, fetch_k: int = 50) -> list:
+    load_resources()
+    _P1 = ("산업안전보건기준에 관한 규칙", "산업안전보건법", "중대재해 처벌")
+    docs = _db.similarity_search_with_score(query, k=fetch_k)
+    out, seen = [], set()
+    for doc, score in docs:
+        if score >= 100.0: continue
+        src = unicodedata.normalize("NFC", doc.metadata.get("source", ""))
+        if not any(p in src for p in _P1): continue
+        content = unicodedata.normalize("NFC", doc.page_content)
+        key = content[:80]
+        if key in seen: continue
+        seen.add(key)
+        out.append(f"[출처: {src.replace('.pdf','')}]\n{content}")
+        if len(out) >= top_n: break
+    return out
+
+def _keyword_p1(query: str, top_n: int = 2) -> list:
+    load_resources()
+    _sfx = ["에서","에게","으로","로부터","보다","처럼","까지","부터","마다","께서","라도",
+            "하여","하고","하는","한","를","을","이","가","은","는","의","과","와","도","만","로","에","서"]
+    _stop = {"설치","기준","사항","경우","관련","규정","해당","작업","사업","사업주","근로자",
+             "방법","조치","안전","관리","사용","이상","이하","다음","의한","위한","따른"}
+    _syn = {"틈새":["틈새","틈"],"자재":["자재","재료"],"방지망":["방지망","방호망"],
+            "추락방지망":["추락방지망","추락방호망"],"추락방호망":["추락방호망","추락방지망"]}
+    def _strip(w):
+        for s in sorted(_sfx, key=len, reverse=True):
+            if w.endswith(s) and len(w)-len(s) >= 2: return w[:-len(s)]
+        return w
+    import re as _re
+    raw_kws = list({_strip(w) for w in query.replace("?","").replace("!","").split()
+                   if len(_strip(w)) >= 2 and _strip(w) not in _stop})
+    expanded = list(set(sum([_syn.get(k,[k]) for k in raw_kws],[])))
+    long_kws = [k for k in expanded if len(k) >= 3]
+    if not long_kws: return []
+    scored = []
+    for src, content in _p1_chunks:
+        if content.strip().startswith("법제처"): continue
+        if len(content) < 100: continue
+        조cnt = len(_re.findall(r"제\d+조", content))
+        if 조cnt >= 6 and len(content) < 조cnt * 30: continue
+        if not any(k in content for k in long_kws): continue
+        scored.append((sum(len(k) for k in expanded if k in content), src, content))
+    scored.sort(key=lambda x: -x[0])
+    out, seen = [], set()
+    for _, src, content in scored:
+        key = content[:80]
+        if key in seen: continue
+        seen.add(key)
+        out.append(f"[출처: {src.replace('.pdf','')}]\n{content}")
+        if len(out) >= top_n: break
+    return out
 
 def retrieve(query: str, top_k: int = 5) -> list:
     load_resources()
@@ -77,21 +136,17 @@ def _call_claude(system: str, user: str, max_tokens: int = 2500) -> str:
                 raise
 
 def law_search(question: str) -> dict:
-    sources = retrieve(question, top_k=18)
-    # 1순위 법령(산업안전보건기준 등) 원문이 누락되지 않도록 보강 검색
-    try:
-        boost = retrieve(f"{question} 산업안전보건기준에 관한 규칙", top_k=6)
-    except Exception:
-        boost = []
+    p1  = _semantic_p1(question, top_n=6, fetch_k=50)
+    kw  = _keyword_p1(question, top_n=2)
+    gen = retrieve(question, top_k=12)
     merged, seen = [], set()
-    for s in (sources + boost):
+    for s in (p1 + kw + gen):
         key = s[:100]
         if key not in seen:
             seen.add(key); merged.append(s)
     if not merged:
         return {"answer": "해당 내용은 DB에서 찾을 수 없습니다.\nlaw.go.kr 또는 kosha.or.kr을 직접 확인해 주세요.", "sources": [], "count": 0}
-    _P1 = ("산업안전보건기준", "산업안전보건법", "시행규칙", "중대재해 처벌")
-    merged = sorted(merged, key=lambda s: 0 if any(k in s.split("\n")[0] for k in _P1) else 1)[:18]
+    merged = merged[:20]
     context = "\n\n---\n\n".join(merged)
     answer = _call_claude(LAW_SEARCH_PROMPT, f"[질문]\n{question}\n\n[검색된 법령 조문]\n{context}")
     return {"answer": answer, "sources": merged, "count": len(merged)}
