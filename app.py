@@ -968,7 +968,7 @@ def page_accident_form():
         loc=c2.text_input("작업 장소",value=acc.get("location",""))
         cobj=c2.text_input("기인물",value=acc.get("cause_object",""),placeholder="예: 갱폼")
         c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">발생 형태</p>', unsafe_allow_html=True)
-        atype=c1.selectbox("발생 형태",["추락","깔림","낙하","화상","끼임","기타"],label_visibility="collapsed")
+        atype=c1.selectbox("발생 형태",["기타","추락","깔림","낙하","화상","끼임"],label_visibility="collapsed")
 
         # 재해자 정보 (발생형태와 상해부위 사이)
         st.markdown('<p class="sec-label">재해자 정보</p>',unsafe_allow_html=True)
