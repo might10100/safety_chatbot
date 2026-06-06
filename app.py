@@ -986,7 +986,8 @@ def page_accident_form():
         tc2.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">분 *</p>', unsafe_allow_html=True)
         adt_m=tc2.selectbox("분 *",mins_a,index=mins_a.index(sm_) if sm_ in mins_a else 0,key="adt_m",label_visibility="collapsed")
         adt_time=f"{adt_h}:{adt_m}"
-        loc=c2.text_input("작업 장소",value=acc.get("location",""))
+        c2.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작업 장소 *</p>', unsafe_allow_html=True)
+        loc=c2.text_input("작업 장소 *",value=acc.get("location",""),placeholder="예: 3층 외벽",label_visibility="collapsed")
         cobj=c2.text_input("기인물",value=acc.get("cause_object",""),placeholder="예: 갱폼")
         c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">발생 형태</p>', unsafe_allow_html=True)
         atype=c1.selectbox("발생 형태",["기타","추락","깔림","낙하","화상","끼임"],label_visibility="collapsed")
@@ -1025,7 +1026,7 @@ def page_accident_form():
 
         # 필수 항목 체크
         basic_required=[("작성자 직위",wpos),("작성자 성명",wname)]
-        scene_required=[("사고 발생 일자",str(adt_date)),("사고 발생 시분",adt_time)]
+        scene_required=[("사고 발생 일자",str(adt_date)),("사고 발생 시분",adt_time),("작업 장소",loc)]
         content_required=[("재해 발생 개요",ov)]
         all_required=basic_required+scene_required+content_required
         missing=[n for n,v in all_required if not v]
