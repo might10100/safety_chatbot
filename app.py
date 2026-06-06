@@ -153,7 +153,7 @@ def sidebar():
         if z:
             if st.button("금일 안전보드", type="primary" if page=="daily_input" else "secondary", use_container_width=True):
                 go("daily_input")
-            if st.button("사고 보고서", type="primary" if page=="accident_form" else "secondary", use_container_width=True):
+            if st.button("사고 원인 분석", type="primary" if page=="accident_form" else "secondary", use_container_width=True):
                 go("accident_form", accident_input={}, report_content="")
         st.divider()
         back_map={"gen_daily_log":"zone_board","gen_checklist":"zone_board",
@@ -364,7 +364,7 @@ def page_zone_board():
             zd_full[p_s][z_s]["reports"].append({
                 "id": str(uuid.uuid4())[:8],
                 "type": "accident",
-                "label": "사고 보고서",
+                "label": "사고 원인 분석",
                 "date": a.get("write_date", a.get("accident_date", "")),
                 "path": "",
                 "content": rc
@@ -942,10 +942,10 @@ def page_gen_checklist():
             go("daily_input")
 
 # ══════════════════════════════════════════════════════════════
-# 사고 보고서
+# 사고 원인 분석
 # ══════════════════════════════════════════════════════════════
 def page_accident_form():
-    st.markdown(f"## 사고 보고서 — {zone()}")
+    st.markdown(f"## 사고 원인 분석 — {zone()}")
     if "accident_form_visited" not in st.session_state:
         st.session_state["show_missing_warning"] = False
         st.session_state["accident_form_visited"] = True
@@ -1036,7 +1036,7 @@ def page_accident_form():
 <span style="color:#C62828;font-size:14px">필수 항목을 입력해 주세요: {missing_str2}</span>
 </div>""", unsafe_allow_html=True)
 
-        if st.button("사고 보고서 작성",type="primary",use_container_width=True):
+        if st.button("사고 원인 분석 작성",type="primary",use_container_width=True):
             if missing:
                 st.session_state["show_accident_warning"] = True
                 st.rerun()
@@ -1050,7 +1050,7 @@ def page_accident_form():
                 zd=SS.get_zone_data()
                 acc_with_report={**new_acc,"report_content":st.session_state.report_content,"acc_id":str(uuid.uuid4())[:8]}
                 zd[p_][z_]["accidents"].append(acc_with_report); SS.set_zone_data(zd)
-                save_report("accident","사고 보고서","",st.session_state.report_content,new_acc.get("write_date",""))
+                save_report("accident","사고 원인 분석","",st.session_state.report_content,new_acc.get("write_date",""))
                 st.rerun()
     else:
         acc=st.session_state.accident_input
@@ -1066,7 +1066,7 @@ def page_accident_form():
         for line in lines:
             if not line or line=="---": continue
             if line.startswith("[") and line.endswith("]"):
-                if skip_first_section and line == "[사고 보고서]":
+                if skip_first_section and line == "[사고 원인 분석]":
                     skip_first_section = False
                     continue
                 skip_first_section = False
