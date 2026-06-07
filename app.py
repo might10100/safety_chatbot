@@ -41,7 +41,7 @@ st.markdown("""<style>
 .ok{background:#e8f5e9;border-radius:8px;padding:.7rem;border-left:4px solid #4caf50;margin:.4rem 0;}
 .law-card{background:#fffde7;border-radius:8px;padding:.6rem;border:1px solid #ffc107;margin:.3rem 0;}
 .req{color:#e74c3c;font-weight:bold;}
-.sec-label{font-weight:bold;font-size:1rem;margin:1rem 0 .3rem 0;color:#1a1a2e;}
+.sec-label{font-weight:700;font-size:1rem;margin:1rem 0 .3rem 0;color:#0064FF;}
 </style>""", unsafe_allow_html=True)
 
 REGIONS = {
@@ -281,6 +281,45 @@ def page_main_board():
             st.session_state.show_new_proj=True; go("landing")
         st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:4px 0 24px 0'>", unsafe_allow_html=True)
+    # ── 전체 사고 통계 ──
+    all_ac=[]
+    for _z in p.get("zones",[]):
+        all_ac.extend(SS.get_zone_data().get(pid(),{}).get(_z,{}).get("accidents",[]))
+    _total=len(all_ac)
+    _color="#FF3B30" if _total>0 else "#0064FF"
+    _bbg="#FFF5F5" if _total>0 else "#F0F4FF"
+    _bbd="#FFD6D6" if _total>0 else "#BDD1FF"
+    _stxt="사고 발생" if _total>0 else "안전 운영 중"
+    _sdot="#FF3B30" if _total>0 else "#34C759"
+    st.markdown('''<style>
+div[data-testid="stHorizontalBlock"]:has(div.main-acc-left){background:white;border:1.5px solid #E5E8EB;border-radius:20px;overflow:hidden;gap:0!important;padding:0!important}
+div[data-testid="stHorizontalBlock"]:has(div.main-acc-left)>div{padding:0!important}
+</style>''',unsafe_allow_html=True)
+    _mc1,_mc2=st.columns([1,1.4])
+    with _mc1:
+        st.markdown(f"""<div class="main-acc-left" style="padding:24px 28px;border-right:1.5px solid #F2F4F6">
+<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">전체 사고 건수</div>
+<div style="font-size:3rem;font-weight:800;color:{_color};letter-spacing:-.04em;line-height:1;margin-bottom:12px">{_total}</div>
+<div style="display:inline-flex;align-items:center;gap:6px;background:{_bbg};border:1px solid {_bbd};border-radius:20px;padding:4px 12px">
+<div style="width:7px;height:7px;border-radius:50%;background:{_sdot}"></div>
+<span style="font-size:12px;font-weight:600;color:{_color}">{_stxt}</span></div></div>""",unsafe_allow_html=True)
+    with _mc2:
+        if all_ac:
+            import plotly.graph_objects as _go
+            _types={}
+            for _a in all_ac: _types[_a.get("accident_type","기타")]=_types.get(_a.get("accident_type","기타"),0)+1
+            _pal=["#FF3B30","#FF9500","#FFCC00","#34C759","#007AFF","#AF52DE"]
+            _fig=_go.Figure(data=[_go.Pie(labels=list(_types.keys()),values=list(_types.values()),hole=0.58,
+                marker=dict(colors=_pal[:len(_types)],line=dict(color="white",width=2.5)),
+                textinfo="none",hovertemplate="%{label}: %{value}건<extra></extra>")])
+            _fig.update_layout(title=dict(text="유형별 사고",x=0.5,xanchor="center",font=dict(size=12,color="#8B95A1")),
+                showlegend=True,legend=dict(font=dict(size=11,color="#191F28"),orientation="v",x=1,y=0.5,xanchor="left"),
+                margin=dict(t=36,b=16,l=16,r=16),paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(0,0,0,0)",height=200)
+            st.plotly_chart(_fig,use_container_width=True,config={"displayModeBar":False})
+        else:
+            st.markdown("""<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#C4CAD4;font-size:14px;font-weight:500">사고 기록 없음</div>""",unsafe_allow_html=True)
+    st.markdown("<div style='margin-top:20px'></div>",unsafe_allow_html=True)
+
     st.markdown("""<div style="font-size:11px;font-weight:700;color:#8B95A1;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px">구역 현황</div>""", unsafe_allow_html=True)
     zones=p.get("zones",[])
     if not zones: st.info("등록된 구역이 없습니다."); return
@@ -585,7 +624,7 @@ def page_daily_input():
     manager=c3.text_input("관리자 *",value=di.get("manager",""),placeholder="예: 김성균",key="inp_manager",label_visibility="collapsed")
     c4.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작업 위치 *</p>', unsafe_allow_html=True)
     location=c4.text_input("작업 위치 *",value=di.get("location",""),placeholder="예: A동 12층 외벽",key="inp_location",label_visibility="collapsed")
-    c5.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">주요 자재</p>', unsafe_allow_html=True)
+    c5.markdown('<p style="font-size:14px;font-weight:400;color:#4E5968;margin-bottom:2px">주요 자재</p>', unsafe_allow_html=True)
     materials=c5.text_input("주요 자재",value=di.get("materials",""),placeholder="예: 철근, 거푸집",label_visibility="collapsed")
 
     _w_label="투입 인원 현황 (공종별) *"
@@ -978,7 +1017,7 @@ def page_accident_form():
         wd=c1.date_input("작성 일자 *",value=date.today(),label_visibility="collapsed")
         pname=p.get("name","") or proj().get("name","")
         pname_full=f"{pname} - {zone()}" if pname else ""
-        c2.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">현장명</p>', unsafe_allow_html=True)
+        c2.markdown('<p style="font-size:14px;font-weight:400;color:#4E5968;margin-bottom:2px">현장명</p>', unsafe_allow_html=True)
         pname_full=c2.text_input("현장명",value=pname_full,placeholder="현장명을 입력하세요",label_visibility="collapsed")
         c3,c4=st.columns(2)
         c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성자 성명 *</p>', unsafe_allow_html=True)
@@ -1004,7 +1043,7 @@ def page_accident_form():
         c2.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작업 장소 *</p>', unsafe_allow_html=True)
         loc=c2.text_input("작업 장소 *",value=acc.get("location",""),placeholder="예: 3층 외벽",label_visibility="collapsed")
         cobj=c2.text_input("기인물",value=acc.get("cause_object",""),placeholder="예: 갱폼")
-        c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">발생 형태</p>', unsafe_allow_html=True)
+        c1.markdown('<p style="font-size:14px;font-weight:400;color:#4E5968;margin-bottom:2px">발생 형태</p>', unsafe_allow_html=True)
         atype=c1.selectbox("발생 형태",["(선택)","추락","깔림","낙하","화상","끼임","기타"],label_visibility="collapsed")
 
         # 재해자 정보 (발생형태와 상해부위 사이)
@@ -1131,7 +1170,6 @@ def page_accident_form():
 def page_chatbot():
     z_=zone() or "전체"
     st.markdown(f"""<div style="padding:8px 0 20px 0">
-<div style="font-size:13px;font-weight:700;color:#8B95A1;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">AI 법령 검색</div>
 <div style="font-size:2rem;font-weight:800;color:#191F28;letter-spacing:-0.04em;line-height:1.2">안전 챗봇</div>
 <div style="font-size:14px;color:#8B95A1;margin-top:6px">건설 안전 법령을 검색하고 질문하세요.</div>
 </div>""", unsafe_allow_html=True)
