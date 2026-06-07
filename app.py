@@ -1022,7 +1022,7 @@ def page_accident_form():
         c3,c4=st.columns(2)
         c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성자 성명 *</p>', unsafe_allow_html=True)
         wpos=""
-        wname=c3.text_input("작성자 성명 *",value=acc.get("writer_name",""),label_visibility="collapsed")
+        wname=c3.text_input("작성자 성명 *",value=acc.get("writer_name",""),placeholder="예: 홍길동",label_visibility="collapsed")
 
         # 사고 현장 정보
         st.markdown('<p class="sec-label">사고 현장 정보</p>',unsafe_allow_html=True)
@@ -1049,8 +1049,8 @@ def page_accident_form():
         # 재해자 정보 (발생형태와 상해부위 사이)
         st.markdown('<p class="sec-label">재해자 정보</p>',unsafe_allow_html=True)
         c1,c2,c3=st.columns(3)
-        sub=c1.text_input("협력업체명",value=acc.get("subcontractor",""))
-        vn=c2.text_input("재해자 성명",value=acc.get("victim_name",""))
+        sub=c1.text_input("협력업체명",value=acc.get("subcontractor",""),placeholder="예: 성대건축")
+        vn=c2.text_input("재해자 성명",value=acc.get("victim_name",""),placeholder="예: 홍길동")
         hd=c3.text_input("채용일",value=acc.get("hire_date",""),placeholder="예: 2025-01-15")
 
         c4,c5=st.columns(2)
