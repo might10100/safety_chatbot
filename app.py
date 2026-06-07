@@ -637,7 +637,7 @@ def page_daily_input():
                      placeholder="예: 12층 외부 갱폼 인양 및 설치",height=65,label_visibility="collapsed")
 
     # ── 장비 현황 ──
-    st.markdown('<p class="sec-label">장비 현황 *</p>',unsafe_allow_html=True)
+    st.markdown('<p style="font-weight:400;font-size:1rem;margin:1rem 0 .3rem 0;color:#191F28">장비 현황</p>',unsafe_allow_html=True)
     eq_counts=di.get("equipment_counts",{})
     eq_cols=st.columns(5)
     for i,eq in enumerate(EQUIPMENT_TYPES):
