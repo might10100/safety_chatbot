@@ -214,13 +214,13 @@ def generate_accident_report(acc: dict, selected_laws: list = None) -> str:
                "\n\n[검색된 법령 조문]\n" + "\n\n---\n\n".join(sources) if sources else "")
     msg = f"""[사고 입력]
 작성일자: {acc.get('write_date','')} / 현장명: {acc.get('project_name','')}
-작성자: {acc.get('writer_position','')} {acc.get('writer_name','')}
+작성자: {acc.get('writer_name','')}
 현장소장: {acc.get('site_manager','')} / 공사과장: {acc.get('const_manager','')} / 담당기사: {acc.get('engineer','')}
 협력업체: {acc.get('subcontractor','')} / 공사종류: {acc.get('work_type','')}
 재해자: {acc.get('victim_name','')} / 직종: {acc.get('victim_job','')} / 채용일: {acc.get('hire_date','')}
 사고일시: {acc.get('accident_datetime','')}
 작업장소: {acc.get('location','')} / 기인물: {acc.get('cause_object','')}
-발생형태: {acc.get('accident_type','')}
+발생형태: {acc.get('accident_type','')}{"" if acc.get('accident_type','')!='(선택)' else chr(10)+"※ 발생형태가 미선택입니다. 아래 [재해 발생 개요]를 분석하여 추락/깔림/낙하/화상/끼임/기타 중 가장 적합한 유형을 판단하고, 보고서의 '발생 형태:' 항목에 판단된 유형으로 작성하십시오."}
 상해부위: {acc.get('injury_part','')} / 상해종류: {acc.get('injury_type','')}
 재해개요: {acc.get('overview','')}
 직접원인: {acc.get('direct_cause','')}

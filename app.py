@@ -976,10 +976,9 @@ def page_accident_form():
         c2.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">현장명</p>', unsafe_allow_html=True)
         pname_full=c2.text_input("현장명",value=pname_full,placeholder="현장명을 입력하세요",label_visibility="collapsed")
         c3,c4=st.columns(2)
-        c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성자 직위 *</p>', unsafe_allow_html=True)
-        wpos=c3.text_input("작성자 직위 *",value=acc.get("writer_position",""),placeholder="예: 안전관리자",label_visibility="collapsed")
-        c4.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성자 성명 *</p>', unsafe_allow_html=True)
-        wname=c4.text_input("작성자 성명 *",value=acc.get("writer_name",""),label_visibility="collapsed")
+        c3.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">작성자 성명 *</p>', unsafe_allow_html=True)
+        wpos=""
+        wname=c3.text_input("작성자 성명 *",value=acc.get("writer_name",""),label_visibility="collapsed")
 
         # 사고 현장 정보
         st.markdown('<p class="sec-label">사고 현장 정보</p>',unsafe_allow_html=True)
@@ -1001,7 +1000,7 @@ def page_accident_form():
         loc=c2.text_input("작업 장소 *",value=acc.get("location",""),placeholder="예: 3층 외벽",label_visibility="collapsed")
         cobj=c2.text_input("기인물",value=acc.get("cause_object",""),placeholder="예: 갱폼")
         c1.markdown('<p style="font-size:14px;font-weight:600;color:#191F28;margin-bottom:2px">발생 형태</p>', unsafe_allow_html=True)
-        atype=c1.selectbox("발생 형태",["기타","추락","깔림","낙하","화상","끼임"],label_visibility="collapsed")
+        atype=c1.selectbox("발생 형태",["(선택)","추락","깔림","낙하","화상","끼임","기타"],label_visibility="collapsed")
 
         # 재해자 정보 (발생형태와 상해부위 사이)
         st.markdown('<p class="sec-label">재해자 정보</p>',unsafe_allow_html=True)
@@ -1022,7 +1021,7 @@ def page_accident_form():
 
         new_acc={
             "write_date":wd.strftime("%Y-%m-%d"),"project_name":pname_full,
-            "writer_position":wpos,"writer_name":wname,
+            "writer_name":wname,
             "subcontractor":sub,"victim_name":vn,"hire_date":hd,
             "accident_datetime":f"{adt_date.strftime('%Y-%m-%d')} {adt_time}",
             "accident_date":adt_date.strftime("%Y-%m-%d"),"accident_time":adt_time,
@@ -1032,11 +1031,13 @@ def page_accident_form():
         st.session_state.accident_input=new_acc
 
         # 준거 기준 선택
-        if atype and loc:
+        if atype and atype!="(선택)" and loc:
             st.markdown("---"); st.session_state.selected_laws=law_ui(f"{atype} {loc} 산업재해")
+        elif atype=="(선택)" and loc and ov:
+            st.markdown("---"); st.session_state.selected_laws=law_ui(f"{ov[:30]} {loc} 산업재해")
 
         # 필수 항목 체크
-        basic_required=[("작성자 직위",wpos),("작성자 성명",wname)]
+        basic_required=[("작성자 성명",wname)]
         scene_required=[("사고 발생 일자",str(adt_date)),("사고 발생 시분",adt_time),("작업 장소",loc)]
         content_required=[("재해 발생 개요",ov)]
         all_required=basic_required+scene_required+content_required
@@ -1061,8 +1062,15 @@ def page_accident_form():
                 p_,z_=pid(),zone(); ensure_zd(p_,z_)
                 zd=SS.get_zone_data()
                 acc_with_report={**new_acc,"report_content":st.session_state.report_content,"acc_id":str(uuid.uuid4())[:8]}
+                import re as _re_at
+                _rc_at=st.session_state.report_content
+                if acc_with_report.get("accident_type","")=="(선택)":
+                    _m=_re_at.search(r"발생 형태\s*[:：]\s*([가-힣]+)", _rc_at)
+                    if _m: acc_with_report["accident_type"]=_m.group(1)
+                    else: acc_with_report["accident_type"]="기타"
+                    acc_with_report["ai_analyzed_type"]=True
                 zd[p_][z_]["accidents"].append(acc_with_report); SS.set_zone_data(zd)
-                save_report("accident","사고 원인 분석","",st.session_state.report_content,new_acc.get("write_date",""))
+                save_report("accident","사고 원인 분석","",_rc_at,new_acc.get("write_date",""))
                 st.rerun()
     else:
         acc=st.session_state.accident_input
@@ -1096,6 +1104,9 @@ def page_accident_form():
                 note_style = "color:#C62828;font-weight:600" if is_note else "color:#191F28"
                 table_rows+=f'<tr><td colspan="2" style="padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;{note_style};line-height:1.6">{line}</td></tr>'
         st.markdown(f'<div style="border:1.5px solid #E5E8EB;border-radius:10px;overflow:hidden;margin-bottom:16px"><table style="width:100%;border-collapse:collapse">{table_rows}</table></div>', unsafe_allow_html=True)
+        acc2=st.session_state.accident_input
+        if acc2.get("ai_analyzed_type"):
+            st.markdown('<p style="color:#C62828;font-weight:700;font-size:13px;margin:8px 0">⚠️ 발생 형태를 AI가 자동으로 분석하여 작성했습니다. 내용을 직접 확인해 주세요.</p>', unsafe_allow_html=True)
         st.markdown("<hr style='border:none;border-top:1.5px solid #F2F4F6;margin:16px 0'>", unsafe_allow_html=True)
         c1,c2=st.columns(2)
         if "accident_pdf_cache" not in st.session_state:
