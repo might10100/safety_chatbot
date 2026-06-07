@@ -182,7 +182,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
          _p(acc.get("writer_name",""), align="CENTER"),
          _p("(인)", align="CENTER")],
     ]
-    sc = [W*0.13, W*0.22, W*0.07, W*0.07, W*0.1, W*0.09, W*0.17, W*0.15]
+    sc = [W*0.12, W*0.33, W*0.10, W*0.09, W*0.22, W*0.14]
     s_t = Table(site_data, colWidths=sc, rowHeights=[10*mm])
     s_t.setStyle(_ts(("ALIGN",(1,0),(1,0),"LEFT")))
     story.append(s_t)
@@ -251,7 +251,7 @@ def save_accident_form_pdf(acc: dict, ai_content: str = "",
     story.append(e_t)
 
     # ── 사고발생일시 ─────────────────────────────────────────
-    adt = acc.get("accident_datetime","")
+    adt = acc.get("accident_datetime","") or f"{acc.get('accident_date','')} {acc.get('accident_time','')}".strip()
     acc_date = adt.split(" ")[0] if " " in adt else adt
     acc_time = adt.split(" ")[1] if " " in adt else ""
     dp = acc_date.split("-") if "-" in acc_date else ["","",""]

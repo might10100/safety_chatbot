@@ -538,8 +538,22 @@ div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) > div {
                         _ad={}
                         for _ln in _rcontent.split("\n"):
                             _ln=_ln.strip()
-                            if "작성 일자:" in _ln: _ad["write_date"]=_ln.split("작성 일자:")[-1].split("/")[0].strip()
-                            if "현장명:" in _ln: _ad["project_name"]=_ln.split("현장명:")[-1].strip()
+                            if "작성 일자:" in _ln:
+                                _ad["write_date"]=_ln.split("작성 일자:")[-1].split("/")[0].strip()
+                                _pn=_ln.split("현장명:")[-1].strip() if "현장명:" in _ln else ""
+                                if _pn: _ad["project_name"]=_pn
+                            if "현장명:" in _ln and "write_date" not in _ad:
+                                _ad["project_name"]=_ln.split("현장명:")[-1].strip()
+                            if "작성자:" in _ln: _ad["writer_name"]=_ln.split("작성자:")[-1].strip()
+                            if "사고 발생 일시:" in _ln: _ad["accident_datetime"]=_ln.split("사고 발생 일시:")[-1].strip()
+                            if "작업 장소:" in _ln: _ad["location"]=_ln.split("작업 장소:")[-1].split("/")[0].strip()
+                            if "기인물:" in _ln: _ad["cause_object"]=_ln.split("기인물:")[-1].strip()
+                            if "발생 형태:" in _ln: _ad["accident_type"]=_ln.split("발생 형태:")[-1].strip()
+                            if "협력업체명:" in _ln: _ad["subcontractor"]=_ln.split("협력업체명:")[-1].strip()
+                            if "재해자 성명:" in _ln: _ad["victim_name"]=_ln.split("재해자 성명:")[-1].split("/")[0].strip()
+                            if "채용일:" in _ln: _ad["hire_date"]=_ln.split("채용일:")[-1].strip()
+                            if "상해 부위:" in _ln: _ad["injury_part"]=_ln.split("상해 부위:")[-1].split("/")[0].strip()
+                            if "상해 종류:" in _ln: _ad["injury_type"]=_ln.split("상해 종류:")[-1].strip()
                         if not _ad.get("write_date"): _ad["write_date"]=_rdate
                         _fname=f"{_rdate.replace('-','')}_사고원인분석.pdf"
                         try:
