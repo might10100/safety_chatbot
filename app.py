@@ -528,31 +528,44 @@ div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) > div {
                         st.markdown(_dh+f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:0 0 10px 10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
                     else:
                         st.markdown(f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
+                    import tempfile as _tmp, os as _os
+                    _rid=r.get("id",""); _rdate=r.get("date",""); _rtype=r.get("type",""); _rcontent=r.get("content","")
                     if r.get("path") and os.path.exists(r.get("path","")):
                         with open(r["path"],"rb") as f_:
-                            st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{r.get('id','')}")
-                    elif r.get("content") and r.get("type")=="accident":
+                            st.download_button("PDF 다운로드",f_.read(),file_name=os.path.basename(r["path"]),mime="application/pdf",key=f"dl_{_rid}")
+                    elif _rcontent and _rtype=="accident":
                         from accident_form import save_accident_form_pdf
-                        import tempfile, os as _os
-                        acc_data={}
-                        rep_content=r.get("content","")
-                        # content에서 기본 정보 파싱
-                        for line in rep_content.split("\n"):
-                            line=line.strip()
-                            if "작성 일자:" in line:
-                                acc_data["write_date"]=line.split("작성 일자:")[-1].split("/")[0].strip()
-                            if "현장명:" in line:
-                                acc_data["project_name"]=line.split("현장명:")[-1].strip()
-                        if not acc_data.get("write_date"): acc_data["write_date"]=r.get("date","")
-                        fname=f"{r.get('date','').replace('-','')}_사고보고서_양식.pdf"
+                        _ad={}
+                        for _ln in _rcontent.split("\n"):
+                            _ln=_ln.strip()
+                            if "작성 일자:" in _ln: _ad["write_date"]=_ln.split("작성 일자:")[-1].split("/")[0].strip()
+                            if "현장명:" in _ln: _ad["project_name"]=_ln.split("현장명:")[-1].strip()
+                        if not _ad.get("write_date"): _ad["write_date"]=_rdate
+                        _fname=f"{_rdate.replace('-','')}_사고원인분석.pdf"
                         try:
-                            tmp_dir=tempfile.mkdtemp()
-                            pdf_path=save_accident_form_pdf(acc_data, rep_content, tmp_dir)
-                            if _os.path.exists(pdf_path):
-                                with open(pdf_path,"rb") as f_: pdf_bytes=f_.read()
-                                st.download_button("PDF 다운로드",pdf_bytes,file_name=fname,mime="application/pdf",key=f"dl_{r.get('id','')}")
-                        except Exception as e:
-                            st.download_button("텍스트 다운로드",rep_content.encode("utf-8"),file_name=fname.replace(".pdf",".txt"),mime="text/plain",key=f"dl_{r.get('id','')}")
+                            _td=_tmp.mkdtemp(); _pp=save_accident_form_pdf(_ad,_rcontent,_td)
+                            if _os.path.exists(_pp):
+                                with open(_pp,"rb") as f_: _pb=f_.read()
+                                st.download_button("PDF 다운로드",_pb,file_name=_fname,mime="application/pdf",key=f"dl_{_rid}")
+                        except: st.download_button("텍스트 다운로드",_rcontent.encode("utf-8"),file_name=_fname.replace(".pdf",".txt"),mime="text/plain",key=f"dl_{_rid}")
+                    elif _rcontent and _rtype=="daily":
+                        from pdf_utils import save_daily_log_pdf
+                        _fname=f"{_rdate.replace('-','')}_위험요인분석.pdf"
+                        try:
+                            _td=_tmp.mkdtemp(); _pp=save_daily_log_pdf({},_rcontent,_td,_rdate.replace("-",""),zone())
+                            if _os.path.exists(_pp):
+                                with open(_pp,"rb") as f_: _pb=f_.read()
+                                st.download_button("PDF 다운로드",_pb,file_name=_fname,mime="application/pdf",key=f"dl_{_rid}")
+                        except: st.download_button("텍스트 다운로드",_rcontent.encode("utf-8"),file_name=_fname.replace(".pdf",".txt"),mime="text/plain",key=f"dl_{_rid}")
+                    elif _rcontent and _rtype=="checklist":
+                        from pdf_utils import save_checklist_pdf
+                        _fname=f"{_rdate.replace('-','')}_안전점검체크리스트.pdf"
+                        try:
+                            _td=_tmp.mkdtemp(); _pp=save_checklist_pdf(_rcontent,_rdate,proj().get("name",""),zone(),"",_td)
+                            if _os.path.exists(_pp):
+                                with open(_pp,"rb") as f_: _pb=f_.read()
+                                st.download_button("PDF 다운로드",_pb,file_name=_fname,mime="application/pdf",key=f"dl_{_rid}")
+                        except: st.download_button("텍스트 다운로드",_rcontent.encode("utf-8"),file_name=_fname.replace(".pdf",".txt"),mime="text/plain",key=f"dl_{_rid}")
         else:
             st.info("최근 1주일 내 문서가 없습니다.")
     else:
