@@ -151,7 +151,7 @@ def sidebar():
         if st.button("Chatbot", type="primary" if page=="chatbot" else "secondary", use_container_width=True):
             go("chatbot")
         if z:
-            if st.button("금일 안전보드", type="primary" if page=="daily_input" else "secondary", use_container_width=True):
+            if st.button("금일 안전 관리", type="primary" if page=="daily_input" else "secondary", use_container_width=True):
                 go("daily_input")
             if st.button("사고 원인 분석", type="primary" if page=="accident_form" else "secondary", use_container_width=True):
                 go("accident_form", accident_input={}, report_content="")
@@ -161,7 +161,7 @@ def sidebar():
                   "daily_input":"zone_board","zone_board":"main_board"}
         back=back_map.get(page)
         if back:
-            lbl={"daily_input":"← 금일 안전보드","zone_board":"구역 보드","main_board":"← 메인보드"}.get(back,"← 이전")
+            lbl={"daily_input":"← 금일 안전 관리","zone_board":"구역 보드","main_board":"← 메인보드"}.get(back,"← 이전")
             if st.button(lbl, use_container_width=True): go(back)
         if z and st.button("메인보드", use_container_width=True): go("main_board",cur_zone=None)
 
@@ -552,7 +552,7 @@ def page_daily_input():
     if "daily_input_visited" not in st.session_state:
         st.session_state["show_missing_warning"] = False
         st.session_state["daily_input_visited"] = True
-    st.markdown(f"## 금일 안전보드 — {z}")
+    st.markdown(f"## 금일 안전 관리 — {z}")
     di=st.session_state.daily_input
 
     # 필수 항목 안내
