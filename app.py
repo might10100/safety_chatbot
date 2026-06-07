@@ -1101,11 +1101,16 @@ def page_accident_form():
         }
         st.session_state.accident_input=new_acc
 
-        # 준거 기준 선택
-        if atype and atype!="(선택)" and loc:
-            st.markdown("---"); st.session_state.selected_laws=law_ui(f"{atype} {loc} 산업재해")
-        elif atype=="(선택)" and loc and ov:
-            st.markdown("---"); st.session_state.selected_laws=law_ui(f"{ov[:30]} {loc} 산업재해")
+        # 법령 자동 선택 (UI 없이 전체 후보 자동 반영)
+        if not st.session_state.law_candidates:
+            _q = f"{atype} {loc} 산업재해" if atype and atype!="(선택)" else f"{ov[:30]} {loc} 산업재해"
+            if _q.strip():
+                _cands = get_law_candidates(_q)
+                st.session_state.law_candidates = _cands
+                st.session_state.selected_laws = [
+                    f"[{l['name']} {l['article']}] {l.get('title','')} — {l.get('summary','')}"
+                    for l in _cands
+                ]
 
         # 필수 항목 체크
         basic_required=[("작성자 성명",wname)]
