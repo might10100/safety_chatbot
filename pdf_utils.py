@@ -156,7 +156,7 @@ def save_daily_log_pdf(daily: dict, report_text: str,
     path    = _out(f"{date_c}_일일안전일지_{manager_safe}.pdf", save_dir)
     doc     = _doc(path)
     story   = []
-    HDR  = colors.HexColor("#1a1a2e")
+    HDR  = colors.HexColor("#0064FF")
     GRAY = colors.HexColor("#e8eaf6")
 
     # 제목
@@ -281,7 +281,7 @@ def save_checklist_pdf(content: str, date: str,
     doc  = _doc(path)
     story= []
     W    = A4[0]-30*mm
-    HDR  = colors.HexColor("#1a1a2e")
+    HDR  = colors.HexColor("#0064FF")
     GRAY = colors.HexColor("#e8eaf6")
 
     t = Table([[_p("현장 안전 점검 체크리스트",14,bold=True,align="CENTER",color=colors.white)]], colWidths=[W])
@@ -347,7 +347,7 @@ def save_accident_report_pdf(content: str, date: str,
     doc  = _doc(path)
     story= []
     W    = A4[0]-30*mm
-    HDR  = colors.HexColor("#1a1a2e")
+    HDR  = colors.HexColor("#0064FF")
     GRAY = colors.HexColor("#e8eaf6")
 
     t = Table([[_p("사  고  현  장  보  고  서",14,bold=True,align="CENTER")]], colWidths=[W])

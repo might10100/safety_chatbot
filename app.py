@@ -485,7 +485,7 @@ div[data-testid="stHorizontalBlock"]:has(div.acc-unified-left) > div {
                         _ah='<div style="background:#0064FF;color:white;text-align:center;padding:11px 16px;font-size:14px;font-weight:800;border-radius:10px 10px 0 0;letter-spacing:.06em">사고 원인 분석</div>'
                         st.markdown(_ah+f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:0 0 10px 10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
                     elif _rt=="daily":
-                        _dh=f'<div style="background:#1a1a2e;color:white;text-align:center;padding:11px;font-size:13px;font-weight:700;border-radius:10px 10px 0 0;letter-spacing:.12em">위 험  요 인  분 석</div>'
+                        _dh=f'<div style="background:#0064FF;color:white;text-align:center;padding:11px;font-size:13px;font-weight:800;border-radius:10px 10px 0 0;letter-spacing:.06em">위험 요인 분석</div>'
                         st.markdown(_dh+f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:0 0 10px 10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
                     else:
                         st.markdown(f'<div style="background:white;border:1.5px solid #E5E8EB;border-radius:10px;padding:18px 22px;white-space:pre-wrap;font-size:13px;color:#191F28;line-height:1.8">{_rc}</div>',unsafe_allow_html=True)
@@ -758,49 +758,55 @@ def render_daily_log_html(daily,report_text):
     else:
         ws="날씨 데이터 없음" 
 
+    _K='background:#FAFBFC;font-size:.85rem;font-weight:600;color:#4E5968;padding:10px 14px;border-bottom:1px solid #F2F4F6;vertical-align:top'
+    _V='padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;color:#191F28;line-height:1.6'
     risk_html=""
     for r,l,a in risk_sets:
-        risk_html+=f"""<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;width:18%;">위험 요인</td>
-<td colspan="3" style="padding:6px;border:1px solid #aaa;">{r}</td></tr>
-<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">법적 근거</td>
-<td colspan="3" style="padding:6px;border:1px solid #aaa;">{l}</td></tr>
-<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">안전 조치 사항</td>
-<td colspan="3" style="padding:6px;border:1px solid #aaa;">{a}</td></tr>
-<tr><td colspan="4" style="padding:2px;background:#f0f0f0;"></td></tr>"""
+        risk_html+=f"""<tr><td style="{_K};width:18%">위험 요인</td>
+<td colspan="3" style="{_V}">{r}</td></tr>
+<tr><td style="{_K}">법적 근거</td>
+<td colspan="3" style="{_V}">{l}</td></tr>
+<tr><td style="{_K}">안전 조치 사항</td>
+<td colspan="3" style="{_V}">{a}</td></tr>
+<tr><td colspan="4" style="padding:0;background:#EFF4FF;height:4px;border-bottom:2px solid #C2D8FF"></td></tr>"""
 
-    return f"""<table style="width:100%;border-collapse:collapse;font-size:.88rem;margin:8px 0;">
-<tr><td colspan="4" style="background:#1a1a2e;color:white;text-align:center;padding:12px;font-size:1.05rem;font-weight:bold;letter-spacing:.15em;">위 험  요 인  분 석</td></tr>
-<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;width:15%;">작성 일자</td>
-<td style="padding:6px;border:1px solid #aaa;width:35%;">{fmt_date(daily.get("date",""))}</td>
-<td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;width:15%;">관리자</td>
-<td style="padding:6px;border:1px solid #aaa;width:35%;">{daily.get("manager","")}</td></tr>
-<tr><td colspan="4" style="background:#e8eaf6;font-weight:bold;padding:7px;border:1px solid #aaa;">1. 기본 사항</td></tr>
-<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">투입 인원</td>
-<td style="padding:6px;border:1px solid #aaa;">{daily.get("workers","")}</td>
-<td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">장비 현황</td>
-<td style="padding:6px;border:1px solid #aaa;">{daily.get("equipment","")}</td></tr>
-<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">주요 작업 내용</td>
-<td colspan="3" style="padding:6px;border:1px solid #aaa;">{daily.get("work_process","")}</td></tr>
-<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">작업 위치</td>
-<td style="padding:6px;border:1px solid #aaa;">{daily.get("location","")}</td>
-<td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">공종 시간</td>
-<td style="padding:6px;border:1px solid #aaa;">{daily.get("work_time","")}</td></tr>
-<tr><td colspan="4" style="background:#e8eaf6;font-weight:bold;padding:7px;border:1px solid #aaa;">2. 특이 사항</td></tr>
-<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">전일 미조치</td>
-<td style="padding:6px;border:1px solid #aaa;">{daily.get("prev_issues","없음")}</td>
-<td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">주변 간섭</td>
-<td style="padding:6px;border:1px solid #aaa;">{daily.get("nearby_interference","없음")}</td></tr>
-<tr><td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">신규 인원</td>
-<td style="padding:6px;border:1px solid #aaa;">{daily.get("new_workers","없음")}</td>
-<td style="background:#e8eaf6;font-weight:bold;padding:6px;border:1px solid #aaa;">날씨</td>
-<td style="padding:6px;border:1px solid #aaa;">{ws}</td></tr>
-<tr><td colspan="4" style="background:#e8eaf6;font-weight:bold;padding:7px;border:1px solid #aaa;">3. 위험 요인 및 안전 조치 (법규 기반)</td></tr>
+    _K='background:#FAFBFC;font-size:.85rem;font-weight:600;color:#4E5968;padding:10px 14px;border-bottom:1px solid #F2F4F6;vertical-align:top'
+    _V='padding:10px 14px;border-bottom:1px solid #F2F4F6;font-size:.88rem;color:#191F28;line-height:1.6'
+    _S='background:#EFF4FF;color:#191F28;font-weight:700;font-size:.9rem;padding:10px 14px;border-bottom:1px solid #C2D8FF;border-top:2px solid #C2D8FF'
+    return f"""<div style="border:1.5px solid #E5E8EB;border-radius:10px;overflow:hidden;margin:8px 0">
+<table style="width:100%;border-collapse:collapse;font-size:.88rem;">
+<tr><td colspan="4" style="background:#0064FF;color:white;text-align:center;padding:14px;font-size:1.05rem;font-weight:800;letter-spacing:.08em;border-radius:8px 8px 0 0">위험 요인 분석</td></tr>
+<tr><td style="{_K};width:15%">작성 일자</td>
+<td style="{_V};width:35%">{fmt_date(daily.get("date",""))}</td>
+<td style="{_K};width:15%">관리자</td>
+<td style="{_V};width:35%">{daily.get("manager","")}</td></tr>
+<tr><td colspan="4" style="{_S}">1. 기본 사항</td></tr>
+<tr><td style="{_K}">투입 인원</td>
+<td style="{_V}">{daily.get("workers","")}</td>
+<td style="{_K}">장비 현황</td>
+<td style="{_V}">{daily.get("equipment","")}</td></tr>
+<tr><td style="{_K}">주요 작업 내용</td>
+<td colspan="3" style="{_V}">{daily.get("work_process","")}</td></tr>
+<tr><td style="{_K}">작업 위치</td>
+<td style="{_V}">{daily.get("location","")}</td>
+<td style="{_K}">공종 시간</td>
+<td style="{_V}">{daily.get("work_time","")}</td></tr>
+<tr><td colspan="4" style="{_S}">2. 특이 사항</td></tr>
+<tr><td style="{_K}">전일 미조치</td>
+<td style="{_V}">{daily.get("prev_issues","없음")}</td>
+<td style="{_K}">주변 간섭</td>
+<td style="{_V}">{daily.get("nearby_interference","없음")}</td></tr>
+<tr><td style="{_K}">신규 인원</td>
+<td style="{_V}">{daily.get("new_workers","없음")}</td>
+<td style="{_K}">날씨</td>
+<td style="{_V}">{ws}</td></tr>
+<tr><td colspan="4" style="{_S}">3. 위험 요인 및 안전 조치 (법규 기반)</td></tr>
 {risk_html}
-<tr><td colspan="4" style="background:#e8eaf6;font-weight:bold;padding:7px;border:1px solid #aaa;">4. TBM 메시지</td></tr>
-<tr><td colspan="4" style="background:#fff8e1;padding:16px;border:2px solid #ffc107;">{tbm}</td></tr>
-<tr><td colspan="4" style="text-align:center;padding:10px;border:1px solid #aaa;background:#fafafa;">
+<tr><td colspan="4" style="{_S}">4. TBM 메시지</td></tr>
+<tr><td colspan="4" style="padding:14px 18px;border-bottom:1px solid #F2F4F6;font-size:.88rem;color:#191F28;line-height:1.8">{tbm}</td></tr>
+<tr><td colspan="4" style="text-align:center;padding:10px 14px;font-size:.85rem;color:#4E5968;background:#FAFBFC">
 관리자 서명: &nbsp;&nbsp;{daily.get("manager","")}&nbsp;(인)</td></tr>
-</table>"""
+</table></div>"""
 
 def save_report(rtype,label,path,content,rdate):
     p_,z_=pid(),zone(); ensure_zd(p_,z_)
